@@ -8,13 +8,12 @@ import { FlagChips } from '../components/flags'
 import { Rail } from '../components/Rail'
 import { Reviews } from '../components/Reviews'
 import { useToggleSet } from '../hooks'
+import { matchesProduct, type ProductFilter } from '../lib/filters'
 import { products } from '../data/products'
 import { recipes } from '../data/recipes'
 import { productReviews } from '../data/reviews'
 import { traitLabel } from '../data/traits'
-import type { Product, Trait } from '../data/types'
-
-type ProductFilter = Product['category'] | 'certified' | Trait
+import type { Product } from '../data/types'
 
 const chips: ChipOption<ProductFilter>[] = [
   { id: 'certified', label: 'Certified GF', icon: BadgeCheck },
@@ -29,19 +28,9 @@ const chips: ChipOption<ProductFilter>[] = [
   { id: 'nut-free', label: 'Nut-free', icon: NutOff },
 ]
 
-const categories = new Set<string>(['bread', 'pasta', 'snacks', 'baking', 'sweets', 'breakfast'])
-
-/** Categories widen the list (any of them); certification and diet chips narrow it (all of them). */
-function matches(product: Product, selected: ProductFilter[]) {
-  const picked = selected.filter((f) => categories.has(f))
-  if (picked.length > 0 && !picked.includes(product.category)) return false
-  if (selected.includes('certified') && !product.certified) return false
-  return selected.filter((f): f is Trait => f in traitLabel).every((t) => product.traits.includes(t))
-}
-
 export function ProductsPage() {
   const [selected, toggle, clear] = useToggleSet<ProductFilter>()
-  const shown = products.filter((p) => matches(p, selected))
+  const shown = products.filter((p) => matchesProduct(p, selected))
 
   return (
     <ListingPage

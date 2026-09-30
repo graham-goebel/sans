@@ -25,6 +25,7 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run lint
+      - run: npm test
       # Pages serves the site from /<repo>/, so assets need that base path.
       - run: npm run build -- --base=/${{ github.event.repository.name }}/
       - uses: actions/configure-pages@v5

@@ -2,70 +2,7 @@ import { useEffect, useMemo, useState, type ComponentType, type KeyboardEvent } 
 import { useNavigate } from 'react-router'
 import { EmptyState, Heading, Input, List, Sheet, Stack, Tag, Text } from '@dovetail-ds/react'
 import { Coffee, Croissant, Search, SearchX, ShoppingBasket, Store, Utensils, UtensilsCrossed } from 'lucide-react'
-import { places, safetyLabel } from '../data/places'
-import { products } from '../data/products'
-import { recipes } from '../data/recipes'
-import { traitLabel } from '../data/traits'
-import type { Place } from '../data/types'
-
-type Kind = 'recipe' | 'product' | Place['type']
-
-interface Result {
-  id: string
-  kind: Kind
-  title: string
-  detail: string
-  image: string
-  path: string
-  haystack: string
-}
-
-/** Lower-cased and stripped of accents, so "cafe" finds "Café". */
-const normalize = (text: string) =>
-  text
-    .toLowerCase()
-    .normalize('NFD')
-    .replace(/[̀-ͯ]/g, '')
-
-const index: Result[] = [
-  ...recipes.map((r) => ({
-    id: `recipe-${r.id}`,
-    kind: 'recipe' as const,
-    title: r.title,
-    detail: `${r.minutes} min · ${r.difficulty}`,
-    image: r.image,
-    path: `/recipes/${r.id}`,
-    haystack: [r.title, r.category, r.dek, ...r.ingredients, ...r.traits.map((t) => traitLabel[t])].join(' '),
-  })),
-  ...products.map((p) => ({
-    id: `product-${p.id}`,
-    kind: 'product' as const,
-    title: p.name,
-    detail: `${p.brand} · ${p.price}`,
-    image: p.image,
-    path: `/products/${p.id}`,
-    haystack: [p.name, p.brand, p.category, p.dek, p.description, ...p.traits.map((t) => traitLabel[t])].join(' '),
-  })),
-  ...places.map((p) => ({
-    id: `place-${p.id}`,
-    kind: p.type,
-    title: p.name,
-    detail: `${safetyLabel[p.safety]} · ${p.neighborhood}, ${p.city}`,
-    image: p.image,
-    path: `/places/${p.id}`,
-    haystack: [p.name, p.type, p.city, p.neighborhood, p.dek, p.description, ...p.order].join(' '),
-  })),
-].map((r) => ({ ...r, haystack: normalize(r.haystack) }))
-
-/** Every word must appear; a plural also matches its singular ("pizzas" finds "pizza"). */
-function matches(result: Result, words: string[]) {
-  return words.every(
-    (w) =>
-      result.haystack.includes(w) ||
-      (w.length > 3 && w.endsWith('es') && result.haystack.includes(w.slice(0, -2))) ||
-      (w.length > 3 && w.endsWith('s') && result.haystack.includes(w.slice(0, -1))),
-  )
-}
+import { search, type Kind } from '../lib/search'
 
 const kinds: { id: Kind; label: string; icon: ComponentType }[] = [
   { id: 'recipe', label: 'Recipes', icon: UtensilsCrossed },
@@ -110,11 +47,11 @@ export function SearchSheet({ open, onClose }: SearchSheetProps) {
     return () => window.clearTimeout(timer)
   }, [open])
 
-  const words = useMemo(() => normalize(query).split(/\s+/).filter(Boolean), [query])
+  const hasQuery = query.trim() !== ''
 
-  // Everything the words match, before the type chips narrow it down.
-  const matched = useMemo(() => (words.length > 0 ? index.filter((r) => matches(r, words)) : index), [words])
-  const searching = words.length > 0 || selected.length > 0
+  // Everything the query matches, before the type chips narrow it down.
+  const matched = useMemo(() => search(query), [query])
+  const searching = hasQuery || selected.length > 0
   const shown = matched.filter((r) => selected.length === 0 || selected.includes(r.kind))
 
   const toggle = (kind: Kind) =>
@@ -139,7 +76,7 @@ export function SearchSheet({ open, onClose }: SearchSheetProps) {
       footer={
         <div className="search-filters" role="group" aria-label="Show only">
           {kinds.map(({ id, label, icon: Icon }) => {
-            const count = words.length > 0 ? matched.filter((r) => r.kind === id).length : undefined
+            const count = hasQuery ? matched.filter((r) => r.kind === id).length : undefined
             return (
               <Tag
                 key={id}

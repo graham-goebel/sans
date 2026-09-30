@@ -4,6 +4,7 @@ import type { ComponentType } from 'react'
 import {
   BadgeCheck,
   BookOpen,
+  CalendarCheck,
   Clock,
   Coffee,
   CookingPot,
@@ -27,11 +28,10 @@ import type { ChipOption } from '../components/FilterChips'
 import { DetailHero, ListingPage, MetaItem, NotFoundState } from '../components/layout'
 import { Rail } from '../components/Rail'
 import { useToggleSet } from '../hooks'
+import { matchesPlace, type PlaceFilter } from '../lib/filters'
 import { places, safetyLabel } from '../data/places'
 import { placeReviews } from '../data/reviews'
-import type { Place, PrecautionKind } from '../data/types'
-
-type PlaceFilter = Place['type'] | 'dedicated' | 'gf-menu'
+import type { PrecautionKind } from '../data/types'
 
 const chips: ChipOption<PlaceFilter>[] = [
   { id: 'dedicated', label: '100% gluten-free', icon: ShieldCheck },
@@ -57,21 +57,9 @@ const precautionStyle: Record<PrecautionKind, { icon: ComponentType<{ 'aria-hidd
   ask: { icon: MessageCircleWarning, caution: true },
 }
 
-const types = new Set<string>(['restaurant', 'cafe', 'bakery', 'market'])
-const safeties = new Set<string>(['dedicated', 'gf-menu'])
-
-/** Types widen the list, and so do safety levels: pick either and you see both. */
-function matches(place: Place, selected: PlaceFilter[]) {
-  const pickedTypes = selected.filter((f) => types.has(f))
-  const pickedSafety = selected.filter((f) => safeties.has(f))
-  if (pickedTypes.length > 0 && !pickedTypes.includes(place.type)) return false
-  if (pickedSafety.length > 0 && !pickedSafety.includes(place.safety as PlaceFilter)) return false
-  return true
-}
-
 export function PlacesPage() {
   const [selected, toggle, clear] = useToggleSet<PlaceFilter>()
-  const shown = places.filter((p) => matches(p, selected))
+  const shown = places.filter((p) => matchesPlace(p, selected))
 
   return (
     <ListingPage
@@ -118,6 +106,7 @@ export function PlaceDetail() {
             <MetaItem icon={<Star aria-hidden />}>
               {place.rating.toFixed(1)} · {place.price}
             </MetaItem>
+            <MetaItem icon={<CalendarCheck aria-hidden />}>Checked {place.lastChecked}</MetaItem>
           </>
         }
         badges={

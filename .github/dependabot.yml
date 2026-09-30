@@ -1,0 +1,22 @@
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: daily
+    groups:
+      # Dovetail is the design system every screen is built on: it gets its
+      # own PR per release, so CI and the visual check can vet it alone.
+      dovetail:
+        patterns: ['@dovetail-ds/*']
+      # Everything else rides together in one PR.
+      everything-else:
+        patterns: ['*']
+        exclude-patterns: ['@dovetail-ds/*']
+    labels: ['dependencies']
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+    labels: ['dependencies']

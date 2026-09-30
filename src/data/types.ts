@@ -71,6 +71,10 @@ export interface Place {
   hours: string
   order: string[]
   precautions: Precaution[]
+  /** When these details were last confirmed with the place, e.g. "Sep 2026". */
+  lastChecked: string
+  /** Where the details came from: the place's own site first. Required for real (non-sample) places. */
+  sources?: string[]
   flags?: Flag[]
 }
 

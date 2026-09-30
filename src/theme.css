@@ -318,9 +318,73 @@ h3 em {
 
 
 
+/* ---------- Prototype banner and footer ---------- */
+
+.prototype-banner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--dt-space-inline-sm);
+  padding: var(--dt-space-inset-xs) var(--dt-space-gutter);
+  padding-top: calc(var(--dt-space-inset-xs) + env(safe-area-inset-top));
+  background: var(--dt-surface-warning-subtle);
+  color: var(--dt-text-warning);
+  text-align: center;
+}
+
+.prototype-banner svg {
+  flex: none;
+  width: 16px;
+  height: 16px;
+}
+
 .site-footer {
+  display: grid;
+  gap: var(--dt-space-stack-sm);
+  max-width: var(--dt-size-container-default);
+  margin-inline: auto;
+  padding: var(--dt-space-stack-2xl) var(--dt-space-gutter) var(--dt-space-stack-lg);
+  box-sizing: border-box;
   color: var(--dt-text-tertiary);
   font-size: var(--dt-font-size-sm);
+}
+
+.footer-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--dt-space-stack-xs) var(--dt-space-inline-lg);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  color: var(--dt-text-secondary);
+}
+
+.info-prose h2 {
+  font-family: var(--dt-font-family-serif);
+  font-weight: var(--dt-font-weight-regular);
+  font-size: 1.75rem;
+  letter-spacing: 0;
+}
+
+.reviews-title {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--dt-space-inline-sm);
+}
+
+.coming-soon {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--dt-space-inline-sm);
+  padding: var(--dt-space-inset-xs) var(--dt-space-inset-md);
+  border-radius: var(--dt-radius-pill);
+  background: color-mix(in oklab, currentColor 14%, transparent);
+  font-weight: var(--dt-font-weight-medium);
+}
+
+.coming-soon svg {
+  width: 18px;
+  height: 18px;
 }
 
 /* ---------- Navigation and search ---------- */
@@ -651,11 +715,3 @@ h3 em {
   color: var(--dt-text-tertiary);
 }
 
-/* ---------- Community CTA ---------- */
-
-.store-buttons {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: var(--dt-space-inline-sm);
-}
