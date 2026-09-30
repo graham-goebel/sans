@@ -20,11 +20,21 @@ real advice.
 - [x] Automated tests (Vitest) for search, filters and every page, run by the
       `CI` workflow on every PR and before every deploy
 
+### Staying current with Dovetail ✅
+
+- [x] Dependabot opens a PR for each `@dovetail-ds/react` release (daily check);
+      other packages come grouped in one PR
+- [x] `Visual check` workflow screenshots 9 screens at phone and desktop sizes on
+      the PR and its base, and diffs them. Dependabot PRs fail on any visual
+      change; other PRs just report
+- [x] [dovetail-requests.md](dovetail-requests.md): five Dovetail features that
+      would retire sans's workarounds on Dovetail internals
+
 ## Phase 2: real content
 
 The launch blocker. See [CONTENT.md](CONTENT.md) for how to add and check it.
 
-- [ ] Choose a launch city
+- [x] Choose a launch city: **Denver, CO**
 - [ ] Verify 15–30 places there: visit or call, record precautions, date it
 - [ ] Replace sample products with real ones you have checked (labels, certification)
 - [ ] Replace sample recipes with tested ones

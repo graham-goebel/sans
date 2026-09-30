@@ -1,0 +1,57 @@
+name: Visual check
+
+# Screenshots key pages on the PR and on its base branch, and diffs them.
+# Dependabot PRs (e.g. a Dovetail upgrade) run strict: any visual change
+# fails, so an upgrade that shifts the design gets a human look first.
+# On other PRs, changes are expected, so the check only reports them.
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  visual:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: head
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.base.sha }}
+          path: base
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Build base and PR
+        run: |
+          for side in base head; do
+            (cd "$side" && npm ci && npx vite build)
+          done
+
+      - name: Serve both builds
+        run: |
+          (cd base && npx vite preview --port 4001 --strictPort > /dev/null 2>&1 &)
+          (cd head && npx vite preview --port 4002 --strictPort > /dev/null 2>&1 &)
+          npx --yes wait-on@8 http://localhost:4001 http://localhost:4002
+
+      - name: Install Chromium
+        working-directory: head
+        run: npx playwright install --with-deps chromium
+
+      - name: Compare screenshots
+        working-directory: head
+        run: >
+          node scripts/visual-diff.mjs http://localhost:4001 http://localhost:4002 ../visual-diff
+          ${{ github.event.pull_request.user.login == 'dependabot[bot]' && '--strict' || '' }}
+
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: visual-diff
+          path: visual-diff
+          if-no-files-found: ignore
