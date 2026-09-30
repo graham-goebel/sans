@@ -1,3 +1,4 @@
+import millHouseLogo from '../assets/logos/mill-house.svg'
 import { unsplash } from './images'
 import type { Product } from './types'
 
@@ -140,5 +141,6 @@ export const products: Product[] = [
       'Rice flour, tapioca and psyllium, with the yeast already in the bag. Prove it for an hour and it stretches by hand into two thin, crisp-edged pizzas.',
     whereToBuy: ['Most supermarkets', 'Online direct'],
     flags: ['hot'],
+    featured: { logo: millHouseLogo },
   },
 ]

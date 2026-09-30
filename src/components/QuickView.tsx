@@ -1,6 +1,6 @@
 import { useState, type ReactNode } from 'react'
 import { useNavigate } from 'react-router'
-import { Button, Callout, List, Sheet, Stack, Text } from '@dovetail-ds/react'
+import { Button, Callout, Sheet, Stack, Text } from '@dovetail-ds/react'
 import { ArrowRight, ChefHat, Clock, MapPin, Store, Users } from 'lucide-react'
 import { places } from '../data/places'
 import { products } from '../data/products'
@@ -10,6 +10,7 @@ import { QuickViewContext, type ItemKind, type QuickViewTarget } from '../lib/qu
 import { ChipList } from './itemChips'
 import { MetaItem } from './layout'
 import { PrecautionList } from './precautions'
+import { SimpleList } from './SimpleList'
 import { CoeliacNote } from './CoeliacNote'
 import { ItemMenu } from './ItemMenu'
 import { scrimFor, scrimStyle, type ScrimTone } from '../lib/scrim'
@@ -43,6 +44,7 @@ export function QuickViewProvider({ children }: { children: ReactNode }) {
       {children}
       {content && (
         <Sheet
+          className="item-sheet"
           open={open}
           onClose={() => setOpen(false)}
           eyebrow={content.eyebrow}
@@ -112,10 +114,7 @@ function preview({ kind, id }: QuickViewTarget): Preview | undefined {
             <MetaItem icon={<Users aria-hidden />}>Serves {recipe.serves}</MetaItem>
             <MetaItem icon={<ChefHat aria-hidden />}>{recipe.difficulty}</MetaItem>
           </div>
-          <List
-            label="Ingredients"
-            items={shown.map((item) => ({ id: item, title: item }))}
-          />
+          <SimpleList label="Ingredients" items={shown} />
           {recipe.ingredients.length > shown.length && (
             <Text variant="small" tone="secondary">
               + {recipe.ingredients.length - shown.length} more ingredients and the method on the full recipe.
@@ -137,10 +136,7 @@ function preview({ kind, id }: QuickViewTarget): Preview | undefined {
       chips: productChips(product),
       tone: scrimFor.product(product),
       body: (
-        <List
-          label="Where to buy"
-          items={product.whereToBuy.map((where) => ({ id: where, title: where, leading: <Store size={20} aria-hidden /> }))}
-        />
+        <SimpleList label="Where to buy" items={product.whereToBuy} icon={<Store aria-hidden />} />
       ),
     }
   }

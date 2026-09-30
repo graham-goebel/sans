@@ -1019,3 +1019,106 @@ h3 em {
   width: 16px;
   height: 16px;
 }
+
+/* ---------- Simple list (static rows, aligned to the content edge) ---------- */
+
+.simple-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.simple-list li {
+  display: flex;
+  align-items: center;
+  gap: var(--dt-space-inline-sm);
+  padding-block: var(--dt-space-stack-sm);
+  font-size: var(--dt-text-body-md-size);
+  color: var(--dt-text-primary);
+}
+
+.simple-list li + li {
+  border-top: var(--dt-border-width-default) solid var(--dt-border-subtle);
+}
+
+.simple-list svg {
+  width: 18px;
+  height: 18px;
+  flex: none;
+  color: var(--dt-text-secondary);
+}
+
+/* ---------- Logo card (featured partners) ---------- */
+
+.logo-card {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  place-items: center;
+  height: 100%;
+  min-height: 100%;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  border-radius: var(--dt-card-radius);
+  text-decoration: none;
+  --scrim: var(--scrim-ink);
+}
+
+.logo-card__photo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform var(--dt-motion-micro);
+}
+
+/* An even wash of the item's tone, so a white logo reads anywhere on it. */
+.logo-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: color-mix(in oklab, var(--scrim) 62%, transparent);
+}
+
+.logo-card__logo {
+  position: relative;
+  z-index: 1;
+  width: 64%;
+  max-height: 42%;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 8px color-mix(in oklab, black 30%, transparent));
+}
+
+.logo-card__label {
+  position: absolute;
+  z-index: 1;
+  top: var(--dt-space-stack-sm);
+  left: var(--dt-space-inline-sm);
+  padding: 4px 10px;
+  border-radius: var(--dt-radius-pill);
+  background: color-mix(in oklab, white 88%, transparent);
+  color: var(--dt-color-neutral-900);
+  font-size: 0.75rem;
+  font-weight: var(--dt-font-weight-semibold);
+  letter-spacing: 0.02em;
+}
+
+.logo-card:hover .logo-card__photo {
+  transform: scale(1.03);
+}
+
+.logo-card:focus-visible {
+  outline: var(--dt-focus-ring-width) solid var(--dt-focus-ring-color);
+  outline-offset: var(--dt-focus-ring-offset);
+}
+
+/* ---------- Sheet header ----------
+   Dovetail widens the sheet's sticky header past the content column, so its
+   divider overhangs the content on both sides. Pull it back in line with the
+   content; the styles are inline, hence !important (see
+   docs/dovetail-requests.md). */
+.item-sheet > :first-child {
+  margin-inline: 0 !important;
+  padding-inline: 0 !important;
+}

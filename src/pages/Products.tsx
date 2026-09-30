@@ -1,6 +1,7 @@
 import { useParams } from 'react-router'
-import { Heading, List, Section, Stack, Text } from '@dovetail-ds/react'
+import { Heading, Section, Stack, Text } from '@dovetail-ds/react'
 import { BadgeCheck, CakeSlice, EggOff, ChefHat, Coffee, CookingPot, Cookie, Croissant, MilkOff, NutOff, Star, Store, Vegan } from 'lucide-react'
+import { SimpleList } from '../components/SimpleList'
 import { ProductCard, RecipeCard } from '../components/cards'
 import type { ChipOption } from '../components/FilterChips'
 import { DetailHero, ListingPage, MetaItem, NotFoundState } from '../components/layout'
@@ -98,13 +99,7 @@ export function ProductDetail() {
             <Heading level={2} size="heading-lg">
               Where to buy
             </Heading>
-            <List
-              label="Where to buy"
-              items={product.whereToBuy.map((where) => ({
-                id: where,
-                title: where,
-                leading: <Store size={20} aria-hidden /> }))}
-            />
+            <SimpleList label="Where to buy" items={product.whereToBuy} icon={<Store aria-hidden />} />
           </Stack>
           <Stack gap="md">
             <Heading level={2} size="heading-lg">

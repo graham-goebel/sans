@@ -79,6 +79,23 @@ describe('quick view', () => {
   })
 })
 
+describe('cards', () => {
+  it('shows a featured partner as a logo card, named by its logo', () => {
+    const featured = products.find((p) => p.featured)!
+    visit('/products')
+    const logo = screen.getByRole('img', { name: `${featured.brand}: ${featured.name}` })
+    expect(logo.closest('a')?.getAttribute('href')).toBe(`#/products/${featured.id}`)
+    expect(screen.getByText('Featured')).toBeTruthy()
+  })
+
+  it('keeps "Unverified" off place cards but on the place itself', () => {
+    visit('/places')
+    expect(document.querySelector('.card-grid .flag--unverified')).toBeNull()
+    visit(`/places/${places[0].id}`)
+    expect(screen.getAllByText('Unverified').length).toBeGreaterThan(0)
+  })
+})
+
 describe('products', () => {
   it('doesn’t show prices, which vary by shop', () => {
     visit('/products')

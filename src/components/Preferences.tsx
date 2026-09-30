@@ -25,6 +25,7 @@ export function PreferencesProvider({ children }: { children: ReactNode }) {
     <PreferencesContext.Provider value={{ preferences, update, openSheet: () => setOpen(true) }}>
       {children}
       <Sheet
+        className="item-sheet"
         open={open}
         onClose={() => setOpen(false)}
         eyebrow="Your preferences"

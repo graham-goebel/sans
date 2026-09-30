@@ -1,6 +1,6 @@
 import { lazy, Suspense, useEffect, useState } from 'react'
 import { useParams, useSearchParams } from 'react-router'
-import { Button, Callout, Heading, Link, List, Section, Stack, Tabs, Text } from '@dovetail-ds/react'
+import { Button, Callout, Heading, Link, Section, Stack, Tabs, Text } from '@dovetail-ds/react'
 import {
   BookOpen,
   CalendarCheck,
@@ -19,6 +19,7 @@ import {
 } from 'lucide-react'
 import { PlaceCard } from '../components/cards'
 import { placeChips } from '../lib/chips'
+import { SimpleList } from '../components/SimpleList'
 import { PrecautionList } from '../components/precautions'
 import { CoeliacNote } from '../components/CoeliacNote'
 import type { ChipOption } from '../components/FilterChips'
@@ -207,10 +208,7 @@ export function PlaceDetail() {
               <Heading level={2} size="heading-lg">
                 {unverified ? 'Reported gluten-free' : 'What to order'}
               </Heading>
-              <List
-                label={unverified ? 'Reported gluten-free dishes' : 'What to order'}
-                items={place.order.map((dish) => ({ id: dish, title: dish }))}
-              />
+              <SimpleList label={unverified ? 'Reported gluten-free dishes' : 'What to order'} items={place.order} />
             </Stack>
           ) : (
             <div />

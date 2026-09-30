@@ -42,6 +42,10 @@ Before adding a place, confirm with the place itself, by visiting or calling:
       else you relied on
 - [ ] **Photo**: of the place itself, used with permission or under a licence
       that allows it, and credited
+- [ ] **Featured logo** (optional, `featured: { logo }`): only for a partner
+      that has sent its own logo and agreed to feature. Save it under
+      `src/assets/logos/` as a white or light SVG; the card shows it over the
+      photo in place of the title
 
 ## Products
 

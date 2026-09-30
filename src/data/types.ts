@@ -18,6 +18,11 @@ export interface Product {
   description: string
   whereToBuy: string[]
   flags?: Flag[]
+  /**
+   * A featured partner: its card shows this logo, centred over the photo,
+   * instead of the title. Use only a logo the brand has given us.
+   */
+  featured?: { logo: string }
 }
 
 export interface Recipe {
@@ -100,6 +105,11 @@ export interface Place {
   /** Where the details came from: the place's own site first. */
   sources: Source[]
   flags?: Flag[]
+  /**
+   * A featured partner: its card shows this logo, centred over the photo,
+   * instead of the title. Use only a logo the brand has given us.
+   */
+  featured?: { logo: string }
 }
 
 export interface Review {
