@@ -11,8 +11,10 @@ export const safetyLabel: Record<Safety, string> = {
 export function safetyText(place: Place): string {
   const label = safetyLabel[place.safety]
   if (place.verification === 'verified') return label
-  // Lower-case only the first letter, so "GF" stays "GF".
-  return `Reported ${label.charAt(0).toLowerCase()}${label.slice(1)}`
+  // Lower-case the first word unless it's an abbreviation like "GF".
+  const first = label.split(' ')[0]
+  const lowered = first === first.toUpperCase() ? label : label.charAt(0).toLowerCase() + label.slice(1)
+  return `Reported ${lowered}`
 }
 
 /** One line on how a place handles gluten, e.g. "Reported 100% gluten-free · $$". */

@@ -42,6 +42,10 @@ describe('place labels', () => {
     const menu = places.find((p) => p.safety === 'gf-menu' && p.verification === 'unverified')!
     expect(safetyText(menu)).toBe('Reported separate GF menu')
     expect(safetyText({ ...menu, verification: 'verified' })).toBe('Separate GF menu')
+    const options = places.find((p) => p.safety === 'gf-options' && p.verification === 'unverified')!
+    expect(safetyText(options)).toBe('Reported GF options')
+    const dedicated = places.find((p) => p.safety === 'dedicated' && p.verification === 'unverified')!
+    expect(safetyText(dedicated)).toBe('Reported 100% gluten-free')
   })
 })
 

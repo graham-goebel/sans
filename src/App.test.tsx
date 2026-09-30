@@ -73,6 +73,7 @@ describe('quick view', () => {
     const sheet = await screen.findByRole('dialog')
     expect(sheet.textContent).toContain(first.dek)
     expect(sheet.textContent).toContain('Wheat-free')
+    expect(screen.getByRole('button', { name: 'More options' })).toBeTruthy()
     await userEvent.click(screen.getByRole('button', { name: 'See the full recipe' }))
     expect(window.location.hash).toBe(`#/recipes/${first.id}`)
   })
@@ -97,12 +98,54 @@ describe('search', () => {
   })
 })
 
+describe('preferences', () => {
+  it('opens from the profile button and remembers choices on this device', async () => {
+    window.localStorage.clear()
+    visit('/')
+    await userEvent.click(screen.getAllByRole('button', { name: 'Your preferences' })[0])
+    await screen.findByRole('dialog')
+    await userEvent.click(screen.getByRole('radio', { name: /Coeliac disease/ }))
+    await userEvent.click(screen.getByRole('checkbox', { name: 'Dairy' }))
+    expect(JSON.parse(window.localStorage.getItem('sans:preferences')!)).toMatchObject({
+      condition: 'coeliac',
+      avoid: ['dairy'],
+    })
+  })
+
+  it('starts recipes filtered to what you avoid', () => {
+    window.localStorage.setItem('sans:preferences', JSON.stringify({ avoid: ['dairy'] }))
+    visit('/recipes')
+    const dairyFree = recipes.filter((r) => r.traits.includes('dairy-free')).length
+    expect(screen.getByRole('button', { name: 'Dairy-free' }).getAttribute('aria-pressed')).toBe('true')
+    expect(screen.getByText(new RegExp(`^${dairyFree} recipes? match your filters$`))).toBeTruthy()
+    window.localStorage.clear()
+  })
+
+  it('warns people with coeliac disease about shared kitchens', () => {
+    window.localStorage.setItem('sans:preferences', JSON.stringify({ condition: 'coeliac' }))
+    const shared = places.find((p) => p.safety === 'gf-options')!
+    visit(`/places/${shared.id}`)
+    expect(screen.getByText('Shared kitchen')).toBeTruthy()
+    window.localStorage.clear()
+  })
+
+  it('still works when storage is blocked', () => {
+    const getItem = Storage.prototype.getItem
+    Storage.prototype.getItem = () => {
+      throw new Error('blocked')
+    }
+    visit('/')
+    expect(screen.getAllByRole('heading', { level: 1 }).length).toBeGreaterThan(0)
+    Storage.prototype.getItem = getItem
+  })
+})
+
 describe('places map', () => {
   it('switches to the map view and back', async () => {
     visit('/places')
     await userEvent.click(screen.getByRole('tab', { name: 'Map' }))
     expect(window.location.hash).toBe('#/places?view=map')
-    expect(await screen.findByText('Tap a pin to see the place.')).toBeTruthy()
+    expect(await screen.findByText('Tap a pin to preview the place.')).toBeTruthy()
     await userEvent.click(screen.getByRole('tab', { name: 'List' }))
     expect(window.location.hash).toBe('#/places')
   })

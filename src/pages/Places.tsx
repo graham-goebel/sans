@@ -1,4 +1,4 @@
-import { lazy, Suspense, useState } from 'react'
+import { lazy, Suspense, useEffect, useState } from 'react'
 import { useParams, useSearchParams } from 'react-router'
 import { Button, Callout, Heading, Link, List, Section, Stack, Tabs, Text } from '@dovetail-ds/react'
 import {
@@ -20,10 +20,14 @@ import {
 import { PlaceCard } from '../components/cards'
 import { placeChips } from '../lib/chips'
 import { PrecautionList } from '../components/precautions'
+import { CoeliacNote } from '../components/CoeliacNote'
 import type { ChipOption } from '../components/FilterChips'
 import { DetailHero, ListingPage, MetaItem, NotFoundState } from '../components/layout'
 import { Rail } from '../components/Rail'
 import { useNearMe, useToggleSet } from '../hooks'
+import { usePreferences } from '../lib/preferences'
+import { useQuickView } from '../lib/quickView'
+import { scrimFor } from '../lib/scrim'
 import { byDistance, nearestLocation } from '../lib/geo'
 import { matchesPlace, type PlaceFilter } from '../lib/filters'
 import { places } from '../data/places'
@@ -47,11 +51,18 @@ export function PlacesPage() {
   const view = params.get('view') === 'map' ? 'map' : 'list'
   const [pickedId, setPickedId] = useState<string>()
   const nearMe = useNearMe()
+  const openQuickView = useQuickView()
+  const { preferences } = usePreferences()
+
+  // With "Sort places by distance" on in preferences, find the viewer as soon as the page opens.
+  const { locate } = nearMe
+  useEffect(() => {
+    if (preferences.useLocation) locate()
+  }, [preferences.useLocation, locate])
 
   const filtered = places.filter((p) => matchesPlace(p, selected))
   const shown = nearMe.position ? byDistance(filtered, nearMe.position) : filtered
   const milesTo = (p: Place) => (nearMe.position ? nearestLocation(p, nearMe.position)?.miles : undefined)
-  const picked = shown.find((p) => p.id === pickedId)
   const offMap = shown.filter((p) => !p.locations?.length)
 
   const toolbar = (
@@ -119,24 +130,26 @@ export function PlacesPage() {
       layout={view === 'map' ? 'plain' : 'grid'}
     >
       {view === 'map' ? (
-        <Stack gap="lg">
+        <Stack gap="md">
           <Suspense fallback={<div className="places-map places-map--loading" aria-label="Loading map" />}>
-            <PlacesMap places={shown} you={nearMe.position} selectedId={pickedId} onSelect={setPickedId} />
+            <PlacesMap
+              places={shown}
+              you={nearMe.position}
+              selectedId={pickedId}
+              onSelect={(id) => {
+                setPickedId(id)
+                if (id) openQuickView({ kind: 'place', id })
+              }}
+            />
           </Suspense>
           <div className="map-legend" aria-hidden>
             <span className="legend-dot pin--dedicated" /> 100% gluten-free
             <span className="legend-dot pin--gf-menu" /> Separate GF menu
             <span className="legend-dot pin--gf-options" /> GF options
           </div>
-          {picked ? (
-            <div className="map-pick">
-              <PlaceCard place={picked} miles={milesTo(picked)} />
-            </div>
-          ) : (
-            <Text variant="small" tone="secondary">
-              Tap a pin to see the place.
-            </Text>
-          )}
+          <Text variant="small" tone="secondary">
+            Tap a pin to preview the place.
+          </Text>
           {offMap.length > 0 && (
             <Text variant="fine">
               Not on the map (no single address): {offMap.map((p) => p.name).join(', ')}.
@@ -161,6 +174,7 @@ export function PlaceDetail() {
   return (
     <>
       <DetailHero
+        tone={scrimFor.place(place)}
         back={{ to: '/places', label: 'Back to all places' }}
         image={place.image}
         photoNote={unverified ? 'Illustrative photo' : undefined}
@@ -209,6 +223,7 @@ export function PlaceDetail() {
               {place.description}
             </Text>
             <PrecautionList precautions={place.precautions} />
+            <CoeliacNote place={place} />
             {unverified ? (
               <Callout tone="caution" title="Not yet confirmed">
                 sans hasn’t confirmed these details with {place.name}. They come from public listings, reviews and

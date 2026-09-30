@@ -1,19 +1,24 @@
 import type { ComponentProps, ReactNode } from 'react'
 import { useNavigate } from 'react-router'
 import { Button, EmptyState, Heading, IconButton, Section, Stack, Text } from '@dovetail-ds/react'
-import { ArrowLeft, SearchX } from 'lucide-react'
+import { ArrowLeft, CircleUserRound, SearchX } from 'lucide-react'
 import { FilterChips, type ChipOption } from './FilterChips'
 import type { ChipSpec } from '../lib/chips'
+import { usePreferences } from '../lib/preferences'
+import { scrimStyle, type ScrimTone } from '../lib/scrim'
 import { ChipList } from './itemChips'
 
 export function Masthead() {
+  const { openSheet } = usePreferences()
   return (
     <Section spacing="none" style={{ paddingBlock: 'var(--dt-space-stack-lg)' }}>
       <div className="masthead">
-        <a className="wordmark" href="#/">
+        <a className="wordmark" href="#/" aria-label="sans, the gluten-free companion: home">
           sans<em>.</em>
         </a>
-        <Text variant="eyebrow">The gluten-free companion</Text>
+        <IconButton label="Your preferences" className="icon-secondary" onClick={openSheet}>
+          <CircleUserRound />
+        </IconButton>
       </div>
     </Section>
   )
@@ -115,6 +120,8 @@ interface DetailHeroProps {
   dek: string
   meta?: ReactNode
   chips?: ChipSpec[]
+  /** The colour laid over the photo. */
+  tone?: ScrimTone
 }
 
 /**
@@ -122,11 +129,11 @@ interface DetailHeroProps {
  * eyebrow and headline set over it and a back button in the corner (the nav
  * bar is hidden on these pages). The standfirst, facts and labels follow.
  */
-export function DetailHero({ back, image, photoNote, eyebrow, title, dek, meta, chips }: DetailHeroProps) {
+export function DetailHero({ back, image, photoNote, eyebrow, title, dek, meta, chips, tone = 'ink' }: DetailHeroProps) {
   const navigate = useNavigate()
   return (
     <>
-      <div className="detail-photo">
+      <div className="detail-photo" style={scrimStyle(tone)}>
         <img src={image} alt="" />
         <IconButton label={back.label} className="icon-glass detail-back" size="lg" onClick={() => navigate(back.to)}>
           <ArrowLeft />

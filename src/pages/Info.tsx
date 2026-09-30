@@ -100,6 +100,12 @@ export function PrivacyPage() {
         agree, sans uses it on your device to sort places by distance and show you on the map. It isn’t stored or sent
         anywhere, and it’s forgotten when you leave the page.
       </p>
+      <h2>Your preferences</h2>
+      <p>
+        What you choose in <strong>Your preferences</strong> (your city, why you eat gluten-free, what else you avoid
+        and how long you’ve been gluten-free) is saved in this browser only, to tailor what sans shows you. It isn’t
+        sent anywhere. Clearing your browser’s site data removes it.
+      </p>
       <h2>What other services see</h2>
       <p>
         Photos are loaded from Unsplash, map tiles from CARTO (using OpenStreetMap data), and the site is hosted on

@@ -48,6 +48,27 @@ function Frame({ places, you }: { places: Place[]; you?: LatLng }) {
   return null
 }
 
+/**
+ * Leaflet makes pins focusable but ignores Enter and Space on them. Treat
+ * both like a tap, so keyboard users can open a place too.
+ */
+function KeyboardPins() {
+  const map = useMap()
+  useEffect(() => {
+    const container = map.getContainer()
+    const onKeyDown = (event: KeyboardEvent) => {
+      const pin = (event.target as HTMLElement).closest('.leaflet-marker-icon')
+      if (pin && (event.key === 'Enter' || event.key === ' ')) {
+        event.preventDefault()
+        ;(pin as HTMLElement).click()
+      }
+    }
+    container.addEventListener('keydown', onKeyDown)
+    return () => container.removeEventListener('keydown', onKeyDown)
+  }, [map])
+  return null
+}
+
 export default function PlacesMap({ places, you, selectedId, onSelect }: PlacesMapProps) {
   return (
     <div className="places-map">
@@ -59,6 +80,7 @@ export default function PlacesMap({ places, you, selectedId, onSelect }: PlacesM
           maxZoom={19}
         />
         <Frame places={places} you={you} />
+        <KeyboardPins />
         {places.flatMap((place) =>
           (place.locations ?? []).map((location, i) => (
             <Marker
