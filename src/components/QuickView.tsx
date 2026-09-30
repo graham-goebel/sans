@@ -1,6 +1,6 @@
 import { useState, type ReactNode } from 'react'
 import { useNavigate } from 'react-router'
-import { Button, Callout, List, Sheet, Stack, Text } from '@dovetail-ds/react'
+import { Button, Callout, Sheet, Stack, Text } from '@dovetail-ds/react'
 import { ArrowRight, ChefHat, Clock, MapPin, Store, Users } from 'lucide-react'
 import { places } from '../data/places'
 import { products } from '../data/products'
@@ -10,6 +10,10 @@ import { QuickViewContext, type ItemKind, type QuickViewTarget } from '../lib/qu
 import { ChipList } from './itemChips'
 import { MetaItem } from './layout'
 import { PrecautionList } from './precautions'
+import { SimpleList } from './SimpleList'
+import { CoeliacNote } from './CoeliacNote'
+import { ItemMenu } from './ItemMenu'
+import { scrimFor, scrimStyle, type ScrimTone } from '../lib/scrim'
 
 const paths: Record<ItemKind, string> = { recipe: '/recipes', product: '/products', place: '/places' }
 const fullPageLabel: Record<ItemKind, string> = {
@@ -40,11 +44,20 @@ export function QuickViewProvider({ children }: { children: ReactNode }) {
       {children}
       {content && (
         <Sheet
+          className="item-sheet"
           open={open}
           onClose={() => setOpen(false)}
           eyebrow={content.eyebrow}
           title={content.title}
           size="lg"
+          action={
+            <ItemMenu
+              path={`${paths[target!.kind]}/${target!.id}`}
+              title={content.title}
+              onOpenFullPage={goToFullPage}
+              directionsTo={content.directionsTo}
+            />
+          }
           footer={
             <Button variant="primary" fullWidth iconEnd={<ArrowRight />} onClick={goToFullPage}>
               {fullPageLabel[target!.kind]}
@@ -52,7 +65,7 @@ export function QuickViewProvider({ children }: { children: ReactNode }) {
           }
         >
           <Stack gap="lg">
-            <div className="quick-photo">
+            <div className="quick-photo" style={scrimStyle(content.tone)}>
               <img src={content.image} alt="" />
               {content.photoNote && <span className="photo-note">{content.photoNote}</span>}
             </div>
@@ -75,6 +88,9 @@ interface Preview {
   photoNote?: string
   dek: string
   chips: ChipSpec[]
+  tone: ScrimTone
+  /** Where "Get directions" should point, for places. */
+  directionsTo?: string
   body: ReactNode
 }
 
@@ -90,6 +106,7 @@ function preview({ kind, id }: QuickViewTarget): Preview | undefined {
       image: recipe.image,
       dek: recipe.dek,
       chips: recipeChips(recipe),
+      tone: scrimFor.recipe(recipe),
       body: (
         <Stack gap="md">
           <div className="meta-row">
@@ -97,10 +114,7 @@ function preview({ kind, id }: QuickViewTarget): Preview | undefined {
             <MetaItem icon={<Users aria-hidden />}>Serves {recipe.serves}</MetaItem>
             <MetaItem icon={<ChefHat aria-hidden />}>{recipe.difficulty}</MetaItem>
           </div>
-          <List
-            label="Ingredients"
-            items={shown.map((item) => ({ id: item, title: item }))}
-          />
+          <SimpleList label="Ingredients" items={shown} />
           {recipe.ingredients.length > shown.length && (
             <Text variant="small" tone="secondary">
               + {recipe.ingredients.length - shown.length} more ingredients and the method on the full recipe.
@@ -120,11 +134,9 @@ function preview({ kind, id }: QuickViewTarget): Preview | undefined {
       image: product.image,
       dek: product.dek,
       chips: productChips(product),
+      tone: scrimFor.product(product),
       body: (
-        <List
-          label="Where to buy"
-          items={product.whereToBuy.map((where) => ({ id: where, title: where, leading: <Store size={20} aria-hidden /> }))}
-        />
+        <SimpleList label="Where to buy" items={product.whereToBuy} icon={<Store aria-hidden />} />
       ),
     }
   }
@@ -139,6 +151,8 @@ function preview({ kind, id }: QuickViewTarget): Preview | undefined {
     photoNote: unverified ? 'Illustrative photo' : undefined,
     dek: place.dek,
     chips: placeChips(place),
+    tone: scrimFor.place(place),
+    directionsTo: place.locations?.length === 1 ? `${place.name}, ${place.address}, ${place.city}, CO` : undefined,
     body: (
       <Stack gap="md">
         <div className="meta-row">
@@ -146,6 +160,7 @@ function preview({ kind, id }: QuickViewTarget): Preview | undefined {
           {place.hours && <MetaItem icon={<Clock aria-hidden />}>{place.hours}</MetaItem>}
         </div>
         <PrecautionList precautions={place.precautions} />
+        <CoeliacNote place={place} />
         {unverified && (
           <Callout tone="caution" title="Not yet confirmed">
             These details come from public listings and press. Call ahead before you go.

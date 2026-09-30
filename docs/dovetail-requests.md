@@ -1,6 +1,6 @@
 # Dovetail feature requests from sans
 
-sans works around five gaps in `@dovetail-ds/react` 0.4.0 by styling
+sans works around seven gaps in `@dovetail-ds/react` 0.4.0 by styling
 Dovetail's internal markup or tokens. Those workarounds break silently if the
 internals change. Each request below would let sans delete one. They're
 written to be filed as issues on the Dovetail repo.
@@ -79,3 +79,36 @@ and makes the sheet a flex column so short content doesn't lift the footer.
 
 **Proposal:** ship that media query in Dovetail's own styles, so every product
 built on it avoids the zoom.
+
+---
+
+## 6. List: no inset on non-interactive rows
+
+**Need:** a plain list whose text lines up with its dividers and the content
+edge.
+
+**Today:** every `List` row is padded `--dt-space-inset-sm --dt-space-inset-md`
+while the dividers run full width, so static lists (ingredients, where to buy)
+look indented by mistake. The inset only earns its place on interactive rows,
+where it frames the hover highlight. sans uses its own `SimpleList` for static
+lists.
+
+**Proposal:** drop the horizontal inset when `interactive` is false, or add
+`inset?: boolean` (default: `interactive`).
+
+---
+
+## 7. Sheet: header divider aligned with the content
+
+**Need:** the sticky header's divider should line up with the content column
+(or run edge to edge), not overhang it.
+
+**Today:** the header bar is widened with
+`margin: 0 calc(-1 * --dt-space-inset-sm)` and matching padding, so its divider
+sticks out past the content on both sides. sans resets it with
+`.item-sheet > :first-child { margin-inline: 0 !important; padding-inline: 0 !important }`.
+
+**Proposal:** remove the negative margin (or make the divider span the full
+sheet width), and give the header bar a class so it can be styled without
+`!important`.
+

@@ -76,6 +76,19 @@
   --dt-color-secondary-950: oklch(0.272 0.064 35);
 }
 
+:root {
+  /* Scrim palette for header photos (see src/lib/scrim.ts). Each is dark
+     enough for white type at the foot of the photo. */
+  --scrim-olive: oklch(0.30 0.055 125);
+  --scrim-terracotta: oklch(0.34 0.08 38);
+  --scrim-clay: oklch(0.33 0.045 60);
+  --scrim-sage: oklch(0.33 0.035 155);
+  --scrim-plum: oklch(0.29 0.06 350);
+  --scrim-ink: oklch(0.24 0.012 60);
+  --scrim-honey: oklch(0.36 0.07 75);
+  --scrim-sky: oklch(0.31 0.05 240);
+}
+
 :root:not(.dark) {
   /* An airy, barely-warm paper for the page; oat for the subtle bands. */
   --dt-surface-base: oklch(0.991 0.005 85);
@@ -533,7 +546,7 @@ h3 em {
 
 .photo-note {
   position: absolute;
-  z-index: 2;
+  z-index: 3;
   right: var(--dt-space-gutter);
   top: calc(env(safe-area-inset-top) + var(--dt-space-stack-md) + 12px);
   padding: 2px 8px;
@@ -738,11 +751,13 @@ h3 em {
   position: relative;
   isolation: isolate;
   z-index: 0;
-  height: min(62svh, 560px);
-  border-radius: var(--dt-radius-container);
+  /* Full bleed: out of the page column to the screen's edges. */
+  margin-inline: calc(50% - 50vw);
+  height: min(72svh, 680px);
   overflow: hidden;
-  background: var(--dt-surface-subtle);
-  border: var(--dt-border-width-default) solid var(--dt-border-default);
+  /* A light, minimal map drawing shows until (or unless) the tiles load. */
+  background: #f3efe7 url('./assets/map-placeholder.svg') center / cover;
+  border-block: var(--dt-border-width-default) solid var(--dt-border-default);
 }
 
 .places-map--loading {
@@ -751,7 +766,7 @@ h3 em {
 
 .places-map .leaflet-container {
   font-family: var(--dt-font-family-sans);
-  background: var(--dt-surface-subtle);
+  background: transparent;
 }
 
 .places-map .leaflet-control-attribution {
@@ -817,28 +832,54 @@ h3 em {
   margin-left: 0;
 }
 
-.map-pick {
-  max-width: 420px;
+.app-main {
+  /* The full-bleed map uses 100vw, which includes a desktop scrollbar. */
+  overflow-x: clip;
 }
+
 
 /* ---------- Detail photo: title over the image ---------- */
 
-/* A dark wash rising from the bottom so the title reads on any photo. */
+/* The scrim: a tint over the whole photo in the page's tone, then a deep
+   wash of the same tone rising from the bottom so the title reads. */
+.detail-photo,
+.quick-photo {
+  --scrim: var(--scrim-ink);
+}
+
+.detail-photo::before,
+.quick-photo::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: var(--scrim);
+  mix-blend-mode: multiply;
+  opacity: 0.22;
+  pointer-events: none;
+}
+
 .detail-photo::after {
   content: '';
   position: absolute;
-  inset: 45% 0 0;
-  background: linear-gradient(to top, color-mix(in oklab, black 72%, transparent), transparent);
+  inset: 35% 0 0;
+  z-index: 1;
+  background: linear-gradient(
+    to top,
+    color-mix(in oklab, var(--scrim) 92%, transparent),
+    color-mix(in oklab, var(--scrim) 55%, transparent) 45%,
+    transparent
+  );
   pointer-events: none;
 }
 
 .detail-back {
-  z-index: 2;
+  z-index: 3;
 }
 
 .detail-photo-text {
   position: absolute;
-  z-index: 1;
+  z-index: 2;
   left: 0;
   right: 0;
   bottom: 0;
@@ -940,6 +981,8 @@ h3 em {
 
 .quick-photo {
   position: relative;
+  /* Keep the tint and note layered inside the photo, under menus. */
+  isolation: isolate;
   aspect-ratio: 16 / 10;
   border-radius: var(--dt-radius-container);
   overflow: hidden;
@@ -975,4 +1018,107 @@ h3 em {
 .recommends svg {
   width: 16px;
   height: 16px;
+}
+
+/* ---------- Simple list (static rows, aligned to the content edge) ---------- */
+
+.simple-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.simple-list li {
+  display: flex;
+  align-items: center;
+  gap: var(--dt-space-inline-sm);
+  padding-block: var(--dt-space-stack-sm);
+  font-size: var(--dt-text-body-md-size);
+  color: var(--dt-text-primary);
+}
+
+.simple-list li + li {
+  border-top: var(--dt-border-width-default) solid var(--dt-border-subtle);
+}
+
+.simple-list svg {
+  width: 18px;
+  height: 18px;
+  flex: none;
+  color: var(--dt-text-secondary);
+}
+
+/* ---------- Logo card (featured partners) ---------- */
+
+.logo-card {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  place-items: center;
+  height: 100%;
+  min-height: 100%;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  border-radius: var(--dt-card-radius);
+  text-decoration: none;
+  --scrim: var(--scrim-ink);
+}
+
+.logo-card__photo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform var(--dt-motion-micro);
+}
+
+/* An even wash of the item's tone, so a white logo reads anywhere on it. */
+.logo-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: color-mix(in oklab, var(--scrim) 62%, transparent);
+}
+
+.logo-card__logo {
+  position: relative;
+  z-index: 1;
+  width: 64%;
+  max-height: 42%;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 8px color-mix(in oklab, black 30%, transparent));
+}
+
+.logo-card__label {
+  position: absolute;
+  z-index: 1;
+  top: var(--dt-space-stack-sm);
+  left: var(--dt-space-inline-sm);
+  padding: 4px 10px;
+  border-radius: var(--dt-radius-pill);
+  background: color-mix(in oklab, white 88%, transparent);
+  color: var(--dt-color-neutral-900);
+  font-size: 0.75rem;
+  font-weight: var(--dt-font-weight-semibold);
+  letter-spacing: 0.02em;
+}
+
+.logo-card:hover .logo-card__photo {
+  transform: scale(1.03);
+}
+
+.logo-card:focus-visible {
+  outline: var(--dt-focus-ring-width) solid var(--dt-focus-ring-color);
+  outline-offset: var(--dt-focus-ring-offset);
+}
+
+/* ---------- Sheet header ----------
+   Dovetail widens the sheet's sticky header past the content column, so its
+   divider overhangs the content on both sides. Pull it back in line with the
+   content; the styles are inline, hence !important (see
+   docs/dovetail-requests.md). */
+.item-sheet > :first-child {
+  margin-inline: 0 !important;
+  padding-inline: 0 !important;
 }

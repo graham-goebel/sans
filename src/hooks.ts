@@ -1,9 +1,9 @@
 import { useCallback, useState } from 'react'
 import type { LatLng } from './lib/geo'
 
-/** A set of toggled ids, for chip filters. */
-export function useToggleSet<T extends string>() {
-  const [selected, setSelected] = useState<T[]>([])
+/** A set of toggled ids, for chip filters, optionally starting with some on. */
+export function useToggleSet<T extends string>(initial: T[] = []) {
+  const [selected, setSelected] = useState<T[]>(initial)
   const toggle = (id: T) =>
     setSelected((current) => (current.includes(id) ? current.filter((x) => x !== id) : [...current, id]))
   return [selected, toggle, () => setSelected([])] as const

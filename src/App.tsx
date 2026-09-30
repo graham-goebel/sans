@@ -4,6 +4,7 @@ import { BottomNav, IconButton } from '@dovetail-ds/react'
 import { House, MapPin, Search, ShoppingBasket, UtensilsCrossed } from 'lucide-react'
 import { SiteFooter } from './components/chrome'
 import { ErrorBoundary } from './components/ErrorBoundary'
+import { PreferencesProvider } from './components/Preferences'
 import { QuickViewProvider } from './components/QuickView'
 import { SearchSheet } from './components/SearchSheet'
 import { Home } from './pages/Home'
@@ -83,9 +84,11 @@ function Shell() {
 function App() {
   return (
     <HashRouter>
-      <QuickViewProvider>
-        <Shell />
-      </QuickViewProvider>
+      <PreferencesProvider>
+        <QuickViewProvider>
+          <Shell />
+        </QuickViewProvider>
+      </PreferencesProvider>
     </HashRouter>
   )
 }

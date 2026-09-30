@@ -70,7 +70,7 @@ export function SearchSheet({ open, onClose }: SearchSheetProps) {
       onClose={onClose}
       title="Search"
       size="lg"
-      className="search-sheet"
+      className="search-sheet item-sheet"
       // A fixed height, so the sheet doesn't jump as results come and go.
       style={{ height: 'min(620px, calc(100% - var(--dt-sheet-top-gap)))' }}
       footer={

@@ -20,6 +20,7 @@ import { places } from '../data/places'
 import { products } from '../data/products'
 import { recipes } from '../data/recipes'
 import { testimonials } from '../data/reviews'
+import { usePreferences } from '../lib/preferences'
 import { site } from '../site'
 
 // The promoted slot, picked by id so it's easy to swap.
@@ -28,6 +29,38 @@ const denverPhoto = unsplash('1414235077428-338989a2e8c0', 1600)
 const dedicatedCount = places.filter((p) => p.safety === 'dedicated').length
 
 export function Home() {
+  const { preferences } = usePreferences()
+  // People new to gluten-free see the basics right after the hero.
+  const newcomer = preferences.experience === 'new'
+
+  // Info: the basics
+  const basics = (
+    <FeatureGridBlock
+      tone="subtle"
+      align="start"
+      eyebrow="Gluten-free, decoded"
+      title="Three habits worth building"
+      lead="Gluten turns up in more places than bread. These three habits catch most of it."
+      items={[
+        {
+          icon: <ScanSearch />,
+          title: 'Read the whole label',
+          description: 'Look past “wheat”: barley, rye, malt and brewer’s yeast all contain gluten.',
+        },
+        {
+          icon: <ShieldCheck />,
+          title: 'Ask about cross-contact',
+          description: 'Shared fryers, toasters and pasta water can undo a gluten-free dish.',
+        },
+        {
+          icon: <BadgeCheck />,
+          title: 'Look for the mark',
+          description: 'Certified products are tested well below the 20 ppm legal limit.',
+        },
+      ]}
+    />
+  )
+
   return (
     <>
       <Masthead />
@@ -44,6 +77,8 @@ export function Home() {
           </Text>
         </Stack>
       </Section>
+
+      {newcomer && basics}
 
       {/* The three sections, each a swipeable row */}
       <Section>
@@ -83,31 +118,7 @@ export function Home() {
         <Text variant="fine">Sponsored. Brands can’t buy a place in our tested lists.</Text>
       </SplitBlock>
 
-      {/* Info: the basics */}
-      <FeatureGridBlock
-        tone="subtle"
-        align="start"
-        eyebrow="Gluten-free, decoded"
-        title="Three habits worth building"
-        lead="Gluten turns up in more places than bread. These three habits catch most of it."
-        items={[
-          {
-            icon: <ScanSearch />,
-            title: 'Read the whole label',
-            description: 'Look past “wheat”: barley, rye, malt and brewer’s yeast all contain gluten.',
-          },
-          {
-            icon: <ShieldCheck />,
-            title: 'Ask about cross-contact',
-            description: 'Shared fryers, toasters and pasta water can undo a gluten-free dish.',
-          },
-          {
-            icon: <BadgeCheck />,
-            title: 'Look for the mark',
-            description: 'Certified products are tested well below the 20 ppm legal limit.',
-          },
-        ]}
-      />
+      {!newcomer && basics}
 
       {/* Denver: where sans is starting, and how far along it is */}
       <Section>

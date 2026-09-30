@@ -7,7 +7,9 @@ import { DetailHero, ListingPage, MetaItem, NotFoundState } from '../components/
 import { recipeChips } from '../lib/chips'
 import { Rail } from '../components/Rail'
 import { Reviews } from '../components/Reviews'
+import { scrimFor } from '../lib/scrim'
 import { useToggleSet } from '../hooks'
+import { avoidTrait, usePreferences } from '../lib/preferences'
 import { matchesRecipe, type RecipeFilter } from '../lib/filters'
 import { recipes } from '../data/recipes'
 import { recipeReviews } from '../data/reviews'
@@ -25,7 +27,8 @@ const chips: ChipOption<RecipeFilter>[] = [
 ]
 
 export function RecipesPage() {
-  const [selected, toggle, clear] = useToggleSet<RecipeFilter>()
+  const { preferences } = usePreferences()
+  const [selected, toggle, clear] = useToggleSet<RecipeFilter>(preferences.avoid.map((a) => avoidTrait[a]))
   const shown = recipes.filter((r) => matchesRecipe(r, selected))
 
   return (
@@ -61,6 +64,7 @@ export function RecipeDetail() {
   return (
     <>
       <DetailHero
+        tone={scrimFor.recipe(recipe)}
         back={{ to: '/recipes', label: 'Back to all recipes' }}
         image={recipe.image}
         eyebrow={recipe.category === 'quick' ? 'Quick' : recipe.category}

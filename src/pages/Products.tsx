@@ -1,13 +1,16 @@
 import { useParams } from 'react-router'
-import { Heading, List, Section, Stack, Text } from '@dovetail-ds/react'
-import { BadgeCheck, CakeSlice, ChefHat, Coffee, CookingPot, Cookie, Croissant, MilkOff, NutOff, Star, Store, Vegan } from 'lucide-react'
+import { Heading, Section, Stack, Text } from '@dovetail-ds/react'
+import { BadgeCheck, CakeSlice, EggOff, ChefHat, Coffee, CookingPot, Cookie, Croissant, MilkOff, NutOff, Star, Store, Vegan } from 'lucide-react'
+import { SimpleList } from '../components/SimpleList'
 import { ProductCard, RecipeCard } from '../components/cards'
 import type { ChipOption } from '../components/FilterChips'
 import { DetailHero, ListingPage, MetaItem, NotFoundState } from '../components/layout'
 import { productChips } from '../lib/chips'
 import { Rail } from '../components/Rail'
 import { Reviews } from '../components/Reviews'
+import { scrimFor } from '../lib/scrim'
 import { useToggleSet } from '../hooks'
+import { avoidTrait, usePreferences } from '../lib/preferences'
 import { matchesProduct, type ProductFilter } from '../lib/filters'
 import { products } from '../data/products'
 import { recipes } from '../data/recipes'
@@ -24,11 +27,13 @@ const chips: ChipOption<ProductFilter>[] = [
   { id: 'breakfast', label: 'Breakfast', icon: Coffee },
   { id: 'dairy-free', label: 'Dairy-free', icon: MilkOff },
   { id: 'vegan', label: 'Vegan', icon: Vegan },
+  { id: 'egg-free', label: 'Egg-free', icon: EggOff },
   { id: 'nut-free', label: 'Nut-free', icon: NutOff },
 ]
 
 export function ProductsPage() {
-  const [selected, toggle, clear] = useToggleSet<ProductFilter>()
+  const { preferences } = usePreferences()
+  const [selected, toggle, clear] = useToggleSet<ProductFilter>(preferences.avoid.map((a) => avoidTrait[a]))
   const shown = products.filter((p) => matchesProduct(p, selected))
 
   return (
@@ -75,6 +80,7 @@ export function ProductDetail() {
   return (
     <>
       <DetailHero
+        tone={scrimFor.product(product)}
         back={{ to: '/products', label: 'Back to all products' }}
         image={product.image}
         eyebrow={product.brand}
@@ -93,13 +99,7 @@ export function ProductDetail() {
             <Heading level={2} size="heading-lg">
               Where to buy
             </Heading>
-            <List
-              label="Where to buy"
-              items={product.whereToBuy.map((where) => ({
-                id: where,
-                title: where,
-                leading: <Store size={20} aria-hidden /> }))}
-            />
+            <SimpleList label="Where to buy" items={product.whereToBuy} icon={<Store aria-hidden />} />
           </Stack>
           <Stack gap="md">
             <Heading level={2} size="heading-lg">
