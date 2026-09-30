@@ -18,7 +18,7 @@ export function Home() {
       <Masthead />
 
       {/* Hero */}
-      <Section media={unsplash('1504674900247-0877df9cc836', 2000)} minHeight="min(78vh, 720px)" width="default">
+      <Section media={unsplash('1529543544282-ea669407fca3', 2000)} minHeight="min(78vh, 720px)" width="default">
         <Stack gap="md">
           <Text variant="eyebrow">Autumn edition</Text>
           <Heading level={1} size="display-lg">
@@ -33,17 +33,17 @@ export function Home() {
       {/* The three sections, each a swipeable row */}
       <Section>
         <Stack gap="2xl">
-          <Rail eyebrow="Cook" title="Recipes" href="#/recipes">
+          <Rail eyebrow="Cook" title="Recipes" to="/recipes" autoplay={5000}>
             {recipes.map((r) => (
               <RecipeCard key={r.id} recipe={r} />
             ))}
           </Rail>
-          <Rail eyebrow="Shop" title="Products" href="#/products" size="narrow">
+          <Rail eyebrow="Shop" title="Products" to="/products" size="narrow" autoplay={6000}>
             {products.map((p) => (
               <ProductCard key={p.id} product={p} />
             ))}
           </Rail>
-          <Rail eyebrow="Go" title="Places" href="#/places" size="wide">
+          <Rail eyebrow="Go" title="Places" to="/places" size="wide" autoplay={7000}>
             {places.map((p) => (
               <PlaceCard key={p.id} place={p} />
             ))}

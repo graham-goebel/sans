@@ -32,16 +32,19 @@ function Shell() {
   return (
     <>
       <main className="app-main">
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/products" element={<ProductsPage />} />
-          <Route path="/products/:id" element={<ProductDetail />} />
-          <Route path="/recipes" element={<RecipesPage />} />
-          <Route path="/recipes/:id" element={<RecipeDetail />} />
-          <Route path="/places" element={<PlacesPage />} />
-          <Route path="/places/:id" element={<PlaceDetail />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
+        {/* Keyed on the path so each page mounts fresh and plays its entrance. */}
+        <div className="page" key={location.pathname}>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/products" element={<ProductsPage />} />
+            <Route path="/products/:id" element={<ProductDetail />} />
+            <Route path="/recipes" element={<RecipesPage />} />
+            <Route path="/recipes/:id" element={<RecipeDetail />} />
+            <Route path="/places" element={<PlacesPage />} />
+            <Route path="/places/:id" element={<PlaceDetail />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </div>
       </main>
       <div className="nav-dock">
         <BottomNav

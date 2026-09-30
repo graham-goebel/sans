@@ -75,7 +75,14 @@ export function SearchSheet({ open, onClose }: SearchSheetProps) {
   }
 
   return (
-    <Sheet open={open} onClose={onClose} title="Search" size="lg">
+    <Sheet
+      open={open}
+      onClose={onClose}
+      title="Search"
+      size="lg"
+      // A fixed height, so the sheet doesn't jump as results come and go.
+      style={{ height: 'min(620px, calc(100% - var(--dt-sheet-top-gap)))' }}
+    >
       <Stack gap="lg">
         <Input
           aria-label="Search recipes, products and places"
