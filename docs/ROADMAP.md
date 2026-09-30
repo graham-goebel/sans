@@ -35,7 +35,8 @@ real advice.
 The launch blocker. See [CONTENT.md](CONTENT.md) for how to add and check it.
 
 - [x] Choose a launch city: **Denver, CO**
-- [ ] Verify 15–30 places there: visit or call, record precautions, date it
+- [x] Research a shortlist: 20 sourced candidates in [denver/candidates.md](denver/candidates.md)
+- [ ] Verify places using [denver/verification.md](denver/verification.md) (about 10 for a soft launch)
 - [ ] Replace sample products with real ones you have checked (labels, certification)
 - [ ] Replace sample recipes with tested ones
 - [ ] Replace every photo with a correctly matched, credited one

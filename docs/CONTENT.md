@@ -1,5 +1,8 @@
 # Content guide
 
+Launch city: **Denver, CO**. See [denver/verification.md](denver/verification.md)
+for the shortlist and the call script.
+
 People with coeliac disease may rely on what sans says. Only publish what you
 have checked yourself, and say when you checked it.
 
@@ -31,6 +34,8 @@ Before adding a place, confirm with the place itself, by visiting or calling:
 - [ ] **Address and hours**
 - [ ] **Last checked** (`lastChecked`): the month you confirmed it, e.g. `'Oct 2026'`.
       Re-check at least every six months.
+- [ ] **Sources** (`sources`): the place's own website first, then anything
+      else you relied on
 - [ ] **Photo**: of the place itself, used with permission or under a licence
       that allows it, and credited
 
