@@ -1,9 +1,12 @@
-import { useEffect } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { createPortal } from 'react-dom'
 import { divIcon, latLngBounds } from 'leaflet'
-import { CircleMarker, MapContainer, Marker, TileLayer, useMap } from 'react-leaflet'
+import { CircleMarker, MapContainer, Marker, TileLayer, useMap, ZoomControl } from 'react-leaflet'
 import 'leaflet/dist/leaflet.css'
+import { IconButton } from '@dovetail-ds/react'
 import type { Place, Safety } from '../data/types'
 import { DENVER, type LatLng } from '../lib/geo'
+import { Collapse, Expand } from '../icons'
 
 interface PlacesMapProps {
   places: Place[]
@@ -35,6 +38,8 @@ function pin(safety: Safety, selected: boolean) {
 function Frame({ places, you }: { places: Place[]; you?: LatLng }) {
   const map = useMap()
   useEffect(() => {
+    // The map is created before its node reaches the page; measure it now.
+    map.invalidateSize()
     const points = places.flatMap((p) => p.locations ?? [])
     if (you) {
       const nearest = [...points]
@@ -69,10 +74,94 @@ function KeyboardPins() {
   return null
 }
 
+/** The key doubles as a filter: each safety level's pins can be shown or hidden. */
+const levels: { safety: Safety; label: string }[] = [
+  { safety: 'dedicated', label: '100% gluten-free' },
+  { safety: 'gf-menu', label: 'Separate GF menu' },
+  { safety: 'gf-options', label: 'GF options' },
+]
+
+/**
+ * Leaflet measures its container once. Re-measure whenever the container
+ * changes size (going full screen and back), and let the wheel zoom only
+ * when the map has the whole screen, so it doesn't hijack page scrolling.
+ */
+function FitContainer({ full }: { full: boolean }) {
+  const map = useMap()
+  useEffect(() => {
+    const observer = new ResizeObserver(() => map.invalidateSize())
+    observer.observe(map.getContainer())
+    return () => observer.disconnect()
+  }, [map])
+  useEffect(() => {
+    if (full) map.scrollWheelZoom.enable()
+    else map.scrollWheelZoom.disable()
+  }, [map, full])
+  return null
+}
+
+/**
+ * Full screen without remounting the map: it renders into one node that
+ * moves between its place on the page and the end of <body>. (The page's
+ * entry animation would otherwise trap a fixed-position map inside it.)
+ */
+function useFullScreen() {
+  const [full, setFull] = useState(false)
+  const [host] = useState(() => document.createElement('div'))
+  const slot = useRef<HTMLDivElement>(null)
+
+  useLayoutEffect(() => {
+    const parent = full ? document.body : slot.current
+    parent?.appendChild(host)
+  }, [full, host])
+
+  useEffect(() => () => host.remove(), [host])
+
+  // While full screen: Escape leaves, and the page behind doesn't scroll.
+  useEffect(() => {
+    if (!full) return
+    const onKeyDown = (event: KeyboardEvent) => {
+      // A sheet opened from a pin handles its own Escape.
+      if (event.key === 'Escape' && !document.querySelector('[role="dialog"]')) setFull(false)
+    }
+    const overflow = document.documentElement.style.overflow
+    document.documentElement.style.overflow = 'hidden'
+    document.addEventListener('keydown', onKeyDown)
+    return () => {
+      document.documentElement.style.overflow = overflow
+      document.removeEventListener('keydown', onKeyDown)
+    }
+  }, [full])
+
+  return { full, setFull, host, slot }
+}
+
 export default function PlacesMap({ places, you, selectedId, onSelect }: PlacesMapProps) {
-  return (
-    <div className="places-map">
-      <MapContainer center={[DENVER.lat, DENVER.lng]} zoom={11} scrollWheelZoom={false} style={{ height: '100%' }}>
+  const [hidden, setHidden] = useState<Safety[]>([])
+  const { full, setFull, host, slot } = useFullScreen()
+  const mapped = places.filter((p) => p.locations?.length)
+  const counts = new Map(levels.map(({ safety }) => [safety, mapped.filter((p) => p.safety === safety).length]))
+  const shown = places.filter((p) => !hidden.includes(p.safety))
+  const toggle = (safety: Safety) =>
+    setHidden((current) => (current.includes(safety) ? current.filter((s) => s !== safety) : [...current, safety]))
+
+  // Moving the map drops focus; put it back on the full-screen button.
+  const wasFull = useRef(full)
+  useEffect(() => {
+    if (wasFull.current !== full) host.querySelector<HTMLElement>('.map-full-toggle')?.focus({ preventScroll: true })
+    wasFull.current = full
+  }, [full, host])
+
+  const map = (
+    <div className={full ? 'places-map places-map--full' : 'places-map'}>
+      <MapContainer
+        center={[DENVER.lat, DENVER.lng]}
+        zoom={11}
+        scrollWheelZoom={false}
+        zoomControl={false}
+        style={{ height: '100%' }}
+      >
+        <ZoomControl position="bottomright" />
         <TileLayer
           url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
@@ -81,7 +170,8 @@ export default function PlacesMap({ places, you, selectedId, onSelect }: PlacesM
         />
         <Frame places={places} you={you} />
         <KeyboardPins />
-        {places.flatMap((place) =>
+        <FitContainer full={full} />
+        {shown.flatMap((place) =>
           (place.locations ?? []).map((location, i) => (
             <Marker
               key={`${place.id}-${i}`}
@@ -102,6 +192,34 @@ export default function PlacesMap({ places, you, selectedId, onSelect }: PlacesM
           />
         )}
       </MapContainer>
+      <div className="map-key" role="group" aria-label="Show on the map">
+        {levels.map(({ safety, label }) => (
+          <button
+            key={safety}
+            type="button"
+            className="map-key__toggle"
+            aria-pressed={!hidden.includes(safety)}
+            onClick={() => toggle(safety)}
+          >
+            <span className={`legend-dot pin--${safety}`} aria-hidden />
+            {label}
+            <span className="map-key__count">{counts.get(safety)}</span>
+          </button>
+        ))}
+      </div>
+      <IconButton
+        label={full ? 'Exit full screen' : 'Full screen map'}
+        className="icon-glass map-full-toggle"
+        onClick={() => setFull(!full)}
+      >
+        {full ? <Collapse /> : <Expand />}
+      </IconButton>
+    </div>
+  )
+
+  return (
+    <div ref={slot} className="places-map-slot">
+      {createPortal(map, host)}
     </div>
   )
 }

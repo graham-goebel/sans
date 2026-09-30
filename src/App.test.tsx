@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import App from './App'
 import { places } from './data/places'
@@ -88,6 +88,14 @@ describe('cards', () => {
     expect(screen.getByText('Featured')).toBeTruthy()
   })
 
+  it('leads each home row with a featured card', () => {
+    const recipe = recipes.find((r) => r.featured)!
+    visit('/')
+    const logo = screen.getByRole('img', { name: `Featured recipe: ${recipe.title}` })
+    expect(logo.closest('.rail > *')).toBe(logo.closest('.rail')?.firstElementChild)
+    expect(screen.getByText('Your place, featured here').closest('a')?.getAttribute('href')).toBe('#/about')
+  })
+
   it('keeps "Unverified" off place cards but on the place itself', () => {
     visit('/places')
     expect(document.querySelector('.card-grid .flag--unverified')).toBeNull()
@@ -162,9 +170,24 @@ describe('places map', () => {
     visit('/places')
     await userEvent.click(screen.getByRole('tab', { name: 'Map' }))
     expect(window.location.hash).toBe('#/places?view=map')
-    expect(await screen.findByText('Tap a pin to preview the place.')).toBeTruthy()
+    expect(await screen.findByText(/Tap a pin to preview the place/)).toBeTruthy()
     await userEvent.click(screen.getByRole('tab', { name: 'List' }))
     expect(window.location.hash).toBe('#/places')
+  })
+
+  it('toggles each safety level from the key, and goes full screen and back', async () => {
+    visit('/places?view=map')
+    const key = await screen.findByRole('group', { name: 'Show on the map' })
+    const dedicated = within(key).getByRole('button', { name: /100% gluten-free/ })
+    expect(dedicated.getAttribute('aria-pressed')).toBe('true')
+    await userEvent.click(dedicated)
+    expect(dedicated.getAttribute('aria-pressed')).toBe('false')
+
+    await userEvent.click(screen.getByRole('button', { name: 'Full screen map' }))
+    expect(document.body.lastElementChild?.querySelector('.places-map--full')).toBeTruthy()
+    await userEvent.keyboard('{Escape}')
+    expect(screen.getByRole('button', { name: 'Full screen map' })).toBeTruthy()
+    expect(document.querySelector('.places-map--full')).toBeNull()
   })
 
   it('explains when location is turned off', async () => {

@@ -1,3 +1,4 @@
+import millHouseLogo from '../assets/logos/mill-house.svg'
 import { unsplash } from './images'
 import type { Recipe } from './types'
 
@@ -35,6 +36,8 @@ export const recipes: Recipe[] = [
     id: 'margherita-pizza',
     title: 'Blistered margherita pizza on a rice-flour crust',
     category: 'mains',
+    // Sample sponsorship from the fictional Mill House, to show the featured card.
+    featured: { logo: millHouseLogo },
     image: unsplash('1574071318508-1cdbab80d002'),
     minutes: 90,
     serves: 2,

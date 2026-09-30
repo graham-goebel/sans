@@ -13,6 +13,18 @@ const photoCardStyle: CSSProperties = { border: 0 }
 /** Portrait photo card: the recipe's picture with its title set over it. Opens the quick view. */
 export function RecipeCard({ recipe }: { recipe: Recipe }) {
   const onClick = useQuickViewClick('recipe', recipe.id)
+  if (recipe.featured) {
+    return (
+      <LogoCard
+        href={`#/recipes/${recipe.id}`}
+        image={recipe.image}
+        logo={recipe.featured.logo}
+        name={`Featured recipe: ${recipe.title}`}
+        tone={scrimFor.recipe(recipe)}
+        onClick={onClick}
+      />
+    )
+  }
   return (
     <div className="card-wrap" onClick={onClick}>
       <Card
@@ -131,5 +143,23 @@ export function PlaceCard({ place, miles }: { place: Place; miles?: number }) {
       />
       <FlagChips flags={place.flags} iconOnly />
     </div>
+  )
+}
+
+/**
+ * The featured slot in the Places row, held open for a Denver partner. Until
+ * one signs up it invites places to get in touch, rather than borrowing a
+ * real business's name or logo.
+ */
+export function PartnerSlotCard() {
+  return (
+    <a className="logo-card partner-slot" href="#/about">
+      <span className="logo-card__label">Featured</span>
+      <span className="partner-slot__body">
+        <span className="partner-slot__mark">sans</span>
+        <span className="partner-slot__title">Your place, featured here</span>
+        <span className="partner-slot__text">For Denver kitchens that take gluten seriously.</span>
+      </span>
+    </a>
   )
 }

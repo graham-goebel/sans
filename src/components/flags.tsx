@@ -1,5 +1,5 @@
 import type { ComponentType } from 'react'
-import { BadgeCheck, Flame, ShieldQuestionMark, Trophy } from 'lucide-react'
+import { BadgeCheck, Flame, ShieldQuestionMark, Trophy } from '../icons'
 import type { Flag } from '../data/types'
 
 type Chip = Flag | 'certified' | 'unverified'

@@ -38,6 +38,11 @@ export interface Recipe {
   ingredients: string[]
   steps: string[]
   flags?: Flag[]
+  /**
+   * A partner-sponsored recipe: its card shows the partner's logo, centred
+   * over the photo, instead of the title. Use only a logo the brand has given us.
+   */
+  featured?: { logo: string }
 }
 
 export type Safety = 'dedicated' | 'gf-menu' | 'gf-options'
