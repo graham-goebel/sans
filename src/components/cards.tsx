@@ -1,5 +1,5 @@
 import { Card, Image } from '@dovetail-ds/react'
-import { safetyLabel } from '../data/places'
+import { placeSummary } from '../data/places'
 import type { Place, Product, Recipe } from '../data/types'
 import { FlagChips } from './flags'
 
@@ -52,9 +52,9 @@ export function PlaceCard({ place }: { place: Place }) {
         onMedia="white"
         eyebrow={`${place.neighborhood}, ${place.city}`}
         title={place.name}
-        description={`${safetyLabel[place.safety]} · ${place.price}`}
+        description={placeSummary(place)}
       />
-      <FlagChips flags={place.flags} />
+      <FlagChips flags={place.flags} unverified={place.verification === 'unverified'} />
     </div>
   )
 }

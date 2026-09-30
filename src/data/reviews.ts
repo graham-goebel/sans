@@ -76,45 +76,6 @@ export const productReviews: Record<string, Review[]> = {
   ],
 }
 
-export const placeReviews: Record<string, Review[]> = {
-  'flour-and-fern': [
-    { name: 'Amelia P.', rating: 5, date: 'Sep 2026', text: 'I cried a little ordering a croissant without asking a single question.' },
-    { name: 'Hugo L.', rating: 5, date: 'Aug 2026', text: 'The cardamom knot is worth the Saturday queue. Get there early.' },
-  ],
-  'osteria-lume': [
-    { name: 'Julia C.', rating: 5, date: 'Sep 2026', text: 'The server walked me through the whole menu. The cacio e pepe was perfect.' },
-    { name: 'Ravi N.', rating: 4, date: 'Jul 2026', text: 'Pricey but careful. They remembered my note from the booking.' },
-  ],
-  'morning-glory': [
-    { name: 'Sofia G.', rating: 5, date: 'Sep 2026', text: 'Everything in the case is safe. Breakfast tacos on the patio are the move.' },
-    { name: 'Eli M.', rating: 4, date: 'Aug 2026', text: 'Relaxed and friendly. Busy on weekends but worth the wait.' },
-  ],
-  'kin-kitchen': [
-    { name: 'Tessa R.', rating: 4, date: 'Sep 2026', text: 'Clear menu markings and a knowledgeable team. Skip the fries, as they warn.' },
-    { name: 'Owen B.', rating: 4, date: 'Aug 2026', text: 'The grilled little gems are excellent. Great date spot.' },
-  ],
-  'the-good-market': [
-    { name: 'Mia K.', rating: 5, date: 'Sep 2026', text: 'The green shelf tags save me so much label reading.' },
-    { name: 'Carlos Z.', rating: 4, date: 'Jul 2026', text: 'Good range of staples and local gluten-free bread.' },
-  ],
-  saltbox: [
-    { name: 'Jade W.', rating: 5, date: 'Sep 2026', text: 'Fried chicken and onion rings, safely, for the first time in years.' },
-    { name: 'Felix S.', rating: 5, date: 'Aug 2026', text: 'The hot honey sandwich is unreal. Buns don’t fall apart.' },
-  ],
-  'crumb-coffee': [
-    { name: 'Anya V.', rating: 4, date: 'Sep 2026', text: 'Love that the GF toast has its own toaster. The flat white is excellent.' },
-    { name: 'Dan F.', rating: 4, date: 'Aug 2026', text: 'Careful with the tongs every time I’ve been in.' },
-  ],
-  'verde-cantina': [
-    { name: 'Lucia R.', rating: 4, date: 'Sep 2026', text: 'Ask for the dedicated-fryer chips. The al pastor tacos are the best in town.' },
-    { name: 'Pete Y.', rating: 4, date: 'Jul 2026', text: 'Staff knew which salsas had beer without checking. Reassuring.' },
-  ],
-  'forno-nero': [
-    { name: 'Gia M.', rating: 5, date: 'Sep 2026', text: 'Real wood-fired pizza with a chewy, blistered crust. No worrying at all.' },
-    { name: 'Will T.', rating: 5, date: 'Aug 2026', text: 'The nduja and hot honey pizza is the best thing I’ve eaten this year.' },
-  ],
-}
-
 export const testimonials = [
   {
     quote: 'Eating out used to mean an interrogation. Now I open sans, check how a kitchen handles gluten, and just go.',

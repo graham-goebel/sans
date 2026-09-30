@@ -21,9 +21,10 @@ import { recipes } from '../data/recipes'
 import { testimonials } from '../data/reviews'
 import { site } from '../site'
 
-// The promoted slots, picked by id so they are easy to swap.
+// The promoted slot, picked by id so it's easy to swap.
 const partnerProduct = products.find((p) => p.id === 'bronze-cut-rigatoni')!
-const placeOfTheMonth = places.find((p) => p.id === 'flour-and-fern')!
+const denverPhoto = unsplash('1414235077428-338989a2e8c0', 1600)
+const dedicatedCount = places.filter((p) => p.safety === 'dedicated').length
 
 export function Home() {
   return (
@@ -56,7 +57,7 @@ export function Home() {
               <ProductCard key={p.id} product={p} />
             ))}
           </Rail>
-          <Rail eyebrow="Go" title="Places" to="/places" size="wide" autoplay={7000}>
+          <Rail eyebrow="Go · Denver" title="Places" to="/places" size="wide" autoplay={7000}>
             {places.map((p) => (
               <PlaceCard key={p.id} place={p} />
             ))}
@@ -107,31 +108,34 @@ export function Home() {
         ]}
       />
 
-      {/* Promoted: place of the month */}
+      {/* Denver: where sans is starting, and how far along it is */}
       <Section>
         <Stack gap="lg">
           <Stack gap="2xs">
             <Text variant="eyebrow" tone="brand">
-              Place of the month
+              Now in Denver
             </Text>
             <Heading level={2} size="heading-xl">
-              Worth the trip
+              Starting in the Mile High City
             </Heading>
           </Stack>
           <Cover
-            src={placeOfTheMonth.image}
+            src={denverPhoto}
             alt=""
             ratio="4:3"
             radius="container"
-            eyebrow={`100% gluten-free · ${placeOfTheMonth.neighborhood}, ${placeOfTheMonth.city}`}
-            title={placeOfTheMonth.name}
+            eyebrow={`${places.length} places · ${dedicatedCount} reported 100% gluten-free`}
+            title="Denver, first look"
             actions={
-              <ButtonLink to={`/places/${placeOfTheMonth.id}`} variant="secondary">
-                Read more
+              <ButtonLink to="/places" variant="secondary">
+                See Denver places
               </ButtonLink>
             }
           />
-          <Text variant="lead">{placeOfTheMonth.dek}</Text>
+          <Text variant="lead">
+            We’ve gathered Denver’s gluten-free restaurants, bakeries and markets from public listings and press, and
+            we’re confirming each one directly. Until a place is confirmed, it’s marked unverified.
+          </Text>
         </Stack>
       </Section>
 

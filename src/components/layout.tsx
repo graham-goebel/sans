@@ -95,6 +95,8 @@ interface DetailHeroProps {
   /** Where the back button goes, as an app path, and what it says to a screen reader. */
   back: { to: string; label: string }
   image: string
+  /** A short note set over the photo's corner, e.g. "Illustrative photo". */
+  photoNote?: string
   eyebrow: string
   title: string
   dek: string
@@ -106,12 +108,13 @@ interface DetailHeroProps {
  * The top of an item page: a tall photograph bled edge to edge with a back
  * button over it (the nav bar is hidden on these pages), then the headline.
  */
-export function DetailHero({ back, image, eyebrow, title, dek, meta, badges }: DetailHeroProps) {
+export function DetailHero({ back, image, photoNote, eyebrow, title, dek, meta, badges }: DetailHeroProps) {
   const navigate = useNavigate()
   return (
     <>
       <div className="detail-photo">
         <img src={image} alt="" />
+        {photoNote && <span className="photo-note">{photoNote}</span>}
         <IconButton label={back.label} className="icon-glass detail-back" size="lg" onClick={() => navigate(back.to)}>
           <ArrowLeft />
         </IconButton>

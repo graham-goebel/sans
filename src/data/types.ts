@@ -55,26 +55,41 @@ export interface Precaution {
   text: string
 }
 
+export interface Source {
+  label: string
+  url: string
+}
+
 export interface Place {
   id: string
   name: string
   type: 'restaurant' | 'cafe' | 'bakery' | 'market'
   city: string
   neighborhood: string
+  /** An illustrative photo unless the place has given us its own. */
   image: string
   safety: Safety
-  price: '$' | '$$' | '$$$'
-  rating: number
   dek: string
   description: string
   address: string
-  hours: string
+  hours?: string
+  price?: '$' | '$$' | '$$$'
+  rating?: number
+  /** Dishes reported (or, once verified, confirmed) as gluten-free. */
   order: string[]
   precautions: Precaution[]
-  /** When these details were last confirmed with the place, e.g. "Sep 2026". */
-  lastChecked: string
-  /** Where the details came from: the place's own site first. Required for real (non-sample) places. */
-  sources?: string[]
+  /**
+   * unverified: gathered from public listings and press, not yet confirmed
+   * with the place. verified: confirmed directly with the place (see
+   * docs/CONTENT.md). The app labels unverified places everywhere they appear.
+   */
+  verification: 'unverified' | 'verified'
+  /** Month the public sources were read, e.g. "Sep 2026". Unverified places. */
+  researched?: string
+  /** Month the details were confirmed with the place. Verified places. */
+  lastChecked?: string
+  /** Where the details came from: the place's own site first. */
+  sources: Source[]
   flags?: Flag[]
 }
 

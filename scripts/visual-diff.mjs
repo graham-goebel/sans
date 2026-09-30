@@ -26,7 +26,7 @@ const pages = [
   { name: 'places', path: '/places' },
   { name: 'recipe', path: '/recipes/margherita-pizza' },
   { name: 'product', path: '/products/bronze-cut-rigatoni' },
-  { name: 'place', path: '/places/osteria-lume' },
+  { name: 'place', path: '/places/teocalli-cocina-lohi' },
   { name: 'about', path: '/about' },
   { name: 'search', path: '/', search: 'pizza' },
 ]

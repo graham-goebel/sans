@@ -1,5 +1,5 @@
 import { useParams } from 'react-router'
-import { Badge, Heading, List, Section, Stack, Text } from '@dovetail-ds/react'
+import { Badge, Callout, Heading, Link, List, Section, Stack, Text } from '@dovetail-ds/react'
 import type { ComponentType } from 'react'
 import {
   BadgeCheck,
@@ -23,14 +23,12 @@ import {
 } from 'lucide-react'
 import { PlaceCard } from '../components/cards'
 import { FlagChips } from '../components/flags'
-import { Reviews } from '../components/Reviews'
 import type { ChipOption } from '../components/FilterChips'
 import { DetailHero, ListingPage, MetaItem, NotFoundState } from '../components/layout'
 import { Rail } from '../components/Rail'
 import { useToggleSet } from '../hooks'
 import { matchesPlace, type PlaceFilter } from '../lib/filters'
 import { places, safetyLabel } from '../data/places'
-import { placeReviews } from '../data/reviews'
 import type { PrecautionKind } from '../data/types'
 
 const chips: ChipOption<PlaceFilter>[] = [
@@ -63,13 +61,13 @@ export function PlacesPage() {
 
   return (
     <ListingPage
-      eyebrow="Places"
+      eyebrow="Places · Denver"
       title={
         <>
           Eat out, <em>safely</em>
         </>
       }
-      lead="Restaurants, cafés and bakeries where gluten-free is taken seriously, with a clear note on how."
+      lead="Denver restaurants, cafés, bakeries and markets that take gluten-free seriously, with a note on how. We’re confirming each one with the place; until then it’s marked unverified."
       chips={chips}
       selected={selected}
       onToggle={toggle}
@@ -89,6 +87,7 @@ export function PlaceDetail() {
   const place = places.find((p) => p.id === id)
   if (!place) return <NotFoundState what="place" href="/places" />
 
+  const unverified = place.verification === 'unverified'
   const nearby = places.filter((p) => p.id !== place.id)
 
   return (
@@ -96,42 +95,54 @@ export function PlaceDetail() {
       <DetailHero
         back={{ to: '/places', label: 'Back to all places' }}
         image={place.image}
+        photoNote={unverified ? 'Illustrative photo' : undefined}
         eyebrow={`${place.type} · ${place.neighborhood}, ${place.city}`}
         title={place.name}
         dek={place.dek}
         meta={
           <>
             <MetaItem icon={<MapPin aria-hidden />}>{place.address}</MetaItem>
-            <MetaItem icon={<Clock aria-hidden />}>{place.hours}</MetaItem>
-            <MetaItem icon={<Star aria-hidden />}>
-              {place.rating.toFixed(1)} · {place.price}
-            </MetaItem>
-            <MetaItem icon={<CalendarCheck aria-hidden />}>Checked {place.lastChecked}</MetaItem>
+            {place.hours && <MetaItem icon={<Clock aria-hidden />}>{place.hours}</MetaItem>}
+            {place.rating !== undefined && (
+              <MetaItem icon={<Star aria-hidden />}>
+                {place.rating.toFixed(1)}
+                {place.price && ` · ${place.price}`}
+              </MetaItem>
+            )}
+            {place.lastChecked ? (
+              <MetaItem icon={<CalendarCheck aria-hidden />}>Checked {place.lastChecked}</MetaItem>
+            ) : (
+              place.researched && <MetaItem icon={<CalendarCheck aria-hidden />}>Researched {place.researched}</MetaItem>
+            )}
           </>
         }
         badges={
           <>
             <Badge tone={place.safety === 'dedicated' ? 'primary' : place.safety === 'gf-menu' ? 'info' : 'warning'}>
-              {safetyLabel[place.safety]}
+              {unverified ? `Reported ${safetyLabel[place.safety].toLowerCase()}` : safetyLabel[place.safety]}
             </Badge>
-            <FlagChips flags={place.flags} />
+            <FlagChips flags={place.flags} unverified={unverified} />
           </>
         }
       />
       <Section>
         <div className="detail-layout">
+          {place.order.length > 0 ? (
+            <Stack gap="md">
+              <Heading level={2} size="heading-lg">
+                {unverified ? 'Reported gluten-free' : 'What to order'}
+              </Heading>
+              <List
+                label={unverified ? 'Reported gluten-free dishes' : 'What to order'}
+                items={place.order.map((dish) => ({ id: dish, title: dish }))}
+              />
+            </Stack>
+          ) : (
+            <div />
+          )}
           <Stack gap="md">
             <Heading level={2} size="heading-lg">
-              What to order
-            </Heading>
-            <List
-              label="What to order"
-              items={place.order.map((dish) => ({ id: dish, title: dish }))}
-            />
-          </Stack>
-          <Stack gap="md">
-            <Heading level={2} size="heading-lg">
-              How they handle gluten
+              {unverified ? 'What’s been reported' : 'How they handle gluten'}
             </Heading>
             <Text variant="lead" tone="primary">
               {place.description}
@@ -140,7 +151,7 @@ export function PlaceDetail() {
               {place.precautions.map((p) => {
                 const { icon: Icon, caution } = precautionStyle[p.kind]
                 return (
-                  <li key={p.kind}>
+                  <li key={p.text}>
                     <span className={caution ? 'precaution precaution--caution' : 'precaution'}>
                       <Icon aria-hidden />
                     </span>
@@ -149,14 +160,30 @@ export function PlaceDetail() {
                 )
               })}
             </ul>
-            <Text variant="small" tone="secondary">
-              Kitchens change. Always tell your server you need gluten-free food when you order.
-            </Text>
+            {unverified ? (
+              <Callout tone="caution" title="Not yet confirmed">
+                sans hasn’t confirmed these details with {place.name}. They come from public listings, reviews and
+                press read in {place.researched}. Call ahead, and tell staff you need gluten-free food when you order.
+              </Callout>
+            ) : (
+              <Text variant="small" tone="secondary">
+                Kitchens change. Always tell your server you need gluten-free food when you order.
+              </Text>
+            )}
+            <Stack gap="xs">
+              <Text variant="label">Sources</Text>
+              <ul className="sources">
+                {place.sources.map((source) => (
+                  <li key={source.url}>
+                    <Link href={source.url} external underline="hover">
+                      {source.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </Stack>
           </Stack>
         </div>
-      </Section>
-      <Section>
-        <Reviews reviews={placeReviews[place.id] ?? []} />
       </Section>
       <Section tone="subtle">
         <Rail eyebrow="Plan the next one" title="More places" to="/places" size="wide">

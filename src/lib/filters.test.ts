@@ -38,10 +38,27 @@ describe('place filters', () => {
 })
 
 describe('sample data', () => {
-  it('gives every place a last-checked date and at least one precaution', () => {
+  it('gives every place sources and at least one precaution', () => {
     for (const p of places) {
-      expect(p.lastChecked, p.id).toMatch(/^[A-Z][a-z]{2} \d{4}$/)
+      expect(p.sources.length, p.id).toBeGreaterThan(0)
+      for (const source of p.sources) expect(source.url, p.id).toMatch(/^https:\/\//)
       expect(p.precautions.length, p.id).toBeGreaterThan(0)
+    }
+  })
+
+  it('dates every place: checked if verified, researched if not', () => {
+    const month = /^[A-Z][a-z]{2} \d{4}$/
+    for (const p of places) {
+      if (p.verification === 'verified') expect(p.lastChecked, p.id).toMatch(month)
+      else expect(p.researched, p.id).toMatch(month)
+    }
+  })
+
+  it('gives unverified places no ratings or editorial flags', () => {
+    for (const p of places.filter((p) => p.verification === 'unverified')) {
+      expect(p.rating, p.id).toBeUndefined()
+      expect(p.flags ?? [], p.id).toEqual([])
+      expect(p.lastChecked, p.id).toBeUndefined()
     }
   })
 

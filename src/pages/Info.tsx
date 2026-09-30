@@ -47,9 +47,13 @@ export function AboutPage() {
         <>
           <h2>This is a prototype</h2>
           <p>
-            The places, products, brands, addresses, reviews and testimonials in sans are <strong>sample content</strong>{' '}
-            written to show how the app will work. They are not real recommendations. Don’t rely on them when deciding
-            where or what to eat.
+            The <strong>Denver places</strong> are real, but <strong>unverified</strong>: their details come from public
+            listings, reviews and press, and haven’t yet been confirmed with each place. Each one lists its sources.
+            Always check with the place before you eat there.
+          </p>
+          <p>
+            The products, brands, recipes, reviews and testimonials are <strong>sample content</strong> written to show
+            how the app will work. They are not real recommendations.
           </p>
         </>
       )}
@@ -75,7 +79,10 @@ export function AboutPage() {
           <strong>GF options:</strong> some dishes are gluten-free as made; cross-contact is possible.
         </li>
       </ul>
-      <p>Each place shows when its details were last checked.</p>
+      <p>
+        A place marked <strong>unverified</strong> hasn’t been confirmed with the place yet. Once it has, it shows when
+        its details were last checked.
+      </p>
     </InfoPage>
   )
 }
@@ -132,6 +139,10 @@ export function CreditsPage() {
         Photographs in sans come from <a href="https://unsplash.com">Unsplash</a> and are used under the{' '}
         <a href="https://unsplash.com/license">Unsplash License</a>. Thank you to the photographers who share their
         work there.
+      </p>
+      <p>
+        Photos on Denver places are illustrative: they don’t show the business itself unless the place has given us
+        its own.
       </p>
       <p>
         Headlines are set in Instrument Serif, licensed under the SIL Open Font License. Icons are from Lucide, under

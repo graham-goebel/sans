@@ -36,6 +36,7 @@ The launch blocker. See [CONTENT.md](CONTENT.md) for how to add and check it.
 
 - [x] Choose a launch city: **Denver, CO**
 - [x] Research a shortlist: 20 sourced candidates in [denver/candidates.md](denver/candidates.md)
+- [x] Show the Denver candidates in the app, clearly marked unverified with sources
 - [ ] Verify places using [denver/verification.md](denver/verification.md) (about 10 for a soft launch)
 - [ ] Replace sample products with real ones you have checked (labels, certification)
 - [ ] Replace sample recipes with tested ones
