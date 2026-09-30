@@ -36,7 +36,6 @@ interface ListingPageProps<T extends string> {
   eyebrow: string
   title: ReactNode
   lead: string
-  image: string
   chips: ChipOption<T>[]
   selected: T[]
   onToggle: (id: T) => void
@@ -48,12 +47,11 @@ interface ListingPageProps<T extends string> {
   children: ReactNode
 }
 
-/** A section's index: masthead, an editorial intro with a photo, filter chips and a card grid. */
+/** A section's index: masthead, an editorial intro, filter chips and a card grid. */
 export function ListingPage<T extends string>({
   eyebrow,
   title,
   lead,
-  image,
   chips,
   selected,
   onToggle,
@@ -77,7 +75,6 @@ export function ListingPage<T extends string>({
             </Heading>
             <Text variant="lead">{lead}</Text>
           </Stack>
-          <Image src={image} alt="" ratio="21:9" loading="eager" />
           <FilterChips label={`Filter ${noun[1]}`} options={chips} selected={selected} onToggle={onToggle} />
           <Text variant="small" tone="secondary">
             {count} {count === 1 ? noun[0] : noun[1]}

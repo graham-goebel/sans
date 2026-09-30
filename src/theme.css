@@ -141,24 +141,6 @@ h3 em {
   gap: var(--dt-space-inline-md, 16px);
 }
 
-.rail-actions {
-  display: flex;
-  align-items: center;
-  gap: var(--dt-space-inline-md, 16px);
-  flex: none;
-}
-
-.rail-controls {
-  display: none;
-  gap: var(--dt-space-inline-xs, 4px);
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .rail-controls {
-    display: flex;
-  }
-}
-
 .rail {
   --rail-card: min(76vw, 300px);
   display: grid;
@@ -359,9 +341,50 @@ h3 em {
 
 /* Keep the floating pill compact on wide screens instead of spanning the window. */
 .nav-dock > * {
-  max-width: 560px;
+  max-width: 400px;
   margin-inline: auto;
   pointer-events: auto;
+}
+
+/* Icon-only nav: hide each item's visible label. BottomNav still names the
+   link with aria-label, so screen readers hear "Recipes". */
+.nav-dock a[aria-label] > span:last-child {
+  display: none;
+}
+
+/* ---------- Page transitions ---------- */
+
+.page {
+  animation: page-in 520ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+@keyframes page-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+}
+
+/* Photos ease in as they arrive instead of popping. */
+.page img {
+  animation: fade-in 700ms ease both;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page {
+    animation-name: fade-in;
+    animation-duration: 200ms;
+  }
+
+  .page img {
+    animation: none;
+  }
 }
 
 

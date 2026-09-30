@@ -6,7 +6,6 @@ import type { ChipOption } from '../components/FilterChips'
 import { DetailHero, ListingPage, MetaItem, NotFoundState } from '../components/layout'
 import { Rail } from '../components/Rail'
 import { useToggleSet } from '../hooks'
-import { unsplash } from '../data/images'
 import { places, safetyLabel } from '../data/places'
 import type { Place } from '../data/types'
 
@@ -46,7 +45,6 @@ export function PlacesPage() {
         </>
       }
       lead="Restaurants, cafés and bakeries where gluten-free is taken seriously, with a clear note on how."
-      image={unsplash('1552566626-52f8b828add9', 1600)}
       chips={chips}
       selected={selected}
       onToggle={toggle}
@@ -120,7 +118,7 @@ export function PlaceDetail() {
         </div>
       </Section>
       <Section tone="subtle">
-        <Rail eyebrow="Plan the next one" title="More places" href="#/places" size="wide">
+        <Rail eyebrow="Plan the next one" title="More places" to="/places" size="wide">
           {nearby.map((p) => (
             <PlaceCard key={p.id} place={p} />
           ))}

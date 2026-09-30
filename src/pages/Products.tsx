@@ -6,7 +6,6 @@ import type { ChipOption } from '../components/FilterChips'
 import { DetailHero, ListingPage, MetaItem, NotFoundState } from '../components/layout'
 import { Rail } from '../components/Rail'
 import { useToggleSet } from '../hooks'
-import { unsplash } from '../data/images'
 import { products } from '../data/products'
 import { recipes } from '../data/recipes'
 import { traitLabel } from '../data/traits'
@@ -50,7 +49,6 @@ export function ProductsPage() {
         </>
       }
       lead="Gluten-free groceries we’d buy again, tested for taste and texture, not just the label."
-      image={unsplash('1604719312566-8912e9227c6a', 1600)}
       chips={chips}
       selected={selected}
       onToggle={toggle}
@@ -138,7 +136,7 @@ export function ProductDetail() {
       </Section>
       {toMake.length > 0 && (
         <Section tone="secondary-muted">
-          <Rail eyebrow="Put it to use" title="Recipes to make with it" href="#/recipes">
+          <Rail eyebrow="Put it to use" title="Recipes to make with it" to="/recipes">
             {toMake.map((r) => (
               <RecipeCard key={r.id} recipe={r} />
             ))}
@@ -146,7 +144,7 @@ export function ProductDetail() {
         </Section>
       )}
       <Section tone="subtle">
-        <Rail eyebrow="Also on the shelf" title="More products" href="#/products" size="narrow">
+        <Rail eyebrow="Also on the shelf" title="More products" to="/products" size="narrow">
           {related.map((p) => (
             <ProductCard key={p.id} product={p} />
           ))}

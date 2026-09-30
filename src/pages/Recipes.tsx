@@ -6,7 +6,6 @@ import type { ChipOption } from '../components/FilterChips'
 import { DetailHero, ListingPage, MetaItem, NotFoundState } from '../components/layout'
 import { Rail } from '../components/Rail'
 import { useToggleSet } from '../hooks'
-import { unsplash } from '../data/images'
 import { recipes } from '../data/recipes'
 import { traitLabel } from '../data/traits'
 import type { Recipe, Trait } from '../data/types'
@@ -48,7 +47,6 @@ export function RecipesPage() {
         </>
       }
       lead="Tested gluten-free recipes, from quick weeknight bowls to a proper sourdough."
-      image={unsplash('1490645935967-10de6ba17061', 1600)}
       chips={chips}
       selected={selected}
       onToggle={toggle}
@@ -121,7 +119,7 @@ export function RecipeDetail() {
         </div>
       </Section>
       <Section tone="subtle">
-        <Rail eyebrow="Keep cooking" title="More recipes" href="#/recipes">
+        <Rail eyebrow="Keep cooking" title="More recipes" to="/recipes">
           {more.map((r) => (
             <RecipeCard key={r.id} recipe={r} />
           ))}
