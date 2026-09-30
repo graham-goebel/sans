@@ -1,0 +1,24 @@
+name: Geocode
+
+# Looks up map coordinates for place addresses (scripts/geocode.mjs) and
+# prints them in the log. Runs by hand, or when the address list changes.
+
+on:
+  workflow_dispatch:
+  push:
+    branches: ['claude/**']
+    paths: ['scripts/geocode.mjs']
+
+permissions:
+  contents: read
+
+jobs:
+  geocode:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: node scripts/geocode.mjs
