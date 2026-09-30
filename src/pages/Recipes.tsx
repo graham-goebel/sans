@@ -1,6 +1,6 @@
 import { useParams } from 'react-router'
 import { Checkbox, Heading, Section, Stack, Text } from '@dovetail-ds/react'
-import { CakeSlice, ChefHat, Clock, Croissant, EggOff, MilkOff, NutOff, Sunrise, Timer, Users, UtensilsCrossed, Vegan } from 'lucide-react'
+import { CakeSlice, Clock, Croissant, Difficulty, EggOff, MilkOff, NutOff, Sunrise, Timer, Users, Utensils, Vegan } from '../icons'
 import { RecipeCard } from '../components/cards'
 import type { ChipOption } from '../components/FilterChips'
 import { DetailHero, ListingPage, MetaItem, NotFoundState } from '../components/layout'
@@ -16,7 +16,7 @@ import { recipeReviews } from '../data/reviews'
 
 const chips: ChipOption<RecipeFilter>[] = [
   { id: 'breakfast', label: 'Breakfast', icon: Sunrise },
-  { id: 'mains', label: 'Mains', icon: UtensilsCrossed },
+  { id: 'mains', label: 'Mains', icon: Utensils },
   { id: 'baking', label: 'Baking', icon: Croissant },
   { id: 'desserts', label: 'Desserts', icon: CakeSlice },
   { id: 'quick', label: 'Under 30 min', icon: Timer },
@@ -74,7 +74,7 @@ export function RecipeDetail() {
           <>
             <MetaItem icon={<Clock aria-hidden />}>{recipe.minutes} min</MetaItem>
             <MetaItem icon={<Users aria-hidden />}>Serves {recipe.serves}</MetaItem>
-            <MetaItem icon={<ChefHat aria-hidden />}>{recipe.difficulty}</MetaItem>
+            <MetaItem icon={<Difficulty aria-hidden />}>{recipe.difficulty}</MetaItem>
           </>
         }
         chips={recipeChips(recipe)}

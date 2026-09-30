@@ -11,8 +11,8 @@ import {
   TestimonialBlock,
   Text,
 } from '@dovetail-ds/react'
-import { BadgeCheck, ScanSearch, ShieldCheck, Smartphone, ThumbsUp } from 'lucide-react'
-import { PlaceCard, ProductCard, RecipeCard } from '../components/cards'
+import { BadgeCheck, ScanSearch, ShieldCheck, Smartphone, ThumbsUp } from '../icons'
+import { PartnerSlotCard, PlaceCard, ProductCard, RecipeCard } from '../components/cards'
 import { ButtonLink, Masthead } from '../components/layout'
 import { Rail } from '../components/Rail'
 import { unsplash } from '../data/images'
@@ -27,6 +27,10 @@ import { site } from '../site'
 const partnerProduct = products.find((p) => p.id === 'bronze-cut-rigatoni')!
 const denverPhoto = unsplash('1414235077428-338989a2e8c0', 1600)
 const dedicatedCount = places.filter((p) => p.safety === 'dedicated').length
+
+/** Each row leads with its featured card. */
+const featuredFirst = <T extends { featured?: unknown }>(items: T[]) =>
+  [...items].sort((a, b) => Number(!!b.featured) - Number(!!a.featured))
 
 export function Home() {
   const { preferences } = usePreferences()
@@ -83,18 +87,25 @@ export function Home() {
       {/* The three sections, each a swipeable row */}
       <Section>
         <Stack gap="2xl">
-          <Rail eyebrow="Cook" title="Recipes" to="/recipes" autoplay={5000}>
-            {recipes.map((r) => (
+          <Rail title="Recipes" subline="Tested at home, properly gluten-free." to="/recipes" autoplay={5000}>
+            {featuredFirst(recipes).map((r) => (
               <RecipeCard key={r.id} recipe={r} />
             ))}
           </Rail>
-          <Rail eyebrow="Shop" title="Products" to="/products" size="narrow" autoplay={6000}>
-            {products.map((p) => (
+          <Rail
+            title="Products"
+            subline="Groceries that taste like the real thing."
+            to="/products"
+            size="narrow"
+            autoplay={6000}
+          >
+            {featuredFirst(products).map((p) => (
               <ProductCard key={p.id} product={p} />
             ))}
           </Rail>
-          <Rail eyebrow="Go · Denver" title="Places" to="/places" autoplay={7000}>
-            {places.map((p) => (
+          <Rail title="Places" subline="Where to eat and shop in Denver." to="/places" autoplay={7000}>
+            {!places.some((p) => p.featured) && <PartnerSlotCard />}
+            {featuredFirst(places).map((p) => (
               <PlaceCard key={p.id} place={p} />
             ))}
           </Rail>

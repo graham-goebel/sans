@@ -1,6 +1,6 @@
 import { Component, type ErrorInfo, type ReactNode } from 'react'
 import { Button, EmptyState, Section } from '@dovetail-ds/react'
-import { TriangleAlert } from 'lucide-react'
+import { TriangleAlert } from '../icons'
 
 interface State {
   failed: boolean

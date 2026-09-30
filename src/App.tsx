@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { HashRouter, Route, Routes, useLocation, useNavigate } from 'react-router'
 import { BottomNav, IconButton } from '@dovetail-ds/react'
-import { House, MapPin, Search, ShoppingBasket, UtensilsCrossed } from 'lucide-react'
+import { House, MapPin, Search, ShoppingBasket, Recipe } from './icons'
 import { SiteFooter } from './components/chrome'
 import { ErrorBoundary } from './components/ErrorBoundary'
 import { PreferencesProvider } from './components/Preferences'
@@ -17,7 +17,7 @@ import { RecipeDetail, RecipesPage } from './pages/Recipes'
 const destinations = [
   { id: 'home', label: 'Home', icon: <House />, path: '/' },
   { id: 'products', label: 'Products', icon: <ShoppingBasket />, path: '/products' },
-  { id: 'recipes', label: 'Recipes', icon: <UtensilsCrossed />, path: '/recipes' },
+  { id: 'recipes', label: 'Recipes', icon: <Recipe />, path: '/recipes' },
   { id: 'places', label: 'Places', icon: <MapPin />, path: '/places' },
 ]
 

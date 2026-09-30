@@ -60,6 +60,11 @@ Before adding a place, confirm with the place itself, by visiting or calling:
 - [ ] Cook it at least once as written
 - [ ] Name any ingredient that is often *not* gluten-free (miso, soy sauce,
       oats, baking powder, stock) and what to buy instead
+- [ ] **Featured logo** (optional, `featured: { logo }`): for a recipe a partner
+      sponsors, on the same terms as places
+
+On Home, each row leads with its featured card. Until a Denver place signs up
+as a partner, the Places row leads with an open "Your place, featured here" slot.
 
 ## Photos
 

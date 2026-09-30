@@ -1,6 +1,6 @@
 import { useParams } from 'react-router'
 import { Heading, Section, Stack, Text } from '@dovetail-ds/react'
-import { BadgeCheck, CakeSlice, EggOff, ChefHat, Coffee, CookingPot, Cookie, Croissant, MilkOff, NutOff, Star, Store, Vegan } from 'lucide-react'
+import { BadgeCheck, CakeSlice, EggOff, ChefHat, Coffee, CookingPot, Cookie, Croissant, MilkOff, NutOff, Star, Store, Vegan } from '../icons'
 import { SimpleList } from '../components/SimpleList'
 import { ProductCard, RecipeCard } from '../components/cards'
 import type { ChipOption } from '../components/FilterChips'

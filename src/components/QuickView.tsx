@@ -1,7 +1,7 @@
 import { useState, type ReactNode } from 'react'
 import { useNavigate } from 'react-router'
 import { Button, Callout, Sheet, Stack, Text } from '@dovetail-ds/react'
-import { ArrowRight, ChefHat, Clock, MapPin, Store, Users } from 'lucide-react'
+import { ArrowRight, Clock, Difficulty, MapPin, Store, Users } from '../icons'
 import { places } from '../data/places'
 import { products } from '../data/products'
 import { recipes } from '../data/recipes'
@@ -112,7 +112,7 @@ function preview({ kind, id }: QuickViewTarget): Preview | undefined {
           <div className="meta-row">
             <MetaItem icon={<Clock aria-hidden />}>{recipe.minutes} min</MetaItem>
             <MetaItem icon={<Users aria-hidden />}>Serves {recipe.serves}</MetaItem>
-            <MetaItem icon={<ChefHat aria-hidden />}>{recipe.difficulty}</MetaItem>
+            <MetaItem icon={<Difficulty aria-hidden />}>{recipe.difficulty}</MetaItem>
           </div>
           <SimpleList label="Ingredients" items={shown} />
           {recipe.ingredients.length > shown.length && (

@@ -1,6 +1,6 @@
 import { useState, type ReactNode } from 'react'
 import { Button, IconButton, Popover, Stack } from '@dovetail-ds/react'
-import { ArrowUpRight, Check, Ellipsis, Link as LinkIcon, Navigation, Share } from 'lucide-react'
+import { ArrowUpRight, Check, Ellipsis, Link as LinkIcon, Navigation, Share } from '../icons'
 
 interface ItemMenuProps {
   /** The item's app path, e.g. /recipes/margherita-pizza. */

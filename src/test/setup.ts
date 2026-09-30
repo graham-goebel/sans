@@ -26,6 +26,12 @@ window.IntersectionObserver ??= class {
   thresholds = []
 } as unknown as typeof IntersectionObserver
 
+window.ResizeObserver ??= class {
+  observe() {}
+  unobserve() {}
+  disconnect() {}
+} as unknown as typeof ResizeObserver
+
 window.scrollTo = () => {}
 
 afterEach(() => {

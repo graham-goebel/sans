@@ -16,7 +16,7 @@ import {
   Star,
   Store,
   Utensils,
-} from 'lucide-react'
+} from '../icons'
 import { PlaceCard } from '../components/cards'
 import { placeChips } from '../lib/chips'
 import { SimpleList } from '../components/SimpleList'
@@ -132,7 +132,13 @@ export function PlacesPage() {
     >
       {view === 'map' ? (
         <Stack gap="md">
-          <Suspense fallback={<div className="places-map places-map--loading" aria-label="Loading map" />}>
+          <Suspense
+            fallback={
+              <div className="places-map-slot">
+                <div className="places-map places-map--loading" aria-label="Loading map" />
+              </div>
+            }
+          >
             <PlacesMap
               places={shown}
               you={nearMe.position}
@@ -143,13 +149,8 @@ export function PlacesPage() {
               }}
             />
           </Suspense>
-          <div className="map-legend" aria-hidden>
-            <span className="legend-dot pin--dedicated" /> 100% gluten-free
-            <span className="legend-dot pin--gf-menu" /> Separate GF menu
-            <span className="legend-dot pin--gf-options" /> GF options
-          </div>
           <Text variant="small" tone="secondary">
-            Tap a pin to preview the place.
+            Tap a pin to preview the place. Tap a colour in the key to show or hide those places.
           </Text>
           {offMap.length > 0 && (
             <Text variant="fine">

@@ -49,31 +49,31 @@
   --dt-color-neutral-900: oklch(0.205 0.009 60);
   --dt-color-neutral-950: oklch(0.172 0.008 60);
 
-  /* Primary: olive. */
-  --dt-color-primary-050: oklch(0.970 0.020 118);
-  --dt-color-primary-100: oklch(0.940 0.038 118);
-  --dt-color-primary-200: oklch(0.890 0.062 118);
-  --dt-color-primary-300: oklch(0.820 0.086 118);
-  --dt-color-primary-400: oklch(0.730 0.100 119);
-  --dt-color-primary-500: oklch(0.640 0.104 120);
-  --dt-color-primary-600: oklch(0.550 0.096 122);
-  --dt-color-primary-700: oklch(0.470 0.082 124);
-  --dt-color-primary-800: oklch(0.395 0.068 125);
-  --dt-color-primary-900: oklch(0.335 0.056 126);
-  --dt-color-primary-950: oklch(0.245 0.042 128);
+  /* Primary: tan through to burnt orange. */
+  --dt-color-primary-050: oklch(0.974 0.014 75);
+  --dt-color-primary-100: oklch(0.945 0.030 72);
+  --dt-color-primary-200: oklch(0.898 0.054 68);
+  --dt-color-primary-300: oklch(0.832 0.082 64);
+  --dt-color-primary-400: oklch(0.748 0.112 58);
+  --dt-color-primary-500: oklch(0.650 0.132 52);
+  --dt-color-primary-600: oklch(0.555 0.130 48);
+  --dt-color-primary-700: oklch(0.480 0.114 46);
+  --dt-color-primary-800: oklch(0.410 0.094 45);
+  --dt-color-primary-900: oklch(0.345 0.074 45);
+  --dt-color-primary-950: oklch(0.255 0.052 45);
 
-  /* Secondary: terracotta. */
-  --dt-color-secondary-050: oklch(0.972 0.016 52);
-  --dt-color-secondary-100: oklch(0.944 0.034 50);
-  --dt-color-secondary-200: oklch(0.897 0.060 47);
-  --dt-color-secondary-300: oklch(0.827 0.092 44);
-  --dt-color-secondary-400: oklch(0.748 0.120 42);
-  --dt-color-secondary-500: oklch(0.672 0.138 40);
-  --dt-color-secondary-600: oklch(0.600 0.140 38);
-  --dt-color-secondary-700: oklch(0.520 0.126 37);
-  --dt-color-secondary-800: oklch(0.445 0.106 36);
-  --dt-color-secondary-900: oklch(0.380 0.088 35);
-  --dt-color-secondary-950: oklch(0.272 0.064 35);
+  /* Secondary: olive. */
+  --dt-color-secondary-050: oklch(0.970 0.020 118);
+  --dt-color-secondary-100: oklch(0.940 0.038 118);
+  --dt-color-secondary-200: oklch(0.890 0.062 118);
+  --dt-color-secondary-300: oklch(0.820 0.086 118);
+  --dt-color-secondary-400: oklch(0.730 0.100 119);
+  --dt-color-secondary-500: oklch(0.640 0.104 120);
+  --dt-color-secondary-600: oklch(0.550 0.096 122);
+  --dt-color-secondary-700: oklch(0.470 0.082 124);
+  --dt-color-secondary-800: oklch(0.395 0.068 125);
+  --dt-color-secondary-900: oklch(0.335 0.056 126);
+  --dt-color-secondary-950: oklch(0.245 0.042 128);
 }
 
 :root {
@@ -116,6 +116,19 @@ h1 em,
 h2 em,
 h3 em {
   font-style: italic;
+}
+
+/* Icons. Heroicons carry no size of their own: default them to 24px, at
+   zero specificity so any component's own icon sizing wins. Lucide's few
+   food icons are drawn at Heroicons' lighter stroke to match. */
+:where(svg[data-slot='icon']) {
+  width: 24px;
+  height: 24px;
+  flex: none;
+}
+
+svg.lucide {
+  stroke-width: 1.5;
 }
 
 /* ---------- App shell ---------- */
@@ -167,20 +180,24 @@ h3 em {
 }
 
 .rail {
-  --rail-card: min(76vw, 300px);
+  /* Cards per screen. The track's content box is the page column, so whole
+     cards line up with the column edges and the gutter reads the same on
+     both sides; the next card waits just off screen. */
+  --rail-per-view: 1;
+  --rail-gap: var(--dt-space-gutter);
   display: grid;
   grid-auto-flow: column;
-  grid-auto-columns: var(--rail-card);
-  gap: var(--dt-space-inline-md, 16px);
+  grid-auto-columns: calc((100% - (var(--rail-per-view) - 1) * var(--rail-gap)) / var(--rail-per-view));
+  gap: var(--rail-gap);
   overflow-x: auto;
   overscroll-behavior-x: contain;
   scroll-snap-type: x mandatory;
   scrollbar-width: none;
-  /* Bleed to the column edge so cards slide off-screen, not into a margin. */
+  /* Bleed to the screen edge so cards slide off-screen, not into a margin. */
   margin-inline: calc(-1 * var(--dt-space-gutter));
   padding-inline: var(--dt-space-gutter);
   scroll-padding-inline: var(--dt-space-gutter);
-  padding-block: var(--dt-space-stack-xs, 4px) var(--dt-space-stack-sm, 8px);
+  padding-block: 2px;
 }
 
 .rail::-webkit-scrollbar {
@@ -192,12 +209,36 @@ h3 em {
   min-width: 0;
 }
 
-.rail--wide {
-  --rail-card: min(86vw, 420px);
+.rail--narrow {
+  --rail-per-view: 2;
 }
 
-.rail--narrow {
-  --rail-card: min(56vw, 220px);
+@media (min-width: 600px) {
+  .rail {
+    --rail-per-view: 2;
+  }
+
+  .rail--narrow {
+    --rail-per-view: 3;
+  }
+
+  .rail--wide {
+    --rail-per-view: 1;
+  }
+}
+
+@media (min-width: 960px) {
+  .rail {
+    --rail-per-view: 3;
+  }
+
+  .rail--narrow {
+    --rail-per-view: 4;
+  }
+
+  .rail--wide {
+    --rail-per-view: 2;
+  }
 }
 
 /* Portrait photo cards: the picture carries the card. */
@@ -210,16 +251,9 @@ h3 em {
 
 .chip-row {
   display: flex;
-  gap: var(--dt-space-inline-sm, 8px);
-  overflow-x: auto;
-  scrollbar-width: none;
-  margin-inline: calc(-1 * var(--dt-space-gutter));
-  padding-inline: var(--dt-space-gutter);
+  flex-wrap: wrap;
+  gap: var(--dt-space-stack-xs, 8px) var(--dt-space-inline-sm, 8px);
   padding-block: var(--dt-space-stack-2xs, 2px);
-}
-
-.chip-row::-webkit-scrollbar {
-  display: none;
 }
 
 .chip-row > * {
@@ -609,7 +643,7 @@ h3 em {
 }
 
 .flag--hot {
-  background: var(--dt-color-secondary-600);
+  background: var(--dt-color-primary-600);
   color: var(--dt-color-white);
 }
 
@@ -707,7 +741,7 @@ h3 em {
 }
 
 .star--on {
-  color: var(--dt-color-secondary-500);
+  color: var(--dt-color-primary-500);
   fill: currentColor;
 }
 
@@ -745,19 +779,117 @@ h3 em {
   gap: var(--dt-space-inline-sm);
 }
 
+/* The map's place on the page: full bleed, out of the page column to the
+   screen's edges. The map itself (.places-map) sits inside it, or moves to
+   the end of <body> when full screen. */
+.places-map-slot {
+  margin-inline: calc(50% - 50vw);
+  height: min(72svh, 680px);
+}
+
+/* A grid, so the node holding the map stretches to the slot's height. */
+.places-map-slot {
+  display: grid;
+}
+
+.places-map-slot > * {
+  min-width: 0;
+}
+
 .places-map {
   /* Leaflet's panes use z-indexes up to 1000; keep them inside the map so the
      floating nav and sheets stay on top. */
   position: relative;
   isolation: isolate;
   z-index: 0;
-  /* Full bleed: out of the page column to the screen's edges. */
-  margin-inline: calc(50% - 50vw);
-  height: min(72svh, 680px);
+  height: 100%;
   overflow: hidden;
   /* A light, minimal map drawing shows until (or unless) the tiles load. */
   background: #f3efe7 url('./assets/map-placeholder.svg') center / cover;
   border-block: var(--dt-border-width-default) solid var(--dt-border-default);
+}
+
+/* Full screen: over the page and the nav, under sheets opened from a pin. */
+.places-map--full {
+  position: fixed;
+  inset: 0;
+  z-index: 150;
+  height: auto;
+  border: 0;
+}
+
+/* The key floats over the map's top-left corner; each entry toggles its pins. */
+.map-key {
+  position: absolute;
+  z-index: 1001;
+  top: var(--dt-space-stack-sm, 12px);
+  left: var(--dt-space-gutter);
+  right: calc(var(--dt-space-gutter) + 56px);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  pointer-events: none;
+}
+
+.map-key__toggle {
+  pointer-events: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 32px;
+  padding: 4px 10px 4px 8px;
+  border: 0;
+  border-radius: var(--dt-radius-pill);
+  background: var(--dt-surface-glass-strong, rgb(255 255 255 / 0.9));
+  backdrop-filter: blur(12px) saturate(1.4);
+  -webkit-backdrop-filter: blur(12px) saturate(1.4);
+  box-shadow: 0 2px 8px color-mix(in oklab, black 16%, transparent);
+  color: var(--dt-text-primary);
+  font: inherit;
+  font-size: var(--dt-font-size-sm);
+  font-weight: var(--dt-font-weight-medium, 500);
+  cursor: pointer;
+  transition: opacity var(--dt-motion-micro), background var(--dt-motion-micro);
+}
+
+.map-key__toggle .legend-dot {
+  margin: 0;
+  box-shadow: 0 0 0 2px white;
+}
+
+.map-key__count {
+  color: var(--dt-text-secondary);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Off: the pins are hidden, the dot hollow, the entry faded. */
+.map-key__toggle[aria-pressed='false'] {
+  color: var(--dt-text-secondary);
+  background: color-mix(in oklab, white 70%, transparent);
+  text-decoration: line-through;
+  text-decoration-color: color-mix(in oklab, currentColor 60%, transparent);
+}
+
+.map-key__toggle[aria-pressed='false'] .legend-dot {
+  background: transparent;
+  box-shadow: inset 0 0 0 2px var(--dt-color-neutral-400);
+}
+
+.map-key__toggle:focus-visible {
+  outline: var(--dt-focus-ring-width) solid var(--dt-focus-ring-color);
+  outline-offset: 2px;
+}
+
+.map-full-toggle {
+  position: absolute;
+  z-index: 1001;
+  top: var(--dt-space-stack-sm, 12px);
+  right: var(--dt-space-gutter);
+}
+
+.places-map--full .map-key,
+.places-map--full .map-full-toggle {
+  top: max(var(--dt-space-stack-sm, 12px), env(safe-area-inset-top));
 }
 
 .places-map--loading {
@@ -796,7 +928,7 @@ h3 em {
 }
 
 .pin--dedicated {
-  background: var(--dt-color-primary-700);
+  background: var(--dt-color-secondary-700);
 }
 
 .pin--gf-menu {
@@ -808,28 +940,15 @@ h3 em {
 }
 
 .pin--selected {
-  box-shadow: 0 0 0 4px color-mix(in oklab, var(--dt-color-primary-700) 30%, transparent), 0 3px 8px color-mix(in oklab, black 35%, transparent);
-}
-
-.map-legend {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--dt-space-stack-2xs) var(--dt-space-inline-xs);
-  color: var(--dt-text-secondary);
-  font-size: var(--dt-font-size-sm);
+  box-shadow: 0 0 0 4px color-mix(in oklab, var(--dt-color-primary-600) 35%, transparent), 0 3px 8px color-mix(in oklab, black 35%, transparent);
 }
 
 .legend-dot {
   display: inline-block;
+  flex: none;
   width: 10px;
   height: 10px;
   border-radius: 50%;
-  margin-left: var(--dt-space-inline-sm);
-}
-
-.legend-dot:first-child {
-  margin-left: 0;
 }
 
 .app-main {
@@ -938,7 +1057,7 @@ h3 em {
 }
 
 .item-chip--hot {
-  background: var(--dt-color-secondary-600);
+  background: var(--dt-color-primary-600);
   color: var(--dt-color-white);
 }
 
@@ -1055,6 +1174,8 @@ h3 em {
   isolation: isolate;
   display: grid;
   place-items: center;
+  /* Fill the rail's cell; 4:5 sets the height where nothing else does. */
+  width: 100%;
   height: 100%;
   min-height: 100%;
   aspect-ratio: 4 / 5;
@@ -1121,4 +1242,42 @@ h3 em {
 .item-sheet > :first-child {
   margin-inline: 0 !important;
   padding-inline: 0 !important;
+}
+
+/* The Places row's featured slot, open for a partner: a brand panel. */
+.partner-slot {
+  place-items: end start;
+  padding: var(--dt-space-inset-lg);
+  background:
+    radial-gradient(120% 90% at 100% 0%, var(--dt-color-primary-500), transparent 60%),
+    var(--dt-color-primary-700);
+  color: var(--dt-color-white);
+}
+
+.partner-slot::after {
+  content: none;
+}
+
+.partner-slot__body {
+  display: grid;
+  gap: var(--dt-space-stack-xs);
+}
+
+.partner-slot__mark {
+  font-family: var(--dt-font-family-serif);
+  font-size: 3.5rem;
+  line-height: 1;
+  font-style: italic;
+  color: var(--dt-color-primary-100);
+}
+
+.partner-slot__title {
+  font-family: var(--dt-font-family-serif);
+  font-size: 1.75rem;
+  line-height: 1.1;
+}
+
+.partner-slot__text {
+  font-size: var(--dt-font-size-sm);
+  color: color-mix(in oklab, white 82%, transparent);
 }

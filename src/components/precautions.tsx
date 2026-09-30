@@ -12,7 +12,7 @@ import {
   ShieldCheck,
   TriangleAlert,
   Utensils,
-} from 'lucide-react'
+} from '../icons'
 import type { Precaution, PrecautionKind } from '../data/types'
 
 /** An icon for each kind of precaution; cautions are drawn in the warning colour. */

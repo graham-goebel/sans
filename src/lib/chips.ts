@@ -12,7 +12,7 @@ import {
   Trophy,
   Vegan,
   WheatOff,
-} from 'lucide-react'
+} from '../icons'
 import { safetyText } from '../data/places'
 import { traitLabel } from '../data/traits'
 import type { Flag, Place, Product, Recipe, Trait } from '../data/types'

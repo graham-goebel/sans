@@ -1,11 +1,11 @@
 import { useEffect, useMemo, useState, type ComponentType, type KeyboardEvent } from 'react'
 import { useNavigate } from 'react-router'
 import { EmptyState, Heading, Input, List, Sheet, Stack, Tag, Text } from '@dovetail-ds/react'
-import { Coffee, Croissant, Search, SearchX, ShoppingBasket, Store, Utensils, UtensilsCrossed } from 'lucide-react'
+import { Coffee, Croissant, Search, SearchX, ShoppingBasket, Store, Utensils, Recipe } from '../icons'
 import { recommendations, search, type Kind, type Result } from '../lib/search'
 
 const kinds: { id: Kind; label: string; icon: ComponentType }[] = [
-  { id: 'recipe', label: 'Recipes', icon: UtensilsCrossed },
+  { id: 'recipe', label: 'Recipes', icon: Recipe },
   { id: 'product', label: 'Products', icon: ShoppingBasket },
   { id: 'restaurant', label: 'Restaurants', icon: Utensils },
   { id: 'cafe', label: 'Cafés', icon: Coffee },

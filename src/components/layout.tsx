@@ -1,7 +1,7 @@
 import type { ComponentProps, ReactNode } from 'react'
 import { useNavigate } from 'react-router'
 import { Button, EmptyState, Heading, IconButton, Section, Stack, Text } from '@dovetail-ds/react'
-import { ArrowLeft, CircleUserRound, SearchX } from 'lucide-react'
+import { ArrowLeft, CircleUserRound, SearchX } from '../icons'
 import { FilterChips, type ChipOption } from './FilterChips'
 import type { ChipSpec } from '../lib/chips'
 import { usePreferences } from '../lib/preferences'

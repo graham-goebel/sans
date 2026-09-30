@@ -1,11 +1,13 @@
 import { useEffect, useRef, type ReactNode, type RefObject } from 'react'
 import { useNavigate } from 'react-router'
 import { Heading, IconButton, Stack, Text } from '@dovetail-ds/react'
-import { ChevronRight } from 'lucide-react'
+import { ChevronRight } from '../icons'
 
 interface RailProps {
   eyebrow?: string
   title: string
+  /** A short line under the title saying what's in the row. */
+  subline?: string
   /** "See all" destination, as an app path such as /recipes. */
   to?: string
   size?: 'narrow' | 'default' | 'wide'
@@ -15,7 +17,7 @@ interface RailProps {
 }
 
 /** A titled, horizontally scrolling row of cards that snaps card by card. */
-export function Rail({ eyebrow, title, to, size = 'default', autoplay, children }: RailProps) {
+export function Rail({ eyebrow, title, subline, to, size = 'default', autoplay, children }: RailProps) {
   const track = useRef<HTMLDivElement>(null)
   const navigate = useNavigate()
 
@@ -29,6 +31,11 @@ export function Rail({ eyebrow, title, to, size = 'default', autoplay, children 
           <Heading level={2} size="heading-xl">
             {title}
           </Heading>
+          {subline && (
+            <Text variant="small" tone="secondary">
+              {subline}
+            </Text>
+          )}
         </Stack>
         {to && (
           <IconButton label={`See all ${title.toLowerCase()}`} className="icon-secondary" onClick={() => navigate(to)}>

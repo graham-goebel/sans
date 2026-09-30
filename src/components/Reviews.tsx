@@ -1,5 +1,5 @@
 import { Avatar, Badge, Heading, Stack, Text } from '@dovetail-ds/react'
-import { Star } from 'lucide-react'
+import { Star } from '../icons'
 import type { Review } from '../data/types'
 import { site } from '../site'
 
