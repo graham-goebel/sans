@@ -4,9 +4,12 @@ import { CakeSlice, ChefHat, Clock, Croissant, EggOff, MilkOff, NutOff, Sunrise,
 import { RecipeCard } from '../components/cards'
 import type { ChipOption } from '../components/FilterChips'
 import { DetailHero, ListingPage, MetaItem, NotFoundState } from '../components/layout'
+import { FlagChips } from '../components/flags'
 import { Rail } from '../components/Rail'
+import { Reviews } from '../components/Reviews'
 import { useToggleSet } from '../hooks'
 import { recipes } from '../data/recipes'
+import { recipeReviews } from '../data/reviews'
 import { traitLabel } from '../data/traits'
 import type { Recipe, Trait } from '../data/types'
 
@@ -71,7 +74,7 @@ export function RecipeDetail() {
   return (
     <>
       <DetailHero
-        back={{ href: '#/recipes', label: 'All recipes' }}
+        back={{ to: '/recipes', label: 'Back to all recipes' }}
         image={recipe.image}
         eyebrow={recipe.category === 'quick' ? 'Quick' : recipe.category}
         title={recipe.title}
@@ -85,6 +88,7 @@ export function RecipeDetail() {
         }
         badges={
           <>
+            <FlagChips flags={recipe.flags} />
             <Badge tone="primary">Gluten-free</Badge>
             {recipe.traits.map((t) => (
               <Badge key={t}>{traitLabel[t]}</Badge>
@@ -117,6 +121,9 @@ export function RecipeDetail() {
             </ol>
           </Stack>
         </div>
+      </Section>
+      <Section>
+        <Reviews reviews={recipeReviews[recipe.id] ?? []} />
       </Section>
       <Section tone="subtle">
         <Rail eyebrow="Keep cooking" title="More recipes" to="/recipes">

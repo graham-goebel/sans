@@ -4,10 +4,13 @@ import { BadgeCheck, CakeSlice, ChefHat, Coffee, CookingPot, Cookie, Croissant, 
 import { ProductCard, RecipeCard } from '../components/cards'
 import type { ChipOption } from '../components/FilterChips'
 import { DetailHero, ListingPage, MetaItem, NotFoundState } from '../components/layout'
+import { FlagChips } from '../components/flags'
 import { Rail } from '../components/Rail'
+import { Reviews } from '../components/Reviews'
 import { useToggleSet } from '../hooks'
 import { products } from '../data/products'
 import { recipes } from '../data/recipes'
+import { productReviews } from '../data/reviews'
 import { traitLabel } from '../data/traits'
 import type { Product, Trait } from '../data/types'
 
@@ -85,7 +88,7 @@ export function ProductDetail() {
   return (
     <>
       <DetailHero
-        back={{ href: '#/products', label: 'All products' }}
+        back={{ to: '/products', label: 'Back to all products' }}
         image={product.image}
         eyebrow={product.brand}
         title={product.name}
@@ -98,6 +101,7 @@ export function ProductDetail() {
         }
         badges={
           <>
+            <FlagChips flags={product.flags} />
             {product.certified ? (
               <Badge tone="primary">Certified gluten-free</Badge>
             ) : (
@@ -133,6 +137,9 @@ export function ProductDetail() {
             </Text>
           </Stack>
         </div>
+      </Section>
+      <Section>
+        <Reviews reviews={productReviews[product.id] ?? []} />
       </Section>
       {toMake.length > 0 && (
         <Section tone="secondary-muted">

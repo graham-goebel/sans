@@ -112,6 +112,18 @@ h3 em {
   padding-bottom: calc(var(--dt-dim-32, 128px) + env(safe-area-inset-bottom));
 }
 
+/* Item pages have no nav to clear. */
+.app-main--bare {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* iOS zooms the page when it focuses a field set under 16px; keep fields at 16px on touch screens. */
+@media (pointer: coarse) {
+  :root {
+    --dt-input-font-size: 16px;
+  }
+}
+
 .masthead {
   display: flex;
   align-items: baseline;
@@ -287,6 +299,11 @@ h3 em {
   gap: var(--dt-space-stack-2xl, 48px);
 }
 
+/* Let columns shrink to the screen instead of growing to fit a long line. */
+.detail-layout > * {
+  min-width: 0;
+}
+
 @media (min-width: 880px) {
   .detail-layout {
     grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr);
@@ -299,30 +316,7 @@ h3 em {
   }
 }
 
-.back-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  color: var(--dt-text-secondary);
-  text-decoration: none;
-  font-size: var(--dt-font-size-sm);
-}
 
-.back-link:hover {
-  color: var(--dt-text-primary);
-}
-
-.newsletter {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--dt-space-inline-sm, 8px);
-  align-items: flex-end;
-  max-width: 480px;
-}
-
-.newsletter > :first-child {
-  flex: 1 1 220px;
-}
 
 .site-footer {
   color: var(--dt-text-tertiary);
@@ -456,4 +450,212 @@ h3 em {
   font-family: var(--dt-font-family-sans);
   font-size: var(--dt-font-size-sm);
   color: var(--dt-text-tertiary);
+}
+
+/* ---------- Icon button styles ----------
+   IconButton offers ghost and solid; re-pointing its ghost tokens on the
+   button itself gives it the secondary and glass looks, hover states included. */
+
+.icon-secondary {
+  --dt-button-ghost-bg: var(--dt-button-secondary-bg);
+  --dt-button-ghost-bg-hover: var(--dt-button-secondary-bg-hover);
+  --dt-button-ghost-bg-active: var(--dt-button-secondary-bg-active);
+  --dt-button-ghost-fg: var(--dt-button-secondary-fg);
+}
+
+.icon-glass {
+  --dt-button-ghost-bg: var(--dt-surface-glass-strong);
+  --dt-button-ghost-bg-hover: var(--dt-surface-overlay);
+  --dt-button-ghost-bg-active: var(--dt-surface-overlay);
+  --dt-button-ghost-fg: var(--dt-text-primary);
+  backdrop-filter: blur(12px) saturate(1.4);
+  -webkit-backdrop-filter: blur(12px) saturate(1.4);
+  box-shadow: 0 2px 10px color-mix(in oklab, black 18%, transparent);
+}
+
+/* ---------- Detail photo ---------- */
+
+.detail-photo {
+  position: relative;
+  height: min(78svh, 820px);
+  background: var(--dt-surface-subtle);
+}
+
+.detail-photo img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.detail-back {
+  position: absolute;
+  top: calc(env(safe-area-inset-top) + var(--dt-space-stack-md));
+  left: var(--dt-space-gutter);
+}
+
+/* ---------- Cards: full-bleed media and flag chips ---------- */
+
+/* Pull the product shot out to the card's top and side edges. */
+.card-bleed {
+  margin: calc(-1 * var(--dt-card-padding)) calc(-1 * var(--dt-card-padding)) 0;
+}
+
+.card-wrap {
+  position: relative;
+  height: 100%;
+}
+
+.card-wrap > .flags {
+  position: absolute;
+  top: var(--dt-space-stack-sm);
+  left: var(--dt-space-inline-sm);
+  z-index: 4;
+  /* Let taps fall through to the card's link. */
+  pointer-events: none;
+}
+
+.flags {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.flag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 24px;
+  padding: 0 9px 0 7px;
+  border-radius: var(--dt-radius-pill);
+  font-size: 0.75rem;
+  font-weight: var(--dt-font-weight-semibold);
+  line-height: 1;
+  white-space: nowrap;
+  box-shadow: 0 1px 3px color-mix(in oklab, black 16%, transparent);
+}
+
+.flag svg {
+  width: 14px;
+  height: 14px;
+}
+
+.flag--hot {
+  background: var(--dt-color-secondary-600);
+  color: var(--dt-color-white);
+}
+
+.flag--mvp {
+  background: var(--dt-color-neutral-900);
+  color: var(--dt-color-white);
+}
+
+.flag--mvp svg {
+  color: var(--dt-color-amber-300);
+}
+
+.flag--certified {
+  background: var(--dt-color-white);
+  color: var(--dt-color-primary-800);
+}
+
+/* ---------- Precautions ---------- */
+
+.precautions {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: var(--dt-space-stack-md);
+}
+
+.precautions li {
+  display: flex;
+  align-items: center;
+  gap: var(--dt-space-inline-md);
+}
+
+.precaution {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--dt-radius-pill);
+  background: var(--dt-surface-brand-muted);
+  color: var(--dt-text-brand);
+}
+
+.precaution svg {
+  width: 18px;
+  height: 18px;
+}
+
+.precaution--caution {
+  background: var(--dt-surface-warning-subtle);
+  color: var(--dt-text-warning);
+}
+
+/* ---------- Reviews ---------- */
+
+.reviews-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--dt-space-stack-xs) var(--dt-space-inline-md);
+}
+
+.reviews-summary {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--dt-space-inline-sm);
+}
+
+.stars {
+  display: inline-flex;
+  gap: 2px;
+}
+
+.star {
+  width: 16px;
+  height: 16px;
+  color: var(--dt-color-neutral-300);
+}
+
+.star--on {
+  color: var(--dt-color-secondary-500);
+  fill: currentColor;
+}
+
+.review-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr));
+  gap: var(--dt-space-inline-md);
+}
+
+.review {
+  padding: var(--dt-space-inset-lg);
+  border: var(--dt-border-width-default) solid var(--dt-border-default);
+  border-radius: var(--dt-radius-container);
+  background: var(--dt-surface-raised);
+}
+
+.review-byline {
+  display: flex;
+  align-items: center;
+  gap: var(--dt-space-inline-sm);
+}
+
+.review-date {
+  color: var(--dt-text-tertiary);
+}
+
+/* ---------- Community CTA ---------- */
+
+.store-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--dt-space-inline-sm);
 }

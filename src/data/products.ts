@@ -32,6 +32,7 @@ export const products: Product[] = [
     description:
       'The bronze die gives each tube a slightly rough texture, so sauce clings to it the way it does to good wheat pasta. Cook it one minute short of the packet time and finish it in the sauce.',
     whereToBuy: ['Most supermarkets', 'Italian delis'],
+    flags: ['hot'],
   },
   {
     id: 'sea-salt-crackers',
@@ -77,6 +78,7 @@ export const products: Product[] = [
     description:
       'Dark cocoa and real chocolate chunks. Bake them a couple of minutes under the suggested time for the fudgiest centre.',
     whereToBuy: ['Most supermarkets', 'Online direct'],
+    flags: ['mvp'],
   },
   {
     id: 'maple-granola',
@@ -137,5 +139,6 @@ export const products: Product[] = [
     description:
       'Rice flour, tapioca and psyllium, with the yeast already in the bag. Prove it for an hour and it stretches by hand into two thin, crisp-edged pizzas.',
     whereToBuy: ['Most supermarkets', 'Online direct'],
+    flags: ['hot'],
   },
 ]

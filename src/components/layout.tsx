@@ -1,6 +1,6 @@
 import type { ComponentProps, ReactNode } from 'react'
 import { useNavigate } from 'react-router'
-import { Button, EmptyState, Heading, Image, Section, Stack, Text } from '@dovetail-ds/react'
+import { Button, EmptyState, Heading, IconButton, Section, Stack, Text } from '@dovetail-ds/react'
 import { ArrowLeft, SearchX } from 'lucide-react'
 import { FilterChips, type ChipOption } from './FilterChips'
 
@@ -9,20 +9,11 @@ export function Masthead() {
     <Section spacing="none" style={{ paddingBlock: 'var(--dt-space-stack-lg)' }}>
       <div className="masthead">
         <a className="wordmark" href="#/">
-        sans<em>.</em>
-      </a>
+          sans<em>.</em>
+        </a>
         <Text variant="eyebrow">The gluten-free companion</Text>
       </div>
     </Section>
-  )
-}
-
-export function BackLink({ href, children }: { href: string; children: ReactNode }) {
-  return (
-    <a className="back-link" href={href}>
-      <ArrowLeft size={16} aria-hidden />
-      {children}
-    </a>
   )
 }
 
@@ -101,7 +92,8 @@ export function ListingPage<T extends string>({
 }
 
 interface DetailHeroProps {
-  back: { href: string; label: string }
+  /** Where the back button goes, as an app path, and what it says to a screen reader. */
+  back: { to: string; label: string }
   image: string
   eyebrow: string
   title: string
@@ -110,13 +102,21 @@ interface DetailHeroProps {
   badges?: ReactNode
 }
 
-/** The top of an item page: a big photograph, then the headline and standfirst. */
+/**
+ * The top of an item page: a tall photograph bled edge to edge with a back
+ * button over it (the nav bar is hidden on these pages), then the headline.
+ */
 export function DetailHero({ back, image, eyebrow, title, dek, meta, badges }: DetailHeroProps) {
+  const navigate = useNavigate()
   return (
-    <Section spacing="compact">
-      <Stack gap="xl">
-        <BackLink href={back.href}>{back.label}</BackLink>
-        <Image src={image} alt="" ratio="4:3" radius="container" loading="eager" />
+    <>
+      <div className="detail-photo">
+        <img src={image} alt="" />
+        <IconButton label={back.label} className="icon-glass detail-back" size="lg" onClick={() => navigate(back.to)}>
+          <ArrowLeft />
+        </IconButton>
+      </div>
+      <Section spacing="compact">
         <Stack gap="md">
           <Text variant="eyebrow" tone="brand">
             {eyebrow}
@@ -128,8 +128,8 @@ export function DetailHero({ back, image, eyebrow, title, dek, meta, badges }: D
           {meta && <div className="meta-row">{meta}</div>}
           {badges && <div className="chip-row">{badges}</div>}
         </Stack>
-      </Stack>
-    </Section>
+      </Section>
+    </>
   )
 }
 

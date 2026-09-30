@@ -1,5 +1,8 @@
 export type Trait = 'dairy-free' | 'vegan' | 'nut-free' | 'egg-free'
 
+/** Editorial flags shown as icon chips on cards: trending now, or a standout pick. */
+export type Flag = 'hot' | 'mvp'
+
 export interface Product {
   id: string
   name: string
@@ -14,6 +17,7 @@ export interface Product {
   dek: string
   description: string
   whereToBuy: string[]
+  flags?: Flag[]
 }
 
 export interface Recipe {
@@ -28,9 +32,28 @@ export interface Recipe {
   dek: string
   ingredients: string[]
   steps: string[]
+  flags?: Flag[]
 }
 
 export type Safety = 'dedicated' | 'gf-menu' | 'gf-options'
+
+export type PrecautionKind =
+  | 'dedicated-kitchen'
+  | 'dedicated-fryer'
+  | 'shared-fryer'
+  | 'separate-prep'
+  | 'separate-water'
+  | 'separate-toaster'
+  | 'marked-menu'
+  | 'checked'
+  | 'sealed'
+  | 'trained-staff'
+  | 'ask'
+
+export interface Precaution {
+  kind: PrecautionKind
+  text: string
+}
 
 export interface Place {
   id: string
@@ -47,4 +70,14 @@ export interface Place {
   address: string
   hours: string
   order: string[]
+  precautions: Precaution[]
+  flags?: Flag[]
+}
+
+export interface Review {
+  name: string
+  /** Out of five. */
+  rating: number
+  date: string
+  text: string
 }
