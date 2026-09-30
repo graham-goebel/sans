@@ -395,3 +395,65 @@ h3 em {
   object-fit: cover;
   display: block;
 }
+
+/* ---------- Search sheet ---------- */
+
+/* Lay the sheet out as a column so its footer sits at the bottom even when
+   there are few results: the content block (second-last child) grows. */
+.search-sheet {
+  display: flex;
+  flex-direction: column;
+}
+
+.search-sheet > :nth-last-child(2) {
+  flex: 1 0 auto;
+}
+
+/* Float the filter chips over a fade, like the sheet's own action chips,
+   instead of the default footer's solid bar and rule. The footer's styles
+   are inline, hence !important. */
+.search-sheet > :last-child {
+  background: linear-gradient(to top, var(--dt-dialog-bg) 62%, transparent) !important;
+  border-top: 0 !important;
+  padding-top: var(--dt-space-inset-xl) !important;
+}
+
+.search-filters {
+  display: flex;
+  gap: var(--dt-space-inline-xs);
+  /* Scroll edge to edge of the sheet rather than stopping at its padding. */
+  flex: 1 1 100%;
+  min-width: 0;
+  margin-inline: calc(-1 * var(--dt-sheet-padding));
+  padding-inline: var(--dt-sheet-padding);
+  overflow-x: auto;
+  scrollbar-width: none;
+  padding-block: 2px;
+  scroll-padding-inline: var(--dt-sheet-padding);
+}
+
+.search-filters::-webkit-scrollbar {
+  display: none;
+}
+
+.search-filters > * {
+  flex: none;
+  box-shadow: 0 1px 2px color-mix(in oklab, var(--dt-text-primary) 8%, transparent);
+}
+
+.chip-count {
+  min-width: 1.25em;
+  padding: 0 5px;
+  border-radius: var(--dt-radius-pill);
+  background: color-mix(in oklab, currentColor 12%, transparent);
+  font-size: 0.75rem;
+  line-height: 1.5;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+.group-count {
+  font-family: var(--dt-font-family-sans);
+  font-size: var(--dt-font-size-sm);
+  color: var(--dt-text-tertiary);
+}

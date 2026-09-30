@@ -145,4 +145,21 @@ export const places: Place[] = [
     hours: 'Tue–Sun · 12pm–11pm',
     order: ['Al pastor tacos', 'Elote', 'Horchata'],
   },
+  {
+    id: 'forno-nero',
+    name: 'Forno Nero',
+    type: 'restaurant',
+    city: 'Philadelphia',
+    neighborhood: 'Fishtown',
+    image: unsplash('1513104890138-7c749659a591'),
+    safety: 'dedicated',
+    price: '$$',
+    rating: 4.8,
+    dek: 'A wood-fired pizzeria where every crust on the menu is gluten-free.',
+    description:
+      'The whole kitchen is gluten-free, so there’s no shared flour in the air and no separate peel to worry about. The dough proves for two days and comes out of the oven blistered and chewy.',
+    address: '1144 Frankford Avenue',
+    hours: 'Tue–Sun · 5pm–10pm',
+    order: ['Margherita pizza', 'Nduja & hot honey pizza', 'Tiramisu'],
+  },
 ]
