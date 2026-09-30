@@ -1,14 +1,18 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState, type ComponentType, type KeyboardEvent } from 'react'
 import { useNavigate } from 'react-router'
-import { EmptyState, Input, List, Sheet, Stack, Text } from '@dovetail-ds/react'
-import { Search } from 'lucide-react'
-import { places } from '../data/places'
+import { EmptyState, Heading, Input, List, Sheet, Stack, Tag, Text } from '@dovetail-ds/react'
+import { Coffee, Croissant, Search, SearchX, ShoppingBasket, Store, Utensils, UtensilsCrossed } from 'lucide-react'
+import { places, safetyLabel } from '../data/places'
 import { products } from '../data/products'
 import { recipes } from '../data/recipes'
+import { traitLabel } from '../data/traits'
+import type { Place } from '../data/types'
+
+type Kind = 'recipe' | 'product' | Place['type']
 
 interface Result {
   id: string
-  kind: 'Recipe' | 'Product' | 'Place'
+  kind: Kind
   title: string
   detail: string
   image: string
@@ -16,35 +20,78 @@ interface Result {
   haystack: string
 }
 
+/** Lower-cased and stripped of accents, so "cafe" finds "Café". */
+const normalize = (text: string) =>
+  text
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[̀-ͯ]/g, '')
+
 const index: Result[] = [
   ...recipes.map((r) => ({
     id: `recipe-${r.id}`,
-    kind: 'Recipe' as const,
+    kind: 'recipe' as const,
     title: r.title,
     detail: `${r.minutes} min · ${r.difficulty}`,
     image: r.image,
     path: `/recipes/${r.id}`,
-    haystack: [r.title, r.category, r.dek, ...r.ingredients].join(' '),
+    haystack: [r.title, r.category, r.dek, ...r.ingredients, ...r.traits.map((t) => traitLabel[t])].join(' '),
   })),
   ...products.map((p) => ({
     id: `product-${p.id}`,
-    kind: 'Product' as const,
+    kind: 'product' as const,
     title: p.name,
     detail: `${p.brand} · ${p.price}`,
     image: p.image,
     path: `/products/${p.id}`,
-    haystack: [p.name, p.brand, p.category, p.dek].join(' '),
+    haystack: [p.name, p.brand, p.category, p.dek, p.description, ...p.traits.map((t) => traitLabel[t])].join(' '),
   })),
   ...places.map((p) => ({
     id: `place-${p.id}`,
-    kind: 'Place' as const,
+    kind: p.type,
     title: p.name,
-    detail: `${p.neighborhood}, ${p.city}`,
+    detail: `${safetyLabel[p.safety]} · ${p.neighborhood}, ${p.city}`,
     image: p.image,
     path: `/places/${p.id}`,
-    haystack: [p.name, p.type, p.city, p.neighborhood, p.dek].join(' '),
+    haystack: [p.name, p.type, p.city, p.neighborhood, p.dek, p.description, ...p.order].join(' '),
   })),
+].map((r) => ({ ...r, haystack: normalize(r.haystack) }))
+
+/** Every word must appear; a plural also matches its singular ("pizzas" finds "pizza"). */
+function matches(result: Result, words: string[]) {
+  return words.every(
+    (w) =>
+      result.haystack.includes(w) ||
+      (w.length > 3 && w.endsWith('es') && result.haystack.includes(w.slice(0, -2))) ||
+      (w.length > 3 && w.endsWith('s') && result.haystack.includes(w.slice(0, -1))),
+  )
+}
+
+const kinds: { id: Kind; label: string; icon: ComponentType }[] = [
+  { id: 'recipe', label: 'Recipes', icon: UtensilsCrossed },
+  { id: 'product', label: 'Products', icon: ShoppingBasket },
+  { id: 'restaurant', label: 'Restaurants', icon: Utensils },
+  { id: 'cafe', label: 'Cafés', icon: Coffee },
+  { id: 'bakery', label: 'Bakeries', icon: Croissant },
+  { id: 'market', label: 'Markets', icon: Store },
 ]
+
+/** Results are listed in three groups; Places covers every kind of place. */
+const groups: { title: string; kinds: Kind[] }[] = [
+  { title: 'Recipes', kinds: ['recipe'] },
+  { title: 'Products', kinds: ['product'] },
+  { title: 'Places', kinds: ['restaurant', 'cafe', 'bakery', 'market'] },
+]
+
+const suggestions = ['Pizza', 'Bread', 'Breakfast', 'Chocolate', 'Chicago']
+
+/** Tag renders a span with role="button"; give it a button's keys. */
+const pressOnKeys = (action: () => void) => (event: KeyboardEvent) => {
+  if (event.key === 'Enter' || event.key === ' ') {
+    event.preventDefault()
+    action()
+  }
+}
 
 interface SearchSheetProps {
   open: boolean
@@ -53,6 +100,7 @@ interface SearchSheetProps {
 
 export function SearchSheet({ open, onClose }: SearchSheetProps) {
   const [query, setQuery] = useState('')
+  const [selected, setSelected] = useState<Kind[]>([])
   const navigate = useNavigate()
 
   // The sheet focuses its close button on open; move focus to the field once it settles.
@@ -62,15 +110,20 @@ export function SearchSheet({ open, onClose }: SearchSheetProps) {
     return () => window.clearTimeout(timer)
   }, [open])
 
-  const results = useMemo(() => {
-    const words = query.toLowerCase().split(/\s+/).filter(Boolean)
-    if (words.length === 0) return []
-    return index.filter((r) => words.every((w) => r.haystack.toLowerCase().includes(w)))
-  }, [query])
+  const words = useMemo(() => normalize(query).split(/\s+/).filter(Boolean), [query])
+
+  // Everything the words match, before the type chips narrow it down.
+  const matched = useMemo(() => (words.length > 0 ? index.filter((r) => matches(r, words)) : index), [words])
+  const searching = words.length > 0 || selected.length > 0
+  const shown = matched.filter((r) => selected.length === 0 || selected.includes(r.kind))
+
+  const toggle = (kind: Kind) =>
+    setSelected((current) => (current.includes(kind) ? current.filter((k) => k !== kind) : [...current, kind]))
 
   const go = (path: string) => {
     onClose()
     setQuery('')
+    setSelected([])
     navigate(path)
   }
 
@@ -80,8 +133,30 @@ export function SearchSheet({ open, onClose }: SearchSheetProps) {
       onClose={onClose}
       title="Search"
       size="lg"
+      className="search-sheet"
       // A fixed height, so the sheet doesn't jump as results come and go.
       style={{ height: 'min(620px, calc(100% - var(--dt-sheet-top-gap)))' }}
+      footer={
+        <div className="search-filters" role="group" aria-label="Show only">
+          {kinds.map(({ id, label, icon: Icon }) => {
+            const count = words.length > 0 ? matched.filter((r) => r.kind === id).length : undefined
+            return (
+              <Tag
+                key={id}
+                selected={selected.includes(id)}
+                onClick={() => toggle(id)}
+                onKeyDown={pressOnKeys(() => toggle(id))}
+              >
+                <span className="chip">
+                  <Icon aria-hidden />
+                  {label}
+                  {count !== undefined && <span className="chip-count">{count}</span>}
+                </span>
+              </Tag>
+            )
+          })}
+        </div>
+      }
     >
       <Stack gap="lg">
         <Input
@@ -93,24 +168,54 @@ export function SearchSheet({ open, onClose }: SearchSheetProps) {
           id="search-field"
           type="search"
         />
-        {query.trim() === '' ? (
-          <Text variant="small" tone="secondary">
-            Search across {recipes.length} recipes, {products.length} products and {places.length} places.
-          </Text>
-        ) : results.length === 0 ? (
-          <EmptyState title="Nothing yet" description="Try a different word, like an ingredient or a city." />
-        ) : (
-          <List
-            label="Search results"
-            interactive
-            items={results.map((r) => ({
-              id: r.id,
-              title: r.title,
-              description: `${r.kind} · ${r.detail}`,
-              leading: <img src={r.image} alt="" className="result-thumb" />,
-              onClick: () => go(r.path),
-            }))}
+        {!searching ? (
+          <Stack gap="sm">
+            <Text variant="small" tone="secondary">
+              Popular searches
+            </Text>
+            <div className="chip-row">
+              {suggestions.map((s) => (
+                <Tag key={s} onClick={() => setQuery(s)} onKeyDown={pressOnKeys(() => setQuery(s))}>
+                  {s}
+                </Tag>
+              ))}
+            </div>
+          </Stack>
+        ) : shown.length === 0 ? (
+          <EmptyState
+            icon={<SearchX />}
+            title="Nothing yet"
+            description={
+              selected.length > 0
+                ? 'Try another word, or turn off a filter below.'
+                : 'Try a different word, like an ingredient or a city.'
+            }
           />
+        ) : (
+          <Stack gap="xl">
+            {groups.map((group) => {
+              const items = shown.filter((r) => group.kinds.includes(r.kind))
+              if (items.length === 0) return null
+              return (
+                <Stack key={group.title} gap="xs">
+                  <Heading level={3} size="heading-sm">
+                    {group.title} <span className="group-count">{items.length}</span>
+                  </Heading>
+                  <List
+                    label={group.title}
+                    interactive
+                    items={items.map((r) => ({
+                      id: r.id,
+                      title: r.title,
+                      description: r.detail,
+                      leading: <img src={r.image} alt="" className="result-thumb" />,
+                      onClick: () => go(r.path),
+                    }))}
+                  />
+                </Stack>
+              )
+            })}
+          </Stack>
         )}
       </Stack>
     </Sheet>

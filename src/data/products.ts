@@ -60,7 +60,7 @@ export const products: Product[] = [
     rating: 4.6,
     dek: 'Swap it one-for-one into your old recipes. It already has the binder in it.',
     description:
-      'A balanced blend of rice flours, potato starch and tapioca with xanthan already mixed in. Reliable for cakes, cookies and quick breads straight from a wheat recipe.',
+      'A balanced blend of rice flours, potato starch and tapioca with xanthan already mixed in. Reliable for cakes, cookies, quick breads and pizza bases straight from a wheat recipe.',
     whereToBuy: ['Most supermarkets', 'Baking suppliers'],
   },
   {
@@ -122,5 +122,20 @@ export const products: Product[] = [
     description:
       'Made with oat milk, coconut sugar and plenty of chocolate. They stay soft in the tin for a week.',
     whereToBuy: ['Most supermarkets', 'Coffee shops'],
+  },
+  {
+    id: 'pizza-base-mix',
+    name: 'Neapolitan Pizza Base Mix',
+    brand: 'Mill House',
+    category: 'baking',
+    price: '$7.25',
+    image: unsplash('1565299624946-b28f40a0ae38'),
+    certified: true,
+    traits: ['dairy-free', 'vegan', 'egg-free', 'nut-free'],
+    rating: 4.6,
+    dek: 'Add water and oil for a stretchy pizza dough that chars in a hot oven.',
+    description:
+      'Rice flour, tapioca and psyllium, with the yeast already in the bag. Prove it for an hour and it stretches by hand into two thin, crisp-edged pizzas.',
+    whereToBuy: ['Most supermarkets', 'Online direct'],
   },
 ]
