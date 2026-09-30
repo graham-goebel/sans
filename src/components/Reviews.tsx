@@ -1,6 +1,7 @@
-import { Avatar, Heading, Stack, Text } from '@dovetail-ds/react'
+import { Avatar, Badge, Heading, Stack, Text } from '@dovetail-ds/react'
 import { Star } from 'lucide-react'
 import type { Review } from '../data/types'
+import { site } from '../site'
 
 function Stars({ rating }: { rating: number }) {
   return (
@@ -20,9 +21,12 @@ export function Reviews({ reviews }: { reviews: Review[] }) {
   return (
     <Stack gap="lg">
       <div className="reviews-header">
-        <Heading level={2} size="heading-lg">
-          Reviews
-        </Heading>
+        <span className="reviews-title">
+          <Heading level={2} size="heading-lg">
+            Reviews
+          </Heading>
+          {site.sampleContent && <Badge>Sample</Badge>}
+        </span>
         <span className="reviews-summary">
           <Stars rating={Math.round(average)} />
           <Text variant="small" tone="secondary" as="span">

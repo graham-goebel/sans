@@ -25,6 +25,7 @@ export const places: Place[] = [
     address: '1820 Alberta Street',
     hours: 'Wed–Sun · 7am–2pm',
     order: ['Cardamom knot', 'Seeded country loaf', 'Brown butter canelé'],
+    lastChecked: 'Sep 2026',
     precautions: [
       { kind: 'dedicated-kitchen', text: 'Everything is baked in a dedicated gluten-free kitchen' },
       { kind: 'trained-staff', text: 'Staff are trained on coeliac-safe handling' },
@@ -47,6 +48,7 @@ export const places: Place[] = [
     address: '214 Court Street',
     hours: 'Tue–Sun · 5:30pm–10pm',
     order: ['Cacio e pepe', 'Wood-roasted branzino', 'Olive oil gelato'],
+    lastChecked: 'Sep 2026',
     precautions: [
       { kind: 'separate-water', text: 'Gluten-free pasta cooks in its own pot and water' },
       { kind: 'separate-prep', text: 'A separate board and utensils for gluten-free dishes' },
@@ -70,6 +72,7 @@ export const places: Place[] = [
     address: '901 E Cesar Chavez Street',
     hours: 'Daily · 7am–3pm',
     order: ['Migas taco', 'Blueberry corn muffin', 'Honey oat latte'],
+    lastChecked: 'Aug 2026',
     precautions: [
       { kind: 'dedicated-kitchen', text: 'The whole café is gluten-free, pastries included' },
       { kind: 'separate-prep', text: 'Corn tortillas are pressed to order on their own station' },
@@ -91,6 +94,7 @@ export const places: Place[] = [
     address: '3120 Valencia Street',
     hours: 'Wed–Mon · 5pm–10pm',
     order: ['Grilled little gems', 'Half chicken, salsa verde', 'Chocolate pot de crème'],
+    lastChecked: 'Aug 2026',
     precautions: [
       { kind: 'marked-menu', text: 'Gluten-free dishes are marked on the menu' },
       { kind: 'shared-fryer', text: 'The fryer is shared, so skip anything fried' },
@@ -113,6 +117,7 @@ export const places: Place[] = [
     address: '3300 W 32nd Avenue',
     hours: 'Daily · 8am–9pm',
     order: ['Local GF sourdough', 'Frozen dumplings', 'Bulk certified oats'],
+    lastChecked: 'Sep 2026',
     precautions: [
       { kind: 'checked', text: 'The team checks every product it tags gluten-free' },
       { kind: 'sealed', text: 'Bakery loaves from gluten-free bakers arrive sealed' },
@@ -134,6 +139,7 @@ export const places: Place[] = [
     address: '812 W Randolph Street',
     hours: 'Daily · 11am–10pm',
     order: ['Hot honey chicken sandwich', 'Onion rings', 'Soft serve'],
+    lastChecked: 'Sep 2026',
     precautions: [
       { kind: 'dedicated-kitchen', text: 'A fully gluten-free kitchen' },
       { kind: 'dedicated-fryer', text: 'A dedicated fryer, so fried food is safe' },
@@ -156,6 +162,7 @@ export const places: Place[] = [
     address: '1418 E Pine Street',
     hours: 'Daily · 6:30am–5pm',
     order: ['Flat white', 'GF almond croissant', 'Avocado toast on GF sourdough'],
+    lastChecked: 'Jul 2026',
     precautions: [
       { kind: 'sealed', text: 'Gluten-free bakes arrive sealed from a dedicated bakery' },
       { kind: 'separate-toaster', text: 'Gluten-free toast has its own toaster' },
@@ -178,6 +185,7 @@ export const places: Place[] = [
     address: '1602 W Sunset Boulevard',
     hours: 'Tue–Sun · 12pm–11pm',
     order: ['Al pastor tacos', 'Elote', 'Horchata'],
+    lastChecked: 'Aug 2026',
     precautions: [
       { kind: 'dedicated-fryer', text: 'Chips come from a dedicated fryer; ask for them' },
       { kind: 'ask', text: 'Some salsas contain beer, so check before you order' },
@@ -199,6 +207,7 @@ export const places: Place[] = [
     address: '1144 Frankford Avenue',
     hours: 'Tue–Sun · 5pm–10pm',
     order: ['Margherita pizza', 'Nduja & hot honey pizza', 'Tiramisu'],
+    lastChecked: 'Sep 2026',
     precautions: [
       { kind: 'dedicated-kitchen', text: 'A fully gluten-free kitchen, with no shared flour in the air' },
       { kind: 'trained-staff', text: 'Every pizza is made on gluten-free-only peels and boards' },

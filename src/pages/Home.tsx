@@ -1,5 +1,4 @@
 import {
-  Button,
   Cover,
   CtaBlock,
   FeatureGridBlock,
@@ -11,7 +10,7 @@ import {
   TestimonialBlock,
   Text,
 } from '@dovetail-ds/react'
-import { BadgeCheck, Download, ScanSearch, ShieldCheck, Smartphone, Wheat } from 'lucide-react'
+import { BadgeCheck, ScanSearch, ShieldCheck, Smartphone } from 'lucide-react'
 import { PlaceCard, ProductCard, RecipeCard } from '../components/cards'
 import { ButtonLink, Masthead } from '../components/layout'
 import { Rail } from '../components/Rail'
@@ -20,6 +19,7 @@ import { places } from '../data/places'
 import { products } from '../data/products'
 import { recipes } from '../data/recipes'
 import { testimonials } from '../data/reviews'
+import { site } from '../site'
 
 // The promoted slots, picked by id so they are easy to swap.
 const partnerProduct = products.find((p) => p.id === 'bronze-cut-rigatoni')!
@@ -140,40 +140,23 @@ export function Home() {
         tone="brand-muted"
         eyebrow="From the community"
         title="People who get it"
+        lead={site.sampleContent ? 'Sample quotes, written to show how this will look.' : undefined}
         quotes={testimonials}
       />
 
-      {/* Marketing: download the app and join the community */}
+      {/* Marketing: the community app, announced but not yet out */}
       <CtaBlock
         tone="brand"
         eyebrow="The sans community"
         title="Find your gluten-free people."
-        lead="Download sans to review places, share finds and swap recipes with people who eat the way you do."
+        lead="A sans app for reviewing places, sharing finds and swapping recipes with people who eat the way you do."
         actions={
-          <div className="store-buttons">
-            <Button variant="secondary" iconStart={<Smartphone />}>
-              Download for iPhone
-            </Button>
-            <Button variant="secondary" iconStart={<Download />}>
-              Get it on Android
-            </Button>
-          </div>
+          <span className="coming-soon">
+            <Smartphone aria-hidden />
+            Coming soon to iPhone and Android
+          </span>
         }
       />
-
-      <Section spacing="compact">
-        <div className="site-footer">
-          <Stack gap="sm">
-            <span className="wordmark" style={{ fontSize: '1.5rem' }}>
-              sans<em>.</em>
-            </span>
-            <Text variant="fine">
-              <Wheat size={14} aria-hidden style={{ verticalAlign: '-2px' }} /> Sample content for a prototype. Always
-              check labels and ask when you order.
-            </Text>
-          </Stack>
-        </div>
-      </Section>
     </>
   )
 }

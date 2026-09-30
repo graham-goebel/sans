@@ -2,8 +2,11 @@ import { useEffect, useState } from 'react'
 import { HashRouter, Route, Routes, useLocation, useNavigate } from 'react-router'
 import { BottomNav, IconButton } from '@dovetail-ds/react'
 import { House, MapPin, Search, ShoppingBasket, UtensilsCrossed } from 'lucide-react'
+import { PrototypeBanner, SiteFooter } from './components/chrome'
+import { ErrorBoundary } from './components/ErrorBoundary'
 import { SearchSheet } from './components/SearchSheet'
 import { Home } from './pages/Home'
+import { AboutPage, CreditsPage, PrivacyPage, TermsPage } from './pages/Info'
 import { NotFound } from './pages/NotFound'
 import { PlaceDetail, PlacesPage } from './pages/Places'
 import { ProductDetail, ProductsPage } from './pages/Products'
@@ -27,25 +30,34 @@ function Shell() {
   }, [location.pathname])
 
   const [, section, item] = location.pathname.split('/')
-  const current = destinations.find((d) => d.id === section)?.id ?? 'home'
+  // Highlight Home only on the home page itself; pages like About highlight nothing.
+  const current = section ? destinations.find((d) => d.id === section)?.id : 'home'
   // Item pages (level 2) give the screen to the content; their photo carries a back button instead.
   const showNav = !item
 
   return (
     <>
+      <PrototypeBanner />
       <main className={showNav ? 'app-main' : 'app-main app-main--bare'}>
-        {/* Keyed on the path so each page mounts fresh and plays its entrance. */}
+        {/* Keyed on the path so each page mounts fresh and plays its entrance, and a crash resets on navigation. */}
         <div className="page" key={location.pathname}>
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/products" element={<ProductsPage />} />
-            <Route path="/products/:id" element={<ProductDetail />} />
-            <Route path="/recipes" element={<RecipesPage />} />
-            <Route path="/recipes/:id" element={<RecipeDetail />} />
-            <Route path="/places" element={<PlacesPage />} />
-            <Route path="/places/:id" element={<PlaceDetail />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
+          <ErrorBoundary>
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/products" element={<ProductsPage />} />
+              <Route path="/products/:id" element={<ProductDetail />} />
+              <Route path="/recipes" element={<RecipesPage />} />
+              <Route path="/recipes/:id" element={<RecipeDetail />} />
+              <Route path="/places" element={<PlacesPage />} />
+              <Route path="/places/:id" element={<PlaceDetail />} />
+              <Route path="/about" element={<AboutPage />} />
+              <Route path="/privacy" element={<PrivacyPage />} />
+              <Route path="/terms" element={<TermsPage />} />
+              <Route path="/credits" element={<CreditsPage />} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </ErrorBoundary>
+          <SiteFooter />
         </div>
       </main>
       {showNav && (

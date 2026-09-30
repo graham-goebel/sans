@@ -8,12 +8,10 @@ import { FlagChips } from '../components/flags'
 import { Rail } from '../components/Rail'
 import { Reviews } from '../components/Reviews'
 import { useToggleSet } from '../hooks'
+import { matchesRecipe, type RecipeFilter } from '../lib/filters'
 import { recipes } from '../data/recipes'
 import { recipeReviews } from '../data/reviews'
 import { traitLabel } from '../data/traits'
-import type { Recipe, Trait } from '../data/types'
-
-type RecipeFilter = Recipe['category'] | Trait
 
 const chips: ChipOption<RecipeFilter>[] = [
   { id: 'breakfast', label: 'Breakfast', icon: Sunrise },
@@ -27,19 +25,9 @@ const chips: ChipOption<RecipeFilter>[] = [
   { id: 'nut-free', label: 'Nut-free', icon: NutOff },
 ]
 
-const categories = new Set<string>(['breakfast', 'mains', 'baking', 'desserts'])
-
-/** Categories widen the list (any of them); "Under 30 min" and diet chips narrow it (all of them). */
-function matches(recipe: Recipe, selected: RecipeFilter[]) {
-  const picked = selected.filter((f) => categories.has(f))
-  if (picked.length > 0 && !picked.includes(recipe.category)) return false
-  if (selected.includes('quick') && recipe.minutes > 30) return false
-  return selected.filter((f): f is Trait => f in traitLabel).every((t) => recipe.traits.includes(t))
-}
-
 export function RecipesPage() {
   const [selected, toggle, clear] = useToggleSet<RecipeFilter>()
-  const shown = recipes.filter((r) => matches(r, selected))
+  const shown = recipes.filter((r) => matchesRecipe(r, selected))
 
   return (
     <ListingPage
