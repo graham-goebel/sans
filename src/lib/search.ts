@@ -1,4 +1,4 @@
-import { places, safetyLabel } from '../data/places'
+import { placeSummary, places } from '../data/places'
 import { products } from '../data/products'
 import { recipes } from '../data/recipes'
 import { traitLabel } from '../data/traits'
@@ -46,7 +46,7 @@ export const index: Result[] = [
     id: `place-${p.id}`,
     kind: p.type,
     title: p.name,
-    detail: `${safetyLabel[p.safety]} · ${p.neighborhood}, ${p.city}`,
+    detail: `${placeSummary(p)} · ${p.neighborhood}, ${p.city}`,
     image: p.image,
     path: `/places/${p.id}`,
     haystack: [p.name, p.type, p.city, p.neighborhood, p.dek, p.description, ...p.order].join(' '),

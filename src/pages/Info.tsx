@@ -47,9 +47,13 @@ export function AboutPage() {
         <>
           <h2>This is a prototype</h2>
           <p>
-            The places, products, brands, addresses, reviews and testimonials in sans are <strong>sample content</strong>{' '}
-            written to show how the app will work. They are not real recommendations. Don’t rely on them when deciding
-            where or what to eat.
+            The <strong>Denver places</strong> are real, but <strong>unverified</strong>: their details come from public
+            listings, reviews and press, and haven’t yet been confirmed with each place. Each one lists its sources.
+            Always check with the place before you eat there.
+          </p>
+          <p>
+            The products, brands, recipes, reviews and testimonials are <strong>sample content</strong> written to show
+            how the app will work. They are not real recommendations.
           </p>
         </>
       )}
@@ -75,7 +79,10 @@ export function AboutPage() {
           <strong>GF options:</strong> some dishes are gluten-free as made; cross-contact is possible.
         </li>
       </ul>
-      <p>Each place shows when its details were last checked.</p>
+      <p>
+        A place marked <strong>unverified</strong> hasn’t been confirmed with the place yet. Once it has, it shows when
+        its details were last checked.
+      </p>
     </InfoPage>
   )
 }
@@ -87,11 +94,17 @@ export function PrivacyPage() {
         sans doesn’t ask you for an account, and it doesn’t collect, store or sell personal information. There are no
         analytics, advertising trackers or cookies.
       </p>
+      <h2>Your location</h2>
+      <p>
+        If you tap <strong>Near me</strong> on the Places page, your browser asks whether to share your location. If you
+        agree, sans uses it on your device to sort places by distance and show you on the map. It isn’t stored or sent
+        anywhere, and it’s forgotten when you leave the page.
+      </p>
       <h2>What other services see</h2>
       <p>
-        Photos are loaded from Unsplash, and the site is hosted on GitHub Pages. Like any website, those services
-        receive your IP address and browser details when your device requests a page or image, under their own privacy
-        policies.
+        Photos are loaded from Unsplash, map tiles from CARTO (using OpenStreetMap data), and the site is hosted on
+        GitHub Pages. Like any website, those services receive your IP address and browser details when your device
+        requests a page, image or map tile, under their own privacy policies. They don’t receive your location.
       </p>
       <h2>Changes</h2>
       <p>
@@ -134,8 +147,12 @@ export function CreditsPage() {
         work there.
       </p>
       <p>
+        Photos on Denver places are illustrative: they don’t show the business itself unless the place has given us
+        its own.
+      </p>
+      <p>
         Headlines are set in Instrument Serif, licensed under the SIL Open Font License. Icons are from Lucide, under
-        the ISC License.
+        the ISC License. Maps use Leaflet, with map data © OpenStreetMap contributors and tiles © CARTO.
       </p>
     </InfoPage>
   )

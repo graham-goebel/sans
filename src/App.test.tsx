@@ -50,9 +50,40 @@ describe('the shell', () => {
     expect(screen.getByRole('button', { name: 'Back to all places' })).toBeTruthy()
   })
 
+  it('marks an unverified place and lists its sources', () => {
+    const place = places.find((p) => p.verification === 'unverified')!
+    visit(`/places/${place.id}`)
+    expect(screen.getByText('Not yet confirmed')).toBeTruthy()
+    expect(screen.getAllByText('Unverified').length).toBeGreaterThan(0)
+    expect(screen.getByRole('link', { name: new RegExp(place.sources[0].label) })).toBeTruthy()
+  })
+
   it('shows a friendly page for unknown addresses', () => {
     visit('/nowhere')
     expect(screen.getByText('We couldn’t find that page')).toBeTruthy()
+  })
+})
+
+describe('places map', () => {
+  it('switches to the map view and back', async () => {
+    visit('/places')
+    await userEvent.click(screen.getByRole('tab', { name: 'Map' }))
+    expect(window.location.hash).toBe('#/places?view=map')
+    expect(await screen.findByText('Tap a pin to see the place.')).toBeTruthy()
+    await userEvent.click(screen.getByRole('tab', { name: 'List' }))
+    expect(window.location.hash).toBe('#/places')
+  })
+
+  it('explains when location is turned off', async () => {
+    const original = navigator.geolocation
+    Object.defineProperty(navigator, 'geolocation', {
+      configurable: true,
+      value: { getCurrentPosition: (_ok: unknown, fail: (e: object) => void) => fail({ code: 1, PERMISSION_DENIED: 1 }) },
+    })
+    visit('/places')
+    await userEvent.click(screen.getByRole('button', { name: 'Near me' }))
+    expect(screen.getByRole('status').textContent).toMatch(/Location is turned off/)
+    Object.defineProperty(navigator, 'geolocation', { configurable: true, value: original })
   })
 })
 

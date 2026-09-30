@@ -552,6 +552,17 @@ h3 em {
   object-fit: cover;
 }
 
+.photo-note {
+  position: absolute;
+  right: var(--dt-space-gutter);
+  bottom: var(--dt-space-stack-sm);
+  padding: 2px 8px;
+  border-radius: var(--dt-radius-pill);
+  background: color-mix(in oklab, black 45%, transparent);
+  color: white;
+  font-size: 0.75rem;
+}
+
 .detail-back {
   position: absolute;
   top: calc(env(safe-area-inset-top) + var(--dt-space-stack-md));
@@ -618,6 +629,11 @@ h3 em {
   color: var(--dt-color-amber-300);
 }
 
+.flag--unverified {
+  background: var(--dt-color-amber-100);
+  color: var(--dt-color-amber-900);
+}
+
 .flag--certified {
   background: var(--dt-color-white);
   color: var(--dt-color-primary-800);
@@ -658,6 +674,16 @@ h3 em {
 .precaution--caution {
   background: var(--dt-surface-warning-subtle);
   color: var(--dt-text-warning);
+}
+
+.sources {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--dt-space-stack-xs) var(--dt-space-inline-lg);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: var(--dt-font-size-sm);
 }
 
 /* ---------- Reviews ---------- */
@@ -715,3 +741,102 @@ h3 em {
   color: var(--dt-text-tertiary);
 }
 
+
+/* ---------- Places map ---------- */
+
+.places-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--dt-space-inline-sm);
+}
+
+.places-map {
+  /* Leaflet's panes use z-indexes up to 1000; keep them inside the map so the
+     floating nav and sheets stay on top. */
+  position: relative;
+  isolation: isolate;
+  z-index: 0;
+  height: min(62svh, 560px);
+  border-radius: var(--dt-radius-container);
+  overflow: hidden;
+  background: var(--dt-surface-subtle);
+  border: var(--dt-border-width-default) solid var(--dt-border-default);
+}
+
+.places-map--loading {
+  animation: fade-in 1.2s ease-in-out infinite alternate;
+}
+
+.places-map .leaflet-container {
+  font-family: var(--dt-font-family-sans);
+  background: var(--dt-surface-subtle);
+}
+
+.places-map .leaflet-control-attribution {
+  font-size: 0.625rem;
+}
+
+/* A teardrop pin, coloured by how the place handles gluten. */
+.pin {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 50% 50% 50% 0;
+  transform: rotate(-45deg);
+  border: 2.5px solid white;
+  box-shadow: 0 2px 6px color-mix(in oklab, black 30%, transparent);
+  box-sizing: border-box;
+  transition: transform var(--dt-motion-micro);
+}
+
+.pin::after {
+  content: '';
+  position: absolute;
+  inset: 30%;
+  border-radius: 50%;
+  background: white;
+}
+
+.pin--dedicated {
+  background: var(--dt-color-primary-700);
+}
+
+.pin--gf-menu {
+  background: var(--dt-color-cyan-600);
+}
+
+.pin--gf-options {
+  background: var(--dt-color-amber-500);
+}
+
+.pin--selected {
+  box-shadow: 0 0 0 4px color-mix(in oklab, var(--dt-color-primary-700) 30%, transparent), 0 3px 8px color-mix(in oklab, black 35%, transparent);
+}
+
+.map-legend {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--dt-space-stack-2xs) var(--dt-space-inline-xs);
+  color: var(--dt-text-secondary);
+  font-size: var(--dt-font-size-sm);
+}
+
+.legend-dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin-left: var(--dt-space-inline-sm);
+}
+
+.legend-dot:first-child {
+  margin-left: 0;
+}
+
+.map-pick {
+  max-width: 420px;
+}

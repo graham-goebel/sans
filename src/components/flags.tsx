@@ -1,18 +1,28 @@
 import type { ComponentType } from 'react'
-import { BadgeCheck, Flame, Trophy } from 'lucide-react'
+import { BadgeCheck, Flame, ShieldQuestionMark, Trophy } from 'lucide-react'
 import type { Flag } from '../data/types'
 
-type Chip = Flag | 'certified'
+type Chip = Flag | 'certified' | 'unverified'
 
 const chips: Record<Chip, { label: string; icon: ComponentType<{ 'aria-hidden'?: boolean }> }> = {
   hot: { label: 'Hot', icon: Flame },
   mvp: { label: 'MVP', icon: Trophy },
   certified: { label: 'Certified', icon: BadgeCheck },
+  unverified: { label: 'Unverified', icon: ShieldQuestionMark },
 }
 
-/** Small icon chips for an item's flags: trending, a standout pick, certified gluten-free. */
-export function FlagChips({ flags = [], certified = false }: { flags?: Flag[]; certified?: boolean }) {
-  const shown: Chip[] = [...flags, ...(certified ? (['certified'] as const) : [])]
+interface FlagChipsProps {
+  flags?: Flag[]
+  certified?: boolean
+  /** Not yet confirmed with the place. Shown on its own: editorial flags like Hot and MVP don't apply until it is. */
+  unverified?: boolean
+}
+
+/** Small icon chips for an item's flags: unverified, trending, a standout pick, certified gluten-free. */
+export function FlagChips({ flags = [], certified = false, unverified = false }: FlagChipsProps) {
+  const shown: Chip[] = unverified
+    ? ['unverified']
+    : [...flags, ...(certified ? (['certified'] as const) : [])]
   if (shown.length === 0) return null
   return (
     <span className="flags">

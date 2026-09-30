@@ -9,7 +9,7 @@ export function PrototypeBanner() {
     <div className="prototype-banner" role="note">
       <FlaskConical aria-hidden />
       <Text variant="small" as="span">
-        Prototype: places, products and reviews are sample content, not real recommendations.{' '}
+        Prototype: Denver places are unverified leads, and products, recipes and reviews are sample content.{' '}
         <Link href="#/about" tone="inherit">
           Learn more
         </Link>

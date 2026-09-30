@@ -66,13 +66,22 @@ Full notes and sources for each: [candidates.md](candidates.md).
 
 ## From verified to live
 
-For each verified place, add an entry to `src/data/places.ts` (see
-[CONTENT.md](../CONTENT.md)) with:
+All 20 candidates are already in `src/data/places.ts`, marked
+`verification: 'unverified'`. The app shows them with an Unverified chip,
+"reported" wording, their sources, an illustrative photo, and a "Not yet
+confirmed" notice.
 
-- `lastChecked` set to the month you confirmed it
-- `sources`: the place's own website, plus anything you relied on
-- precautions worded from what they told you
-- a photo you have permission to use
+When you confirm a place:
 
-When enough Denver places are verified, remove the sample places and set
-`site.sampleContent` to `false`.
+1. Set `verification: 'verified'` and `lastChecked` to the month you confirmed
+   it (you can drop `researched`).
+2. Reword `dek`, `description`, `precautions` and `order` from what the place
+   told you (drop "reported").
+3. Add the place's own photo if you have permission, and remove the
+   "illustrative" note by replacing `image`.
+4. Add `price`, `hours` and, later, `rating` if you want them shown.
+5. If a place isn't a fit (closed, or it can't say how it handles gluten),
+   delete its entry and note why in the tracker.
+
+`npm test` checks that verified places have a `lastChecked` date and that
+every place has sources.

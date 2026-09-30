@@ -6,13 +6,13 @@ const kinds = (query: string) => new Set(search(query).map((r) => r.kind))
 
 describe('search', () => {
   it('finds every type for a food word', () => {
-    expect(kinds('pizza')).toEqual(new Set(['recipe', 'product', 'restaurant']))
-    expect(titles('pizza')).toContain('Forno Nero')
+    expect(kinds('pizza')).toEqual(new Set(['recipe', 'product', 'restaurant', 'bakery']))
+    expect(titles('pizza')).toContain('Dough Counter')
   })
 
   it('reads descriptions, dishes and ingredients, not only names', () => {
-    // "Cacio e pepe" is only on Osteria Lume's list of dishes to order.
-    expect(titles('cacio')).toEqual(['Osteria Lume'])
+    // Plantains only appear in Quiero Arepas' list of dishes.
+    expect(titles('plantains')).toEqual(['Quiero Arepas'])
     // Psyllium only appears in ingredient lists and product descriptions.
     expect(titles('psyllium').length).toBeGreaterThan(1)
   })
@@ -29,7 +29,7 @@ describe('search', () => {
 
   it('needs every word to match', () => {
     expect(titles('pizza chicago')).toEqual([])
-    expect(titles('pizza philadelphia')).toEqual(['Forno Nero'])
+    expect(titles('churros lohi')).toEqual(['Teocalli Cocina'])
   })
 
   it('returns everything for an empty query and nothing for nonsense', () => {
