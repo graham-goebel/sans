@@ -2,7 +2,7 @@
 //
 //   node scripts/visual-diff.mjs <base-url> <head-url> <out-dir> [--strict]
 //
-// Photos are replaced with flat colours and motion is reduced, so the only
+// Photos and map tiles are replaced with flat colours and motion is reduced, so the only
 // differences are real ones: layout, type, colour, components. Writes a
 // Markdown summary (also to the GitHub job summary) and a diff image per
 // changed page. With --strict, any change fails the run.
@@ -27,6 +27,7 @@ const pages = [
   { name: 'recipe', path: '/recipes/margherita-pizza' },
   { name: 'product', path: '/products/bronze-cut-rigatoni' },
   { name: 'place', path: '/places/teocalli-cocina-lohi' },
+  { name: 'map', path: '/places?view=map' },
   { name: 'about', path: '/about' },
   { name: 'search', path: '/', search: 'pizza' },
 ]
@@ -57,6 +58,9 @@ async function capture(browser, url, viewport, page) {
   const tab = await context.newPage()
   await tab.route(/images\.unsplash\.com/, (route) =>
     route.fulfill({ contentType: 'image/svg+xml', body: photo(route.request().url()) }),
+  )
+  await tab.route(/basemaps\.cartocdn\.com/, (route) =>
+    route.fulfill({ contentType: 'image/svg+xml', body: '<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256"><rect width="256" height="256" fill="#f2efe8"/></svg>' }),
   )
   await tab.goto(`${url}/#${page.path}`, { waitUntil: 'networkidle' })
   await tab.evaluate(() => document.fonts.ready)

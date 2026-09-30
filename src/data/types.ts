@@ -60,6 +60,13 @@ export interface Source {
   url: string
 }
 
+export interface PlaceLocation {
+  lat: number
+  lng: number
+  /** Needed when a place has more than one location, e.g. "Lakewood". */
+  label?: string
+}
+
 export interface Place {
   id: string
   name: string
@@ -72,6 +79,8 @@ export interface Place {
   dek: string
   description: string
   address: string
+  /** Map pins. Omit for places without a fixed address; they stay off the map. */
+  locations?: PlaceLocation[]
   hours?: string
   price?: '$' | '$$' | '$$$'
   rating?: number

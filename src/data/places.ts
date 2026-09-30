@@ -7,16 +7,22 @@ export const safetyLabel: Record<Safety, string> = {
   'gf-options': 'GF options',
 }
 
+/** The safety label, prefixed "Reported" until the place is verified: "Reported separate GF menu". */
+export function safetyText(place: Place): string {
+  const label = safetyLabel[place.safety]
+  if (place.verification === 'verified') return label
+  // Lower-case only the first letter, so "GF" stays "GF".
+  return `Reported ${label.charAt(0).toLowerCase()}${label.slice(1)}`
+}
+
 /** One line on how a place handles gluten, e.g. "Reported 100% gluten-free · $$". */
 export function placeSummary(place: Place): string {
-  const safety =
-    place.verification === 'unverified'
-      ? `Reported ${safetyLabel[place.safety].toLowerCase()}`
-      : safetyLabel[place.safety]
+  const safety = safetyText(place)
   return place.price ? `${safety} · ${place.price}` : safety
 }
 
-// Denver places. All are UNVERIFIED: gathered on 30 Sep 2026 from public
+// Denver places. Map coordinates come from OpenStreetMap Nominatim via
+// scripts/geocode.mjs (Sep 2026). All are UNVERIFIED: gathered on 30 Sep 2026 from public
 // listings and press (see docs/denver/candidates.md), not yet confirmed with
 // the places themselves. Photos are illustrative, not of the businesses.
 // Confirm each one using docs/denver/verification.md, then set
@@ -52,6 +58,7 @@ export const places: Place[] = [
     description:
       'Press and gluten-free directories describe a dedicated gluten-free kitchen and a dedicated fryer, with the churros singled out. The LoHi location opened in July 2025 in the former Post Chicken & Beer space.',
     address: '1575 Boulder St, Unit C',
+    locations: [{ lat: 39.75918, lng: -105.01094 }],
     order: ['Tacos', 'Tortilla chips', 'Churros'],
     precautions: [
       { kind: 'dedicated-kitchen', text: 'Dedicated gluten-free kitchen' },
@@ -77,6 +84,7 @@ export const places: Place[] = [
     description:
       '303 Magazine (Jan 2026) describes a fully dedicated gluten-free kitchen, and its menu is listed as free of gluten and grains. Its Tech Center location is reported closed; this is the LoHi one.',
     address: '2364 15th St',
+    locations: [{ lat: 39.75607, lng: -105.00914 }],
     order: ['Breakfast burrito with pork green chile', 'Cauliflower wings', 'Almond-flour French toast'],
     precautions: [{ kind: 'dedicated-kitchen', text: 'Fully dedicated gluten-free kitchen' }],
     verification: 'unverified',
@@ -99,6 +107,7 @@ export const places: Place[] = [
     description:
       'Listed as a fully gluten-free menu, and described as the first food truck in the US certified gluten-free. It trades inside a shared food hall, so ask whether it has its own enclosed kitchen and fryer.',
     address: '3200 N Pecos St',
+    locations: [{ lat: 39.76225, lng: -105.00612 }],
     order: ['Arepas', 'Sweet fried plantains', 'Passion fruit juice'],
     precautions: [
       { kind: 'dedicated-kitchen', text: 'Gluten-free menu and kitchen' },
@@ -123,6 +132,7 @@ export const places: Place[] = [
     description:
       'Listed by Find Me Gluten Free and Denver Celiacs as a dedicated gluten-free bakery. It opened a Lakewood shop (3140 S Wadsworth Blvd) in May 2026; confirm which locations are currently open.',
     address: '3331 N Downing St',
+    locations: [{ label: 'Downing St', lat: 39.76396, lng: -104.97344 }, { label: 'Lakewood', lat: 39.66159, lng: -105.08133 }],
     order: ['Donuts', 'Bagels', 'Cinnamon rolls', 'Breakfast sandwiches'],
     precautions: [
       { kind: 'dedicated-kitchen', text: 'Dedicated gluten-free bakery' },
@@ -141,13 +151,14 @@ export const places: Place[] = [
     name: 'Rivers and Roads Coffee',
     type: 'cafe',
     city: 'Denver',
-    neighborhood: 'Northeast Denver',
+    neighborhood: 'Clayton',
     image: photo.cafe[0],
     safety: 'dedicated',
     dek: 'A coffee shop reported to run an entirely gluten-free kitchen.',
     description:
       'Celiac-focused directories describe a fully gluten-free facility, with breakfast sandwiches on house-made gluten-free bread.',
     address: '2539 E Bruce Randolph Ave',
+    locations: [{ lat: 39.76465, lng: -104.95632 }],
     order: ['Breakfast sandwich on GF bread', 'Strawberry donut holes'],
     precautions: [{ kind: 'dedicated-kitchen', text: 'Entirely gluten-free kitchen' }],
     verification: 'unverified',
@@ -163,7 +174,7 @@ export const places: Place[] = [
     name: 'Green Bus Cafe',
     type: 'cafe',
     city: 'Denver',
-    neighborhood: 'Uptown',
+    neighborhood: 'City Park West',
     image: photo.cafe[1],
     safety: 'dedicated',
     dek: 'A vegetarian café with an in-house micro-bakery, reported as 100% gluten-free.',
@@ -171,6 +182,7 @@ export const places: Place[] = [
       'The owner is quoted as saying the café is 100% gluten-free and sources only certified gluten-free ingredients. Its Starfish Bakery bakes are described as gluten-free and vegan.',
     address: '1426 E 22nd Ave',
     hours: 'Wed–Sun · 8am–2pm (reported)',
+    locations: [{ lat: 39.74931, lng: -104.97014 }],
     order: ['Scones', 'Cookies', 'Cinnamon rolls (Sundays)', 'Donuts (Saturdays)'],
     precautions: [
       { kind: 'dedicated-kitchen', text: '100% gluten-free, per the owner' },
@@ -196,6 +208,7 @@ export const places: Place[] = [
     description:
       'Described as a 100% gluten-free bakery, also peanut-free, with colour-coded labels for other allergens. It changed its name from Deby’s Gluten Free; confirm the retail counter is open.',
     address: '2369 S Trenton Way',
+    locations: [{ lat: 39.67321, lng: -104.89712 }],
     order: ['Bagels', 'English muffins', 'Bread', 'Pizza dough'],
     precautions: [
       { kind: 'dedicated-kitchen', text: '100% gluten-free, peanut-free bakery' },
@@ -220,6 +233,7 @@ export const places: Place[] = [
     description:
       'Listed as a dedicated gluten-free ice cream shop where everything is plant-based and gluten-free. Cones and shakes are reported gluten-free too; ask about mix-ins.',
     address: '3003 E 3rd Ave',
+    locations: [{ lat: 39.7212, lng: -104.95186 }],
     order: ['Cookies & cream', 'Cookie dough', 'Soft serve'],
     precautions: [
       { kind: 'dedicated-kitchen', text: 'Dedicated gluten-free shop' },
@@ -244,6 +258,7 @@ export const places: Place[] = [
     description:
       'Listings describe a certified gluten-free facility, but reports conflict on the current menu and one source lists it as closed. Treat as a lead until confirmed.',
     address: '3915 Tennyson St',
+    locations: [{ lat: 39.77146, lng: -105.04423 }],
     order: [],
     precautions: [
       { kind: 'dedicated-kitchen', text: 'Reported certified gluten-free facility' },
@@ -268,6 +283,7 @@ export const places: Place[] = [
     description:
       'Guides describe separate gluten-free prep areas, dedicated fryers and more than 40 gluten-free dishes. A co-owner and her son have coeliac disease.',
     address: '3651 Navajo St',
+    locations: [{ lat: 39.76774, lng: -105.00437 }],
     order: ['Fish and chips', 'Artichoke heart fritters', 'Lobster mac and cheese'],
     precautions: [
       { kind: 'separate-prep', text: 'Separate gluten-free prep area' },
@@ -294,6 +310,7 @@ export const places: Place[] = [
     description:
       'Reviews describe a gluten-free side of the kitchen and gluten-free fryers, and nearly the whole menu available gluten-free. Orders are reported to be flagged as allergy orders.',
     address: '2544 Federal Blvd',
+    locations: [{ lat: 39.75449, lng: -105.02487 }],
     order: ['Fish & chips', 'Wings', 'Fried chicken', 'Burgers on GF buns'],
     precautions: [
       { kind: 'separate-prep', text: 'Gluten-free side of the kitchen' },
@@ -319,6 +336,7 @@ export const places: Place[] = [
     description:
       'Reviews describe dedicated pans, separate prep and dedicated fryers, but reports conflict on whether the oven is shared. One report says the gluten-free dough uses gluten-removed wheat starch, which many people with coeliac disease avoid.',
     address: '2466 S Colorado Blvd, Unit 101',
+    locations: [{ lat: 39.67157, lng: -104.94013 }],
     order: ['GF Sicilian pan pizza', 'Chicken strips', 'Fries'],
     precautions: [
       { kind: 'separate-prep', text: 'Dedicated pans and separate prep for GF pizza' },
@@ -345,6 +363,7 @@ export const places: Place[] = [
     description:
       'Not a dedicated kitchen, but reviewers report a separate pot and water for gluten-free pasta and staff familiar with avoiding cross-contact.',
     address: '955 N Lincoln St, Unit D',
+    locations: [{ lat: 39.73118, lng: -104.98633 }],
     order: ['Pasta with GF noodles', 'GF bread', 'Cannoli'],
     precautions: [
       { kind: 'separate-water', text: 'Separate pot and water for gluten-free pasta' },
@@ -369,6 +388,7 @@ export const places: Place[] = [
     description:
       'Gluten-free nuggets and fries are reported to go only into a dedicated fryer, and gluten-free buns are available. Ask how the grill and bun toasting are handled, and confirm which Denver locations are open.',
     address: 'Several Denver locations',
+    locations: [{ label: 'Union Station', lat: 39.75476, lng: -105.00166 }, { label: 'Evans Ave', lat: 39.67875, lng: -104.96897 }, { label: '26th Ave', lat: 39.7545, lng: -104.9767 }, { label: 'Hampden Ave', lat: 39.65268, lng: -104.92887 }],
     order: ['Chicken nuggets', 'Fries', 'Grilled chicken sandwich on a GF bun'],
     precautions: [
       { kind: 'dedicated-fryer', text: 'Dedicated fryer for gluten-free nuggets and fries' },
@@ -418,6 +438,7 @@ export const places: Place[] = [
     description:
       'Not a dedicated kitchen. Gluten-free items are labelled, and reviewers describe glove changes and orders flagged to the kitchen.',
     address: '837 E 17th Ave',
+    locations: [{ lat: 39.74349, lng: -104.97666 }],
     order: ['GF desserts', 'GF cookies'],
     precautions: [
       { kind: 'marked-menu', text: 'Gluten-free items labelled on the menu' },
@@ -442,6 +463,7 @@ export const places: Place[] = [
     description:
       'Most of the menu is reported as marked gluten-free, but a coeliac reviewer reports no dedicated fryer and chips shared with flour tortillas. The sopapillas in the set menu are not gluten-free.',
     address: '6715 W Colfax Ave',
+    locations: [{ lat: 39.74194, lng: -105.07103 }],
     order: ['Tacos', 'Enchiladas'],
     precautions: [
       { kind: 'marked-menu', text: 'Many dishes marked gluten-free' },
@@ -468,6 +490,7 @@ export const places: Place[] = [
     description:
       'Shoppers report gluten-free labels at the price tag. The store brand includes certified gluten-free baking mixes and rice and quinoa pasta.',
     address: '3757 Brighton Blvd · 5231 Leetsdale Dr',
+    locations: [{ label: 'Brighton Blvd', lat: 39.77293, lng: -104.97591 }, { label: 'Leetsdale Dr', lat: 39.70844, lng: -104.9255 }],
     order: ['Store-brand GF baking mixes', 'Certified GF pasta'],
     precautions: [{ kind: 'checked', text: 'Gluten-free shelf labels' }],
     verification: 'unverified',
@@ -510,6 +533,7 @@ export const places: Place[] = [
       'Held outdoors on the second Saturday of the month, June to October. Organisers set strict requirements for vendors. Past vendors include Bosco Baking Co and SugarBee Cookie Company.',
     address: 'North lot by Chase Tower, 333 W Hampden Ave',
     hours: '2nd Saturday, Jun–Oct · 9am–1pm (reported)',
+    locations: [{ lat: 39.65357, lng: -104.99243 }],
     order: ['Baked goods', 'Cookies', 'Mexican food'],
     precautions: [{ kind: 'checked', text: 'Organisers vet every vendor as gluten-free' }],
     verification: 'unverified',

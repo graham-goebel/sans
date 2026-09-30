@@ -1,6 +1,7 @@
 import { Card, Image } from '@dovetail-ds/react'
 import { placeSummary } from '../data/places'
 import type { Place, Product, Recipe } from '../data/types'
+import { formatMiles } from '../lib/geo'
 import { FlagChips } from './flags'
 
 /** Portrait photo card: the recipe's picture with its title set over it. */
@@ -41,8 +42,8 @@ export function ProductCard({ product }: { product: Product }) {
   )
 }
 
-/** Landscape photo card for somewhere to eat or shop. */
-export function PlaceCard({ place }: { place: Place }) {
+/** Landscape photo card for somewhere to eat or shop, with its distance once we know where you are. */
+export function PlaceCard({ place, miles }: { place: Place; miles?: number }) {
   return (
     <div className="card-wrap">
       <Card
@@ -50,7 +51,11 @@ export function PlaceCard({ place }: { place: Place }) {
         href={`#/places/${place.id}`}
         background={place.image}
         onMedia="white"
-        eyebrow={`${place.neighborhood}, ${place.city}`}
+        eyebrow={
+          miles === undefined
+            ? `${place.neighborhood}, ${place.city}`
+            : `${formatMiles(miles)} · ${place.neighborhood}`
+        }
         title={place.name}
         description={placeSummary(place)}
       />

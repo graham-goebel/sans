@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { places } from '../data/places'
+import { places, safetyText } from '../data/places'
 import { products } from '../data/products'
 import { recipes } from '../data/recipes'
 import { matchesPlace, matchesProduct, matchesRecipe } from './filters'
@@ -34,6 +34,14 @@ describe('place filters', () => {
     const shown = places.filter((p) => matchesPlace(p, ['bakery', 'dedicated']))
     expect(shown.every((p) => p.type === 'bakery')).toBe(true)
     expect(shown.every((p) => p.safety === 'dedicated')).toBe(true)
+  })
+})
+
+describe('place labels', () => {
+  it('keeps GF capitalised when prefixing "Reported"', () => {
+    const menu = places.find((p) => p.safety === 'gf-menu' && p.verification === 'unverified')!
+    expect(safetyText(menu)).toBe('Reported separate GF menu')
+    expect(safetyText({ ...menu, verification: 'verified' })).toBe('Separate GF menu')
   })
 })
 

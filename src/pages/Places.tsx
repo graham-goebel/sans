@@ -1,5 +1,6 @@
-import { useParams } from 'react-router'
-import { Badge, Callout, Heading, Link, List, Section, Stack, Text } from '@dovetail-ds/react'
+import { lazy, Suspense, useState } from 'react'
+import { useParams, useSearchParams } from 'react-router'
+import { Badge, Button, Callout, Heading, Link, List, Section, Stack, Tabs, Text } from '@dovetail-ds/react'
 import type { ComponentType } from 'react'
 import {
   BadgeCheck,
@@ -11,6 +12,10 @@ import {
   Croissant,
   Droplets,
   GraduationCap,
+  LayoutList,
+  LocateFixed,
+  LocateOff,
+  Map as MapIcon,
   MapPin,
   MessageCircleWarning,
   Package,
@@ -26,10 +31,11 @@ import { FlagChips } from '../components/flags'
 import type { ChipOption } from '../components/FilterChips'
 import { DetailHero, ListingPage, MetaItem, NotFoundState } from '../components/layout'
 import { Rail } from '../components/Rail'
-import { useToggleSet } from '../hooks'
+import { useNearMe, useToggleSet } from '../hooks'
+import { byDistance, nearestLocation } from '../lib/geo'
 import { matchesPlace, type PlaceFilter } from '../lib/filters'
-import { places, safetyLabel } from '../data/places'
-import type { PrecautionKind } from '../data/types'
+import { places, safetyText } from '../data/places'
+import type { Place, PrecautionKind } from '../data/types'
 
 const chips: ChipOption<PlaceFilter>[] = [
   { id: 'dedicated', label: '100% gluten-free', icon: ShieldCheck },
@@ -55,9 +61,51 @@ const precautionStyle: Record<PrecautionKind, { icon: ComponentType<{ 'aria-hidd
   ask: { icon: MessageCircleWarning, caution: true },
 }
 
+// The map (and Leaflet) loads only when someone opens it.
+const PlacesMap = lazy(() => import('../components/PlacesMap'))
+
 export function PlacesPage() {
   const [selected, toggle, clear] = useToggleSet<PlaceFilter>()
-  const shown = places.filter((p) => matchesPlace(p, selected))
+  const [params, setParams] = useSearchParams()
+  const view = params.get('view') === 'map' ? 'map' : 'list'
+  const [pickedId, setPickedId] = useState<string>()
+  const nearMe = useNearMe()
+
+  const filtered = places.filter((p) => matchesPlace(p, selected))
+  const shown = nearMe.position ? byDistance(filtered, nearMe.position) : filtered
+  const milesTo = (p: Place) => (nearMe.position ? nearestLocation(p, nearMe.position)?.miles : undefined)
+  const picked = shown.find((p) => p.id === pickedId)
+  const offMap = shown.filter((p) => !p.locations?.length)
+
+  const toolbar = (
+    <div className="places-toolbar">
+      <Tabs
+        label="Show places as"
+        variant="pill"
+        value={view}
+        onChange={(id) => setParams(id === 'map' ? { view: 'map' } : {}, { replace: true })}
+        tabs={[
+          { id: 'list', label: 'List', icon: <LayoutList /> },
+          { id: 'map', label: 'Map', icon: <MapIcon /> },
+        ]}
+      />
+      {nearMe.status === 'ready' ? (
+        <Button variant="secondary" size="sm" iconStart={<LocateOff />} onClick={nearMe.clear}>
+          Clear location
+        </Button>
+      ) : (
+        <Button
+          variant="secondary"
+          size="sm"
+          iconStart={<LocateFixed />}
+          loading={nearMe.status === 'locating'}
+          onClick={nearMe.locate}
+        >
+          Near me
+        </Button>
+      )}
+    </div>
+  )
 
   return (
     <ListingPage
@@ -74,10 +122,53 @@ export function PlacesPage() {
       onClear={clear}
       count={shown.length}
       noun={['place', 'places']}
+      toolbar={
+        <Stack gap="xs">
+          {toolbar}
+          {(nearMe.status === 'denied' || nearMe.status === 'unavailable') && (
+            <Text variant="small" tone="secondary" role="status">
+              {nearMe.status === 'denied'
+                ? 'Location is turned off for this site. Allow it in your browser settings to sort by distance.'
+                : 'Couldn’t find your location just now. Try again in a moment.'}
+            </Text>
+          )}
+          {nearMe.status === 'ready' && (
+            <Text variant="small" tone="secondary" role="status">
+              Sorted by distance from you. Your location stays on this device.
+            </Text>
+          )}
+        </Stack>
+      }
+      layout={view === 'map' ? 'plain' : 'grid'}
     >
-      {shown.map((p) => (
-        <PlaceCard key={p.id} place={p} />
-      ))}
+      {view === 'map' ? (
+        <Stack gap="lg">
+          <Suspense fallback={<div className="places-map places-map--loading" aria-label="Loading map" />}>
+            <PlacesMap places={shown} you={nearMe.position} selectedId={pickedId} onSelect={setPickedId} />
+          </Suspense>
+          <div className="map-legend" aria-hidden>
+            <span className="legend-dot pin--dedicated" /> 100% gluten-free
+            <span className="legend-dot pin--gf-menu" /> Separate GF menu
+            <span className="legend-dot pin--gf-options" /> GF options
+          </div>
+          {picked ? (
+            <div className="map-pick">
+              <PlaceCard place={picked} miles={milesTo(picked)} />
+            </div>
+          ) : (
+            <Text variant="small" tone="secondary">
+              Tap a pin to see the place.
+            </Text>
+          )}
+          {offMap.length > 0 && (
+            <Text variant="fine">
+              Not on the map (no single address): {offMap.map((p) => p.name).join(', ')}.
+            </Text>
+          )}
+        </Stack>
+      ) : (
+        shown.map((p) => <PlaceCard key={p.id} place={p} miles={milesTo(p)} />)
+      )}
     </ListingPage>
   )
 }
@@ -119,7 +210,7 @@ export function PlaceDetail() {
         badges={
           <>
             <Badge tone={place.safety === 'dedicated' ? 'primary' : place.safety === 'gf-menu' ? 'info' : 'warning'}>
-              {unverified ? `Reported ${safetyLabel[place.safety].toLowerCase()}` : safetyLabel[place.safety]}
+              {safetyText(place)}
             </Badge>
             <FlagChips flags={place.flags} unverified={unverified} />
           </>

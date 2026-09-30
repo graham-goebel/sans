@@ -32,6 +32,10 @@ Before adding a place, confirm with the place itself, by visiting or calling:
       show in the warning colour.
 - [ ] **What to order** (`order`): dishes that are gluten-free as served
 - [ ] **Address and hours**
+- [ ] **Map pin** (`locations`): add the address to `scripts/geocode.mjs`, push
+      to a `claude/` branch (or run the **Geocode** workflow by hand), and copy
+      the coordinates from the log. Check each match names the right street.
+      Places with several branches get one entry per branch, with a `label`.
 - [ ] **Last checked** (`lastChecked`): the month you confirmed it, e.g. `'Oct 2026'`.
       Re-check at least every six months.
 - [ ] **Sources** (`sources`): the place's own website first, then anything

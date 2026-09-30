@@ -94,11 +94,17 @@ export function PrivacyPage() {
         sans doesn’t ask you for an account, and it doesn’t collect, store or sell personal information. There are no
         analytics, advertising trackers or cookies.
       </p>
+      <h2>Your location</h2>
+      <p>
+        If you tap <strong>Near me</strong> on the Places page, your browser asks whether to share your location. If you
+        agree, sans uses it on your device to sort places by distance and show you on the map. It isn’t stored or sent
+        anywhere, and it’s forgotten when you leave the page.
+      </p>
       <h2>What other services see</h2>
       <p>
-        Photos are loaded from Unsplash, and the site is hosted on GitHub Pages. Like any website, those services
-        receive your IP address and browser details when your device requests a page or image, under their own privacy
-        policies.
+        Photos are loaded from Unsplash, map tiles from CARTO (using OpenStreetMap data), and the site is hosted on
+        GitHub Pages. Like any website, those services receive your IP address and browser details when your device
+        requests a page, image or map tile, under their own privacy policies. They don’t receive your location.
       </p>
       <h2>Changes</h2>
       <p>
@@ -146,7 +152,7 @@ export function CreditsPage() {
       </p>
       <p>
         Headlines are set in Instrument Serif, licensed under the SIL Open Font License. Icons are from Lucide, under
-        the ISC License.
+        the ISC License. Maps use Leaflet, with map data © OpenStreetMap contributors and tiles © CARTO.
       </p>
     </InfoPage>
   )

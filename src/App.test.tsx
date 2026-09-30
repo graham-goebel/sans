@@ -64,6 +64,29 @@ describe('the shell', () => {
   })
 })
 
+describe('places map', () => {
+  it('switches to the map view and back', async () => {
+    visit('/places')
+    await userEvent.click(screen.getByRole('tab', { name: 'Map' }))
+    expect(window.location.hash).toBe('#/places?view=map')
+    expect(await screen.findByText('Tap a pin to see the place.')).toBeTruthy()
+    await userEvent.click(screen.getByRole('tab', { name: 'List' }))
+    expect(window.location.hash).toBe('#/places')
+  })
+
+  it('explains when location is turned off', async () => {
+    const original = navigator.geolocation
+    Object.defineProperty(navigator, 'geolocation', {
+      configurable: true,
+      value: { getCurrentPosition: (_ok: unknown, fail: (e: object) => void) => fail({ code: 1, PERMISSION_DENIED: 1 }) },
+    })
+    visit('/places')
+    await userEvent.click(screen.getByRole('button', { name: 'Near me' }))
+    expect(screen.getByRole('status').textContent).toMatch(/Location is turned off/)
+    Object.defineProperty(navigator, 'geolocation', { configurable: true, value: original })
+  })
+})
+
 describe('listing filters', () => {
   it('narrows the recipe grid when a chip is pressed', async () => {
     visit('/recipes')

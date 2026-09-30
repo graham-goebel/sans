@@ -35,6 +35,10 @@ interface ListingPageProps<T extends string> {
   noun: [singular: string, plural: string]
   /** Denser, two-across grid for product shots. */
   shelf?: boolean
+  /** Controls between the chips and the results, e.g. a list/map switch. */
+  toolbar?: ReactNode
+  /** grid wraps the results in a card grid; plain renders them as given (a map, say). */
+  layout?: 'grid' | 'plain'
   children: ReactNode
 }
 
@@ -50,6 +54,8 @@ export function ListingPage<T extends string>({
   count,
   noun,
   shelf = false,
+  toolbar,
+  layout = 'grid',
   children,
 }: ListingPageProps<T>) {
   return (
@@ -67,12 +73,17 @@ export function ListingPage<T extends string>({
             <Text variant="lead">{lead}</Text>
           </Stack>
           <FilterChips label={`Filter ${noun[1]}`} options={chips} selected={selected} onToggle={onToggle} />
+          {toolbar}
           <Text variant="small" tone="secondary">
             {count} {count === 1 ? noun[0] : noun[1]}
             {selected.length > 0 && ' match your filters'}
           </Text>
           {count > 0 ? (
-            <div className={shelf ? 'card-grid card-grid--shelf' : 'card-grid'}>{children}</div>
+            layout === 'plain' ? (
+              children
+            ) : (
+              <div className={shelf ? 'card-grid card-grid--shelf' : 'card-grid'}>{children}</div>
+            )
           ) : (
             <EmptyState
               icon={<SearchX />}
