@@ -21,7 +21,7 @@ const results = await Promise.all(
   [...ids.keys()].map(async (id) => {
     const url = `https://images.unsplash.com/photo-${id}?w=64&q=10`
     try {
-      const res = await fetch(url, { method: 'HEAD' })
+      const res = await fetch(url, { method: 'HEAD', signal: AbortSignal.timeout(15_000) })
       return { id, ok: res.ok, status: res.status }
     } catch (error) {
       return { id, ok: false, status: String(error) }
