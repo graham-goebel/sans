@@ -26,12 +26,14 @@ function Shell() {
     window.scrollTo(0, 0)
   }, [location.pathname])
 
-  const section = location.pathname.split('/')[1]
+  const [, section, item] = location.pathname.split('/')
   const current = destinations.find((d) => d.id === section)?.id ?? 'home'
+  // Item pages (level 2) give the screen to the content; their photo carries a back button instead.
+  const showNav = !item
 
   return (
     <>
-      <main className="app-main">
+      <main className={showNav ? 'app-main' : 'app-main app-main--bare'}>
         {/* Keyed on the path so each page mounts fresh and plays its entrance. */}
         <div className="page" key={location.pathname}>
           <Routes>
@@ -46,19 +48,21 @@ function Shell() {
           </Routes>
         </div>
       </main>
-      <div className="nav-dock">
-        <BottomNav
-          variant="floating"
-          items={destinations.map(({ id, label, icon, path }) => ({ id, label, icon, href: `#${path}` }))}
-          current={current}
-          onNavigate={(id) => navigate(destinations.find((d) => d.id === id)!.path)}
-          action={
-            <IconButton label="Search" variant="solid" size="lg" onClick={() => setSearching(true)}>
-              <Search />
-            </IconButton>
-          }
-        />
-      </div>
+      {showNav && (
+        <div className="nav-dock">
+          <BottomNav
+            variant="floating"
+            items={destinations.map(({ id, label, icon, path }) => ({ id, label, icon, href: `#${path}` }))}
+            current={current}
+            onNavigate={(id) => navigate(destinations.find((d) => d.id === id)!.path)}
+            action={
+              <IconButton label="Search" variant="solid" size="lg" onClick={() => setSearching(true)}>
+                <Search />
+              </IconButton>
+            }
+          />
+        </div>
+      )}
       <SearchSheet open={searching} onClose={() => setSearching(false)} />
     </>
   )

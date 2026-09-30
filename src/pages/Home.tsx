@@ -1,5 +1,17 @@
-import { Button, Cover, CtaBlock, FeatureGridBlock, Heading, Image, Input, Section, SplitBlock, Stack, Text } from '@dovetail-ds/react'
-import { BadgeCheck, Mail, ScanSearch, ShieldCheck, Wheat } from 'lucide-react'
+import {
+  Button,
+  Cover,
+  CtaBlock,
+  FeatureGridBlock,
+  Heading,
+  Image,
+  Section,
+  SplitBlock,
+  Stack,
+  TestimonialBlock,
+  Text,
+} from '@dovetail-ds/react'
+import { BadgeCheck, Download, ScanSearch, ShieldCheck, Smartphone, Wheat } from 'lucide-react'
 import { PlaceCard, ProductCard, RecipeCard } from '../components/cards'
 import { ButtonLink, Masthead } from '../components/layout'
 import { Rail } from '../components/Rail'
@@ -7,6 +19,7 @@ import { unsplash } from '../data/images'
 import { places } from '../data/places'
 import { products } from '../data/products'
 import { recipes } from '../data/recipes'
+import { testimonials } from '../data/reviews'
 
 // The promoted slots, picked by id so they are easy to swap.
 const partnerProduct = products.find((p) => p.id === 'bronze-cut-rigatoni')!
@@ -122,19 +135,29 @@ export function Home() {
         </Stack>
       </Section>
 
-      {/* Marketing: the newsletter */}
+      {/* Social proof: the community in its own words */}
+      <TestimonialBlock
+        tone="brand-muted"
+        eyebrow="From the community"
+        title="People who get it"
+        quotes={testimonials}
+      />
+
+      {/* Marketing: download the app and join the community */}
       <CtaBlock
         tone="brand"
-        eyebrow="The Sunday Loaf"
-        title="One recipe, one find, one place. Every Sunday."
-        lead="A short, useful letter for people who eat gluten-free. No spam, unsubscribe any time."
+        eyebrow="The sans community"
+        title="Find your gluten-free people."
+        lead="Download sans to review places, share finds and swap recipes with people who eat the way you do."
         actions={
-          <form className="newsletter" onSubmit={(event) => event.preventDefault()}>
-            <Input type="email" aria-label="Email address" placeholder="you@example.com" iconStart={<Mail />} required />
-            <Button type="submit" variant="secondary">
-              Subscribe
+          <div className="store-buttons">
+            <Button variant="secondary" iconStart={<Smartphone />}>
+              Download for iPhone
             </Button>
-          </form>
+            <Button variant="secondary" iconStart={<Download />}>
+              Get it on Android
+            </Button>
+          </div>
         }
       />
 

@@ -31,7 +31,7 @@ export function Rail({ eyebrow, title, to, size = 'default', autoplay, children 
           </Heading>
         </Stack>
         {to && (
-          <IconButton label={`See all ${title.toLowerCase()}`} variant="solid" onClick={() => navigate(to)}>
+          <IconButton label={`See all ${title.toLowerCase()}`} className="icon-secondary" onClick={() => navigate(to)}>
             <ChevronRight />
           </IconButton>
         )}

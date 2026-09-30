@@ -25,6 +25,11 @@ export const places: Place[] = [
     address: '1820 Alberta Street',
     hours: 'Wed–Sun · 7am–2pm',
     order: ['Cardamom knot', 'Seeded country loaf', 'Brown butter canelé'],
+    precautions: [
+      { kind: 'dedicated-kitchen', text: 'Everything is baked in a dedicated gluten-free kitchen' },
+      { kind: 'trained-staff', text: 'Staff are trained on coeliac-safe handling' },
+    ],
+    flags: ['mvp'],
   },
   {
     id: 'osteria-lume',
@@ -42,6 +47,12 @@ export const places: Place[] = [
     address: '214 Court Street',
     hours: 'Tue–Sun · 5:30pm–10pm',
     order: ['Cacio e pepe', 'Wood-roasted branzino', 'Olive oil gelato'],
+    precautions: [
+      { kind: 'separate-water', text: 'Gluten-free pasta cooks in its own pot and water' },
+      { kind: 'separate-prep', text: 'A separate board and utensils for gluten-free dishes' },
+      { kind: 'trained-staff', text: 'Servers flag gluten-free orders to the kitchen' },
+      { kind: 'ask', text: 'Mention it when you book so they can plan ahead' },
+    ],
   },
   {
     id: 'morning-glory',
@@ -59,6 +70,10 @@ export const places: Place[] = [
     address: '901 E Cesar Chavez Street',
     hours: 'Daily · 7am–3pm',
     order: ['Migas taco', 'Blueberry corn muffin', 'Honey oat latte'],
+    precautions: [
+      { kind: 'dedicated-kitchen', text: 'The whole café is gluten-free, pastries included' },
+      { kind: 'separate-prep', text: 'Corn tortillas are pressed to order on their own station' },
+    ],
   },
   {
     id: 'kin-kitchen',
@@ -76,6 +91,11 @@ export const places: Place[] = [
     address: '3120 Valencia Street',
     hours: 'Wed–Mon · 5pm–10pm',
     order: ['Grilled little gems', 'Half chicken, salsa verde', 'Chocolate pot de crème'],
+    precautions: [
+      { kind: 'marked-menu', text: 'Gluten-free dishes are marked on the menu' },
+      { kind: 'shared-fryer', text: 'The fryer is shared, so skip anything fried' },
+      { kind: 'ask', text: 'Ask your server to confirm sauces and dressings' },
+    ],
   },
   {
     id: 'the-good-market',
@@ -93,6 +113,10 @@ export const places: Place[] = [
     address: '3300 W 32nd Avenue',
     hours: 'Daily · 8am–9pm',
     order: ['Local GF sourdough', 'Frozen dumplings', 'Bulk certified oats'],
+    precautions: [
+      { kind: 'checked', text: 'The team checks every product it tags gluten-free' },
+      { kind: 'sealed', text: 'Bakery loaves from gluten-free bakers arrive sealed' },
+    ],
   },
   {
     id: 'saltbox',
@@ -110,6 +134,11 @@ export const places: Place[] = [
     address: '812 W Randolph Street',
     hours: 'Daily · 11am–10pm',
     order: ['Hot honey chicken sandwich', 'Onion rings', 'Soft serve'],
+    precautions: [
+      { kind: 'dedicated-kitchen', text: 'A fully gluten-free kitchen' },
+      { kind: 'dedicated-fryer', text: 'A dedicated fryer, so fried food is safe' },
+    ],
+    flags: ['hot'],
   },
   {
     id: 'crumb-coffee',
@@ -127,6 +156,11 @@ export const places: Place[] = [
     address: '1418 E Pine Street',
     hours: 'Daily · 6:30am–5pm',
     order: ['Flat white', 'GF almond croissant', 'Avocado toast on GF sourdough'],
+    precautions: [
+      { kind: 'sealed', text: 'Gluten-free bakes arrive sealed from a dedicated bakery' },
+      { kind: 'separate-toaster', text: 'Gluten-free toast has its own toaster' },
+      { kind: 'separate-prep', text: 'Fresh tongs for every gluten-free order' },
+    ],
   },
   {
     id: 'verde-cantina',
@@ -144,6 +178,10 @@ export const places: Place[] = [
     address: '1602 W Sunset Boulevard',
     hours: 'Tue–Sun · 12pm–11pm',
     order: ['Al pastor tacos', 'Elote', 'Horchata'],
+    precautions: [
+      { kind: 'dedicated-fryer', text: 'Chips come from a dedicated fryer; ask for them' },
+      { kind: 'ask', text: 'Some salsas contain beer, so check before you order' },
+    ],
   },
   {
     id: 'forno-nero',
@@ -161,5 +199,10 @@ export const places: Place[] = [
     address: '1144 Frankford Avenue',
     hours: 'Tue–Sun · 5pm–10pm',
     order: ['Margherita pizza', 'Nduja & hot honey pizza', 'Tiramisu'],
+    precautions: [
+      { kind: 'dedicated-kitchen', text: 'A fully gluten-free kitchen, with no shared flour in the air' },
+      { kind: 'trained-staff', text: 'Every pizza is made on gluten-free-only peels and boards' },
+    ],
+    flags: ['hot'],
   },
 ]

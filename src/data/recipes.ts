@@ -59,6 +59,7 @@ export const recipes: Recipe[] = [
       'Heat the oven as hot as it goes with a tray or stone inside. Press the dough out on baking paper.',
       'Top with passata and torn mozzarella and bake 10–12 minutes until blistered. Finish with basil.',
     ],
+    flags: ['hot'],
   },
   {
     id: 'green-goddess-bowl',
@@ -140,6 +141,7 @@ export const recipes: Recipe[] = [
       'Bake in a lidded pot at 240 °C for 45 minutes, then uncovered for 20 more.',
       'Cool completely before slicing; the crumb sets as it cools.',
     ],
+    flags: ['hot'],
   },
   {
     id: 'salmon-miso',
@@ -193,6 +195,7 @@ export const recipes: Recipe[] = [
       'Chill the dough for at least 30 minutes so the flour can hydrate.',
       'Scoop onto trays and bake at 180 °C for 10–11 minutes. Top with flaky salt.',
     ],
+    flags: ['mvp'],
   },
   {
     id: 'berry-yogurt-bowl',

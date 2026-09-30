@@ -1,13 +1,35 @@
 import { useParams } from 'react-router'
 import { Badge, Heading, List, Section, Stack, Text } from '@dovetail-ds/react'
-import { BookOpen, Clock, Coffee, Croissant, MapPin, ShieldCheck, Star, Store, Utensils } from 'lucide-react'
+import type { ComponentType } from 'react'
+import {
+  BadgeCheck,
+  BookOpen,
+  Clock,
+  Coffee,
+  CookingPot,
+  Croissant,
+  Droplets,
+  GraduationCap,
+  MapPin,
+  MessageCircleWarning,
+  Package,
+  Sandwich,
+  ShieldCheck,
+  Star,
+  Store,
+  TriangleAlert,
+  Utensils,
+} from 'lucide-react'
 import { PlaceCard } from '../components/cards'
+import { FlagChips } from '../components/flags'
+import { Reviews } from '../components/Reviews'
 import type { ChipOption } from '../components/FilterChips'
 import { DetailHero, ListingPage, MetaItem, NotFoundState } from '../components/layout'
 import { Rail } from '../components/Rail'
 import { useToggleSet } from '../hooks'
 import { places, safetyLabel } from '../data/places'
-import type { Place } from '../data/types'
+import { placeReviews } from '../data/reviews'
+import type { Place, PrecautionKind } from '../data/types'
 
 type PlaceFilter = Place['type'] | 'dedicated' | 'gf-menu'
 
@@ -19,6 +41,21 @@ const chips: ChipOption<PlaceFilter>[] = [
   { id: 'bakery', label: 'Bakeries', icon: Croissant },
   { id: 'market', label: 'Markets', icon: Store },
 ]
+
+/** An icon for each kind of precaution; cautions are drawn in the warning colour. */
+const precautionStyle: Record<PrecautionKind, { icon: ComponentType<{ 'aria-hidden'?: boolean }>; caution?: boolean }> = {
+  'dedicated-kitchen': { icon: ShieldCheck },
+  'dedicated-fryer': { icon: CookingPot },
+  'shared-fryer': { icon: TriangleAlert, caution: true },
+  'separate-prep': { icon: Utensils },
+  'separate-water': { icon: Droplets },
+  'separate-toaster': { icon: Sandwich },
+  'marked-menu': { icon: BookOpen },
+  checked: { icon: BadgeCheck },
+  sealed: { icon: Package },
+  'trained-staff': { icon: GraduationCap },
+  ask: { icon: MessageCircleWarning, caution: true },
+}
 
 const types = new Set<string>(['restaurant', 'cafe', 'bakery', 'market'])
 const safeties = new Set<string>(['dedicated', 'gf-menu'])
@@ -69,7 +106,7 @@ export function PlaceDetail() {
   return (
     <>
       <DetailHero
-        back={{ href: '#/places', label: 'All places' }}
+        back={{ to: '/places', label: 'Back to all places' }}
         image={place.image}
         eyebrow={`${place.type} · ${place.neighborhood}, ${place.city}`}
         title={place.name}
@@ -84,9 +121,12 @@ export function PlaceDetail() {
           </>
         }
         badges={
-          <Badge tone={place.safety === 'dedicated' ? 'primary' : place.safety === 'gf-menu' ? 'info' : 'warning'}>
-            {safetyLabel[place.safety]}
-          </Badge>
+          <>
+            <Badge tone={place.safety === 'dedicated' ? 'primary' : place.safety === 'gf-menu' ? 'info' : 'warning'}>
+              {safetyLabel[place.safety]}
+            </Badge>
+            <FlagChips flags={place.flags} />
+          </>
         }
       />
       <Section>
@@ -97,11 +137,7 @@ export function PlaceDetail() {
             </Heading>
             <List
               label="What to order"
-              items={place.order.map((dish) => ({
-                id: dish,
-                title: dish,
-                leading: <Utensils size={20} aria-hidden />,
-              }))}
+              items={place.order.map((dish) => ({ id: dish, title: dish }))}
             />
           </Stack>
           <Stack gap="md">
@@ -111,11 +147,27 @@ export function PlaceDetail() {
             <Text variant="lead" tone="primary">
               {place.description}
             </Text>
+            <ul className="precautions" aria-label="Precautions">
+              {place.precautions.map((p) => {
+                const { icon: Icon, caution } = precautionStyle[p.kind]
+                return (
+                  <li key={p.kind}>
+                    <span className={caution ? 'precaution precaution--caution' : 'precaution'}>
+                      <Icon aria-hidden />
+                    </span>
+                    <Text as="span">{p.text}</Text>
+                  </li>
+                )
+              })}
+            </ul>
             <Text variant="small" tone="secondary">
               Kitchens change. Always tell your server you need gluten-free food when you order.
             </Text>
           </Stack>
         </div>
+      </Section>
+      <Section>
+        <Reviews reviews={placeReviews[place.id] ?? []} />
       </Section>
       <Section tone="subtle">
         <Rail eyebrow="Plan the next one" title="More places" to="/places" size="wide">
