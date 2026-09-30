@@ -2,8 +2,9 @@ import { useEffect, useState } from 'react'
 import { HashRouter, Route, Routes, useLocation, useNavigate } from 'react-router'
 import { BottomNav, IconButton } from '@dovetail-ds/react'
 import { House, MapPin, Search, ShoppingBasket, UtensilsCrossed } from 'lucide-react'
-import { PrototypeBanner, SiteFooter } from './components/chrome'
+import { SiteFooter } from './components/chrome'
 import { ErrorBoundary } from './components/ErrorBoundary'
+import { QuickViewProvider } from './components/QuickView'
 import { SearchSheet } from './components/SearchSheet'
 import { Home } from './pages/Home'
 import { AboutPage, CreditsPage, PrivacyPage, TermsPage } from './pages/Info'
@@ -37,7 +38,6 @@ function Shell() {
 
   return (
     <>
-      <PrototypeBanner />
       <main className={showNav ? 'app-main' : 'app-main app-main--bare'}>
         {/* Keyed on the path so each page mounts fresh and plays its entrance, and a crash resets on navigation. */}
         <div className="page" key={location.pathname}>
@@ -83,7 +83,9 @@ function Shell() {
 function App() {
   return (
     <HashRouter>
-      <Shell />
+      <QuickViewProvider>
+        <Shell />
+      </QuickViewProvider>
     </HashRouter>
   )
 }

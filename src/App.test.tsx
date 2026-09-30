@@ -34,9 +34,9 @@ describe('every page', () => {
 })
 
 describe('the shell', () => {
-  it('says the content is sample data', () => {
+  it('says in the footer that the content is a prototype', () => {
     visit('/')
-    expect(screen.getByRole('note').textContent).toMatch(/sample content/i)
+    expect(screen.getByRole('contentinfo').textContent).toMatch(/Prototype\..*unverified.*sample content/i)
   })
 
   it('shows the nav on section pages', () => {
@@ -61,6 +61,39 @@ describe('the shell', () => {
   it('shows a friendly page for unknown addresses', () => {
     visit('/nowhere')
     expect(screen.getByText('We couldn’t find that page')).toBeTruthy()
+  })
+})
+
+describe('quick view', () => {
+  it('opens a card in a sheet, with a way to the full page', async () => {
+    visit('/recipes')
+    const first = recipes[0]
+    await userEvent.click(screen.getAllByRole('link', { name: first.title })[0])
+    expect(window.location.hash).toBe('#/recipes')
+    const sheet = await screen.findByRole('dialog')
+    expect(sheet.textContent).toContain(first.dek)
+    expect(sheet.textContent).toContain('Wheat-free')
+    await userEvent.click(screen.getByRole('button', { name: 'See the full recipe' }))
+    expect(window.location.hash).toBe(`#/recipes/${first.id}`)
+  })
+})
+
+describe('products', () => {
+  it('doesn’t show prices, which vary by shop', () => {
+    visit('/products')
+    expect(screen.queryByText(products[0].price)).toBeNull()
+    visit(`/products/${products[0].id}`)
+    expect(screen.queryByText(products[0].price)).toBeNull()
+  })
+})
+
+describe('search', () => {
+  it('opens with recommendations before anything is typed', async () => {
+    visit('/')
+    await userEvent.click(screen.getByRole('button', { name: 'Search' }))
+    const sheet = await screen.findByRole('dialog')
+    expect(sheet.textContent).toContain('Recommended')
+    expect(sheet.textContent).toContain('Teocalli Cocina')
   })
 })
 

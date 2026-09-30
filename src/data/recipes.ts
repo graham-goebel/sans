@@ -10,7 +10,7 @@ export const recipes: Recipe[] = [
     minutes: 25,
     serves: 4,
     difficulty: 'Easy',
-    traits: ['nut-free'],
+    traits: ['wheat-free', 'nut-free'],
     dek: 'Despite the name, buckwheat is no relation to wheat. It gives these tall, tender stacks a toasty, almost malty depth.',
     ingredients: [
       '150 g buckwheat flour',
@@ -39,7 +39,7 @@ export const recipes: Recipe[] = [
     minutes: 90,
     serves: 2,
     difficulty: 'Weekend project',
-    traits: ['nut-free', 'egg-free'],
+    traits: ['wheat-free', 'nut-free', 'egg-free'],
     dek: 'Psyllium husk is the secret: it gives a gluten-free dough real stretch, and a crust that chars at the edges and stays chewy in the middle.',
     ingredients: [
       '200 g white rice flour',
@@ -69,7 +69,7 @@ export const recipes: Recipe[] = [
     minutes: 20,
     serves: 2,
     difficulty: 'Easy',
-    traits: ['dairy-free', 'vegan', 'egg-free'],
+    traits: ['wheat-free', 'dairy-free', 'vegan', 'egg-free'],
     dek: 'Quinoa, crisp vegetables and a herby dressing thick enough to coat everything it touches.',
     ingredients: [
       '150 g quinoa, rinsed',
@@ -96,7 +96,7 @@ export const recipes: Recipe[] = [
     minutes: 60,
     serves: 8,
     difficulty: 'Easy',
-    traits: ['dairy-free'],
+    traits: ['wheat-free', 'dairy-free'],
     dek: 'A one-bowl cake that is naturally gluten-free and tastes even better the next day.',
     ingredients: [
       '200 g ground almonds',
@@ -123,7 +123,7 @@ export const recipes: Recipe[] = [
     minutes: 240,
     serves: 10,
     difficulty: 'Weekend project',
-    traits: ['dairy-free', 'vegan', 'egg-free', 'nut-free'],
+    traits: ['wheat-free', 'dairy-free', 'vegan', 'egg-free', 'nut-free'],
     dek: 'An open, tangy crumb and a crust that crackles as it cools. Start the starter a week ahead.',
     ingredients: [
       '100 g active brown rice starter',
@@ -151,7 +151,7 @@ export const recipes: Recipe[] = [
     minutes: 30,
     serves: 2,
     difficulty: 'Easy',
-    traits: ['dairy-free', 'nut-free', 'egg-free'],
+    traits: ['wheat-free', 'dairy-free', 'nut-free', 'egg-free'],
     dek: 'Most miso is made with barley, so look for a rice or soybean miso labelled gluten-free, and use tamari instead of soy sauce.',
     ingredients: [
       '2 salmon fillets',
@@ -177,7 +177,7 @@ export const recipes: Recipe[] = [
     minutes: 35,
     serves: 12,
     difficulty: 'Easy',
-    traits: ['nut-free'],
+    traits: ['wheat-free', 'nut-free'],
     dek: 'Crisp edges, chewy middles, and nobody will guess they are gluten-free.',
     ingredients: [
       '220 g gluten-free plain flour blend',
@@ -205,7 +205,7 @@ export const recipes: Recipe[] = [
     minutes: 10,
     serves: 2,
     difficulty: 'Easy',
-    traits: ['egg-free'],
+    traits: ['wheat-free', 'egg-free'],
     dek: 'Regular oats are often cross-contaminated with wheat, so buy oats that are certified gluten-free.',
     ingredients: [
       '80 g certified gluten-free oats',

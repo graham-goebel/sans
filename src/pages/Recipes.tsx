@@ -1,17 +1,16 @@
 import { useParams } from 'react-router'
-import { Badge, Checkbox, Heading, Section, Stack, Text } from '@dovetail-ds/react'
+import { Checkbox, Heading, Section, Stack, Text } from '@dovetail-ds/react'
 import { CakeSlice, ChefHat, Clock, Croissant, EggOff, MilkOff, NutOff, Sunrise, Timer, Users, UtensilsCrossed, Vegan } from 'lucide-react'
 import { RecipeCard } from '../components/cards'
 import type { ChipOption } from '../components/FilterChips'
 import { DetailHero, ListingPage, MetaItem, NotFoundState } from '../components/layout'
-import { FlagChips } from '../components/flags'
+import { recipeChips } from '../lib/chips'
 import { Rail } from '../components/Rail'
 import { Reviews } from '../components/Reviews'
 import { useToggleSet } from '../hooks'
 import { matchesRecipe, type RecipeFilter } from '../lib/filters'
 import { recipes } from '../data/recipes'
 import { recipeReviews } from '../data/reviews'
-import { traitLabel } from '../data/traits'
 
 const chips: ChipOption<RecipeFilter>[] = [
   { id: 'breakfast', label: 'Breakfast', icon: Sunrise },
@@ -74,15 +73,7 @@ export function RecipeDetail() {
             <MetaItem icon={<ChefHat aria-hidden />}>{recipe.difficulty}</MetaItem>
           </>
         }
-        badges={
-          <>
-            <FlagChips flags={recipe.flags} />
-            <Badge tone="primary">Gluten-free</Badge>
-            {recipe.traits.map((t) => (
-              <Badge key={t}>{traitLabel[t]}</Badge>
-            ))}
-          </>
-        }
+        chips={recipeChips(recipe)}
       />
       <Section>
         <div className="detail-layout">

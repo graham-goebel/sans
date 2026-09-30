@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router'
 import { Button, EmptyState, Heading, IconButton, Section, Stack, Text } from '@dovetail-ds/react'
 import { ArrowLeft, SearchX } from 'lucide-react'
 import { FilterChips, type ChipOption } from './FilterChips'
+import type { ChipSpec } from '../lib/chips'
+import { ChipList } from './itemChips'
 
 export function Masthead() {
   return (
@@ -112,35 +114,38 @@ interface DetailHeroProps {
   title: string
   dek: string
   meta?: ReactNode
-  badges?: ReactNode
+  chips?: ChipSpec[]
 }
 
 /**
- * The top of an item page: a tall photograph bled edge to edge with a back
- * button over it (the nav bar is hidden on these pages), then the headline.
+ * The top of an item page: a tall photograph bled edge to edge, with the
+ * eyebrow and headline set over it and a back button in the corner (the nav
+ * bar is hidden on these pages). The standfirst, facts and labels follow.
  */
-export function DetailHero({ back, image, photoNote, eyebrow, title, dek, meta, badges }: DetailHeroProps) {
+export function DetailHero({ back, image, photoNote, eyebrow, title, dek, meta, chips }: DetailHeroProps) {
   const navigate = useNavigate()
   return (
     <>
       <div className="detail-photo">
         <img src={image} alt="" />
-        {photoNote && <span className="photo-note">{photoNote}</span>}
         <IconButton label={back.label} className="icon-glass detail-back" size="lg" onClick={() => navigate(back.to)}>
           <ArrowLeft />
         </IconButton>
-      </div>
-      <Section spacing="compact">
-        <Stack gap="md">
-          <Text variant="eyebrow" tone="brand">
+        {photoNote && <span className="photo-note">{photoNote}</span>}
+        <div className="detail-photo-text dark">
+          <Text variant="eyebrow" tone="inherit">
             {eyebrow}
           </Text>
           <Heading level={1} size="display-md">
             {title}
           </Heading>
+        </div>
+      </div>
+      <Section spacing="compact">
+        <Stack gap="md">
           <Text variant="lead">{dek}</Text>
           {meta && <div className="meta-row">{meta}</div>}
-          {badges && <div className="chip-row">{badges}</div>}
+          {chips && <ChipList chips={chips} />}
         </Stack>
       </Section>
     </>

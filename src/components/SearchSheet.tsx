@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState, type ComponentType, type KeyboardEvent } 
 import { useNavigate } from 'react-router'
 import { EmptyState, Heading, Input, List, Sheet, Stack, Tag, Text } from '@dovetail-ds/react'
 import { Coffee, Croissant, Search, SearchX, ShoppingBasket, Store, Utensils, UtensilsCrossed } from 'lucide-react'
-import { search, type Kind } from '../lib/search'
+import { recommendations, search, type Kind, type Result } from '../lib/search'
 
 const kinds: { id: Kind; label: string; icon: ComponentType }[] = [
   { id: 'recipe', label: 'Recipes', icon: UtensilsCrossed },
@@ -20,7 +20,7 @@ const groups: { title: string; kinds: Kind[] }[] = [
   { title: 'Places', kinds: ['restaurant', 'cafe', 'bakery', 'market'] },
 ]
 
-const suggestions = ['Pizza', 'Bread', 'Breakfast', 'Chocolate', 'Chicago']
+const suggestions = ['Pizza', 'Bakery', 'Breakfast', 'Chocolate', 'LoHi']
 
 /** Tag renders a span with role="button"; give it a button's keys. */
 const pressOnKeys = (action: () => void) => (event: KeyboardEvent) => {
@@ -98,7 +98,7 @@ export function SearchSheet({ open, onClose }: SearchSheetProps) {
       <Stack gap="lg">
         <Input
           aria-label="Search recipes, products and places"
-          placeholder="Try “pizza”, “bakery” or “Chicago”"
+          placeholder="Try “pizza”, “bakery” or “LoHi”"
           iconStart={<Search />}
           value={query}
           onChange={(event) => setQuery(event.target.value)}
@@ -106,17 +106,25 @@ export function SearchSheet({ open, onClose }: SearchSheetProps) {
           type="search"
         />
         {!searching ? (
-          <Stack gap="sm">
-            <Text variant="small" tone="secondary">
-              Popular searches
-            </Text>
-            <div className="chip-row">
-              {suggestions.map((s) => (
-                <Tag key={s} onClick={() => setQuery(s)} onKeyDown={pressOnKeys(() => setQuery(s))}>
-                  {s}
-                </Tag>
-              ))}
-            </div>
+          <Stack gap="xl">
+            <Stack gap="sm">
+              <Text variant="small" tone="secondary">
+                Popular searches
+              </Text>
+              <div className="chip-row">
+                {suggestions.map((s) => (
+                  <Tag key={s} onClick={() => setQuery(s)} onKeyDown={pressOnKeys(() => setQuery(s))}>
+                    {s}
+                  </Tag>
+                ))}
+              </div>
+            </Stack>
+            <Stack gap="md">
+              <Text variant="eyebrow" tone="brand">
+                Recommended
+              </Text>
+              <ResultGroups results={recommendations} onOpen={go} />
+            </Stack>
           </Stack>
         ) : shown.length === 0 ? (
           <EmptyState
@@ -129,32 +137,39 @@ export function SearchSheet({ open, onClose }: SearchSheetProps) {
             }
           />
         ) : (
-          <Stack gap="xl">
-            {groups.map((group) => {
-              const items = shown.filter((r) => group.kinds.includes(r.kind))
-              if (items.length === 0) return null
-              return (
-                <Stack key={group.title} gap="xs">
-                  <Heading level={3} size="heading-sm">
-                    {group.title} <span className="group-count">{items.length}</span>
-                  </Heading>
-                  <List
-                    label={group.title}
-                    interactive
-                    items={items.map((r) => ({
-                      id: r.id,
-                      title: r.title,
-                      description: r.detail,
-                      leading: <img src={r.image} alt="" className="result-thumb" />,
-                      onClick: () => go(r.path),
-                    }))}
-                  />
-                </Stack>
-              )
-            })}
-          </Stack>
+          <ResultGroups results={shown} onOpen={go} />
         )}
       </Stack>
     </Sheet>
+  )
+}
+
+/** Results grouped as Recipes, Products and Places, each with a count. */
+function ResultGroups({ results, onOpen }: { results: Result[]; onOpen: (path: string) => void }) {
+  return (
+    <Stack gap="xl">
+      {groups.map((group) => {
+        const items = results.filter((r) => group.kinds.includes(r.kind))
+        if (items.length === 0) return null
+        return (
+          <Stack key={group.title} gap="xs">
+            <Heading level={3} size="heading-sm">
+              {group.title} <span className="group-count">{items.length}</span>
+            </Heading>
+            <List
+              label={group.title}
+              interactive
+              items={items.map((r) => ({
+                id: r.id,
+                title: r.title,
+                description: r.detail,
+                leading: <img src={r.image} alt="" className="result-thumb" />,
+                onClick: () => onOpen(r.path),
+              }))}
+            />
+          </Stack>
+        )
+      })}
+    </Stack>
   )
 }
