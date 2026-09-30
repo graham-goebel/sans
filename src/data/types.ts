@@ -1,4 +1,4 @@
-export type Trait = 'dairy-free' | 'vegan' | 'nut-free' | 'egg-free'
+export type Trait = 'wheat-free' | 'dairy-free' | 'vegan' | 'nut-free' | 'egg-free'
 
 /** Editorial flags shown as icon chips on cards: trending now, or a standout pick. */
 export type Flag = 'hot' | 'mvp'

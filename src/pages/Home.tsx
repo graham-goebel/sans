@@ -1,4 +1,5 @@
 import {
+  Avatar,
   Cover,
   CtaBlock,
   FeatureGridBlock,
@@ -10,7 +11,7 @@ import {
   TestimonialBlock,
   Text,
 } from '@dovetail-ds/react'
-import { BadgeCheck, ScanSearch, ShieldCheck, Smartphone } from 'lucide-react'
+import { BadgeCheck, ScanSearch, ShieldCheck, Smartphone, ThumbsUp } from 'lucide-react'
 import { PlaceCard, ProductCard, RecipeCard } from '../components/cards'
 import { ButtonLink, Masthead } from '../components/layout'
 import { Rail } from '../components/Rail'
@@ -57,7 +58,7 @@ export function Home() {
               <ProductCard key={p.id} product={p} />
             ))}
           </Rail>
-          <Rail eyebrow="Go · Denver" title="Places" to="/places" size="wide" autoplay={7000}>
+          <Rail eyebrow="Go · Denver" title="Places" to="/places" autoplay={7000}>
             {places.map((p) => (
               <PlaceCard key={p.id} place={p} />
             ))}
@@ -145,7 +146,21 @@ export function Home() {
         eyebrow="From the community"
         title="People who get it"
         lead={site.sampleContent ? 'Sample quotes, written to show how this will look.' : undefined}
-        quotes={testimonials}
+        quotes={testimonials.map((t) => ({
+          quote: (
+            <>
+              {t.quote}
+              {t.recommends && (
+                <span className="recommends">
+                  <ThumbsUp aria-hidden /> Recommends sans
+                </span>
+              )}
+            </>
+          ),
+          name: t.name,
+          role: t.role,
+          avatar: <Avatar name={t.name} src={t.photo} size="md" />,
+        }))}
       />
 
       {/* Marketing: the community app, announced but not yet out */}

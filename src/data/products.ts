@@ -11,7 +11,7 @@ export const products: Product[] = [
     price: '$7.50',
     image: unsplash('1549931319-a545dcf3bc73'),
     certified: true,
-    traits: ['dairy-free', 'nut-free'],
+    traits: ['wheat-free', 'dairy-free', 'nut-free'],
     rating: 4.7,
     dek: 'Soft, sliceable and it doesn’t fall apart. The sandwich bread we keep coming back to.',
     description:
@@ -26,7 +26,7 @@ export const products: Product[] = [
     price: '$4.25',
     image: unsplash('1563379926898-05f4575a45d8'),
     certified: true,
-    traits: ['dairy-free', 'vegan', 'egg-free', 'nut-free'],
+    traits: ['wheat-free', 'dairy-free', 'vegan', 'egg-free', 'nut-free'],
     rating: 4.8,
     dek: 'Corn and rice pasta with a rough, sauce-catching surface that holds its bite.',
     description:
@@ -42,7 +42,7 @@ export const products: Product[] = [
     price: '$5.00',
     image: unsplash('1452195100486-9cc805987862'),
     certified: true,
-    traits: ['dairy-free', 'vegan', 'egg-free'],
+    traits: ['wheat-free', 'dairy-free', 'vegan', 'egg-free'],
     rating: 4.5,
     dek: 'Thin, shattering crisp crackers for cheese boards and afternoon snacking.',
     description:
@@ -57,7 +57,7 @@ export const products: Product[] = [
     price: '$9.95',
     image: unsplash('1486427944299-d1955d23e34d'),
     certified: true,
-    traits: ['dairy-free', 'vegan', 'egg-free', 'nut-free'],
+    traits: ['wheat-free', 'dairy-free', 'vegan', 'egg-free', 'nut-free'],
     rating: 4.6,
     dek: 'Swap it one-for-one into your old recipes. It already has the binder in it.',
     description:
@@ -72,7 +72,7 @@ export const products: Product[] = [
     price: '$6.50',
     image: unsplash('1606313564200-e75d5e30476c'),
     certified: true,
-    traits: ['nut-free'],
+    traits: ['wheat-free', 'nut-free'],
     rating: 4.9,
     dek: 'Crackly tops, dense middles. Add eggs and butter and they’re done in 30 minutes.',
     description:
@@ -88,7 +88,7 @@ export const products: Product[] = [
     price: '$8.00',
     image: unsplash('1511690656952-34342bb7c2f2'),
     certified: true,
-    traits: ['dairy-free', 'vegan', 'egg-free'],
+    traits: ['wheat-free', 'dairy-free', 'vegan', 'egg-free'],
     rating: 4.4,
     dek: 'Big clusters, made with certified gluten-free oats.',
     description:
@@ -103,7 +103,7 @@ export const products: Product[] = [
     price: '$11.00',
     image: unsplash('1555507036-ab1f4038808a'),
     certified: false,
-    traits: ['nut-free'],
+    traits: ['wheat-free', 'nut-free'],
     rating: 4.3,
     dek: 'Bake from frozen for flaky, honeycombed croissants on a Sunday morning.',
     description:
@@ -118,7 +118,7 @@ export const products: Product[] = [
     price: '$5.50',
     image: unsplash('1558961363-fa8fdf82db35'),
     certified: true,
-    traits: ['dairy-free', 'vegan', 'egg-free'],
+    traits: ['wheat-free', 'dairy-free', 'vegan', 'egg-free'],
     rating: 4.2,
     dek: 'Soft-baked, vegan and seriously chocolatey.',
     description:
@@ -133,7 +133,7 @@ export const products: Product[] = [
     price: '$7.25',
     image: unsplash('1565299624946-b28f40a0ae38'),
     certified: true,
-    traits: ['dairy-free', 'vegan', 'egg-free', 'nut-free'],
+    traits: ['wheat-free', 'dairy-free', 'vegan', 'egg-free', 'nut-free'],
     rating: 4.6,
     dek: 'Add water and oil for a stretchy pizza dough that chars in a hot oven.',
     description:

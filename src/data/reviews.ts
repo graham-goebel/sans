@@ -1,6 +1,8 @@
+import { unsplash } from './images'
 import type { Review } from './types'
 
-// Sample reviews and testimonials for the prototype. The people are fictional.
+// Sample reviews and testimonials for the prototype. The people are fictional,
+// and the testimonial photos are stock portraits.
 
 export const recipeReviews: Record<string, Review[]> = {
   'buckwheat-pancakes': [
@@ -81,15 +83,21 @@ export const testimonials = [
     quote: 'Eating out used to mean an interrogation. Now I open sans, check how a kitchen handles gluten, and just go.',
     name: 'Amelia P.',
     role: 'Coeliac since 2019',
+    photo: unsplash('1494790108377-be9c29b29330', 160),
+    recommends: true,
   },
   {
     quote: 'The product reviews are honest about texture, not just labels. It’s changed what’s in my cupboard.',
     name: 'Marco V.',
     role: 'Home cook, gluten-free household',
+    photo: unsplash('1507003211169-0a1dd7228f2d', 160),
+    recommends: true,
   },
   {
     quote: 'I found three safe bakeries within a week of moving cities. It felt like being handed a map.',
     name: 'Priya S.',
     role: 'Gluten-free for 8 years',
+    photo: unsplash('1438761681033-6461ffad8d80', 160),
+    recommends: true,
   },
 ]

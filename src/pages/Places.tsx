@@ -1,41 +1,33 @@
 import { lazy, Suspense, useState } from 'react'
 import { useParams, useSearchParams } from 'react-router'
-import { Badge, Button, Callout, Heading, Link, List, Section, Stack, Tabs, Text } from '@dovetail-ds/react'
-import type { ComponentType } from 'react'
+import { Button, Callout, Heading, Link, List, Section, Stack, Tabs, Text } from '@dovetail-ds/react'
 import {
-  BadgeCheck,
   BookOpen,
   CalendarCheck,
   Clock,
   Coffee,
-  CookingPot,
   Croissant,
-  Droplets,
-  GraduationCap,
   LayoutList,
   LocateFixed,
   LocateOff,
   Map as MapIcon,
   MapPin,
-  MessageCircleWarning,
-  Package,
-  Sandwich,
   ShieldCheck,
   Star,
   Store,
-  TriangleAlert,
   Utensils,
 } from 'lucide-react'
 import { PlaceCard } from '../components/cards'
-import { FlagChips } from '../components/flags'
+import { placeChips } from '../lib/chips'
+import { PrecautionList } from '../components/precautions'
 import type { ChipOption } from '../components/FilterChips'
 import { DetailHero, ListingPage, MetaItem, NotFoundState } from '../components/layout'
 import { Rail } from '../components/Rail'
 import { useNearMe, useToggleSet } from '../hooks'
 import { byDistance, nearestLocation } from '../lib/geo'
 import { matchesPlace, type PlaceFilter } from '../lib/filters'
-import { places, safetyText } from '../data/places'
-import type { Place, PrecautionKind } from '../data/types'
+import { places } from '../data/places'
+import type { Place } from '../data/types'
 
 const chips: ChipOption<PlaceFilter>[] = [
   { id: 'dedicated', label: '100% gluten-free', icon: ShieldCheck },
@@ -45,21 +37,6 @@ const chips: ChipOption<PlaceFilter>[] = [
   { id: 'bakery', label: 'Bakeries', icon: Croissant },
   { id: 'market', label: 'Markets', icon: Store },
 ]
-
-/** An icon for each kind of precaution; cautions are drawn in the warning colour. */
-const precautionStyle: Record<PrecautionKind, { icon: ComponentType<{ 'aria-hidden'?: boolean }>; caution?: boolean }> = {
-  'dedicated-kitchen': { icon: ShieldCheck },
-  'dedicated-fryer': { icon: CookingPot },
-  'shared-fryer': { icon: TriangleAlert, caution: true },
-  'separate-prep': { icon: Utensils },
-  'separate-water': { icon: Droplets },
-  'separate-toaster': { icon: Sandwich },
-  'marked-menu': { icon: BookOpen },
-  checked: { icon: BadgeCheck },
-  sealed: { icon: Package },
-  'trained-staff': { icon: GraduationCap },
-  ask: { icon: MessageCircleWarning, caution: true },
-}
 
 // The map (and Leaflet) loads only when someone opens it.
 const PlacesMap = lazy(() => import('../components/PlacesMap'))
@@ -207,14 +184,7 @@ export function PlaceDetail() {
             )}
           </>
         }
-        badges={
-          <>
-            <Badge tone={place.safety === 'dedicated' ? 'primary' : place.safety === 'gf-menu' ? 'info' : 'warning'}>
-              {safetyText(place)}
-            </Badge>
-            <FlagChips flags={place.flags} unverified={unverified} />
-          </>
-        }
+        chips={placeChips(place)}
       />
       <Section>
         <div className="detail-layout">
@@ -238,19 +208,7 @@ export function PlaceDetail() {
             <Text variant="lead" tone="primary">
               {place.description}
             </Text>
-            <ul className="precautions" aria-label="Precautions">
-              {place.precautions.map((p) => {
-                const { icon: Icon, caution } = precautionStyle[p.kind]
-                return (
-                  <li key={p.text}>
-                    <span className={caution ? 'precaution precaution--caution' : 'precaution'}>
-                      <Icon aria-hidden />
-                    </span>
-                    <Text as="span">{p.text}</Text>
-                  </li>
-                )
-              })}
-            </ul>
+            <PrecautionList precautions={place.precautions} />
             {unverified ? (
               <Callout tone="caution" title="Not yet confirmed">
                 sans hasn’t confirmed these details with {place.name}. They come from public listings, reviews and
@@ -277,7 +235,7 @@ export function PlaceDetail() {
         </div>
       </Section>
       <Section tone="subtle">
-        <Rail eyebrow="Plan the next one" title="More places" to="/places" size="wide">
+        <Rail eyebrow="Plan the next one" title="More places" to="/places">
           {nearby.map((p) => (
             <PlaceCard key={p.id} place={p} />
           ))}

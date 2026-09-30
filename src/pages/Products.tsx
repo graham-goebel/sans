@@ -1,10 +1,10 @@
 import { useParams } from 'react-router'
-import { Badge, Heading, List, Section, Stack, Text } from '@dovetail-ds/react'
-import { BadgeCheck, CakeSlice, ChefHat, Coffee, CookingPot, Cookie, Croissant, MilkOff, NutOff, Star, Store, Tag, Vegan } from 'lucide-react'
+import { Heading, List, Section, Stack, Text } from '@dovetail-ds/react'
+import { BadgeCheck, CakeSlice, ChefHat, Coffee, CookingPot, Cookie, Croissant, MilkOff, NutOff, Star, Store, Vegan } from 'lucide-react'
 import { ProductCard, RecipeCard } from '../components/cards'
 import type { ChipOption } from '../components/FilterChips'
 import { DetailHero, ListingPage, MetaItem, NotFoundState } from '../components/layout'
-import { FlagChips } from '../components/flags'
+import { productChips } from '../lib/chips'
 import { Rail } from '../components/Rail'
 import { Reviews } from '../components/Reviews'
 import { useToggleSet } from '../hooks'
@@ -12,7 +12,6 @@ import { matchesProduct, type ProductFilter } from '../lib/filters'
 import { products } from '../data/products'
 import { recipes } from '../data/recipes'
 import { productReviews } from '../data/reviews'
-import { traitLabel } from '../data/traits'
 import type { Product } from '../data/types'
 
 const chips: ChipOption<ProductFilter>[] = [
@@ -63,8 +62,7 @@ const pairings: Partial<Record<Product['category'], Array<(typeof recipes)[numbe
   baking: ['baking', 'desserts'],
   sweets: ['desserts', 'baking'],
   breakfast: ['breakfast'],
-  snacks: ['quick'],
-}
+  snacks: ['quick'] }
 
 export function ProductDetail() {
   const { id } = useParams()
@@ -84,23 +82,10 @@ export function ProductDetail() {
         dek={product.dek}
         meta={
           <>
-            <MetaItem icon={<Tag aria-hidden />}>{product.price}</MetaItem>
             <MetaItem icon={<Star aria-hidden />}>{product.rating.toFixed(1)} from our testers</MetaItem>
           </>
         }
-        badges={
-          <>
-            <FlagChips flags={product.flags} />
-            {product.certified ? (
-              <Badge tone="primary">Certified gluten-free</Badge>
-            ) : (
-              <Badge tone="warning">Gluten-free, not certified</Badge>
-            )}
-            {product.traits.map((t) => (
-              <Badge key={t}>{traitLabel[t]}</Badge>
-            ))}
-          </>
-        }
+        chips={productChips(product)}
       />
       <Section>
         <div className="detail-layout">
@@ -113,8 +98,7 @@ export function ProductDetail() {
               items={product.whereToBuy.map((where) => ({
                 id: where,
                 title: where,
-                leading: <Store size={20} aria-hidden />,
-              }))}
+                leading: <Store size={20} aria-hidden /> }))}
             />
           </Stack>
           <Stack gap="md">

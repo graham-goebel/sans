@@ -16,10 +16,12 @@ interface FlagChipsProps {
   certified?: boolean
   /** Not yet confirmed with the place. Shown on its own: editorial flags like Hot and MVP don't apply until it is. */
   unverified?: boolean
+  /** Icons only, for cards; the label stays as a tooltip and for screen readers. */
+  iconOnly?: boolean
 }
 
 /** Small icon chips for an item's flags: unverified, trending, a standout pick, certified gluten-free. */
-export function FlagChips({ flags = [], certified = false, unverified = false }: FlagChipsProps) {
+export function FlagChips({ flags = [], certified = false, unverified = false, iconOnly = false }: FlagChipsProps) {
   const shown: Chip[] = unverified
     ? ['unverified']
     : [...flags, ...(certified ? (['certified'] as const) : [])]
@@ -29,9 +31,13 @@ export function FlagChips({ flags = [], certified = false, unverified = false }:
       {shown.map((chip) => {
         const { label, icon: Icon } = chips[chip]
         return (
-          <span key={chip} className={`flag flag--${chip}`}>
+          <span
+            key={chip}
+            className={`flag flag--${chip}${iconOnly ? ' flag--icon' : ''}`}
+            title={iconOnly ? label : undefined}
+          >
             <Icon aria-hidden />
-            {label}
+            {iconOnly ? <span className="visually-hidden">{label}</span> : label}
           </span>
         )
       })}
