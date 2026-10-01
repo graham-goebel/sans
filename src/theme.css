@@ -166,8 +166,11 @@ svg.lucide {
   text-decoration: none;
 }
 
-.wordmark em {
-  color: var(--dt-text-brand);
+/* "sans" struck through: without, as in without gluten. */
+.wordmark {
+  text-decoration: line-through;
+  text-decoration-color: var(--dt-text-brand);
+  text-decoration-thickness: 0.07em;
 }
 
 /* ---------- Carousel rail ---------- */
@@ -241,9 +244,12 @@ svg.lucide {
   }
 }
 
-/* Portrait photo cards: the picture carries the card. */
+/* Portrait photo cards: the picture carries the card, and a big serif
+   title sits on it. Card reads its title size from the heading-sm tokens. */
 .photo-card {
   aspect-ratio: 4 / 5;
+  --dt-text-heading-sm-size: clamp(2rem, 8.5vw, 2.75rem);
+  --dt-text-heading-sm-line: 1.04;
 }
 
 
@@ -258,6 +264,18 @@ svg.lucide {
 
 .chip-row > * {
   flex: none;
+}
+
+.chip-row--scroll {
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  scrollbar-width: none;
+  margin-inline: calc(-1 * var(--dt-space-gutter));
+  padding: 4px var(--dt-space-gutter) 10px;
+}
+
+.chip-row--scroll::-webkit-scrollbar {
+  display: none;
 }
 
 .chip {
@@ -779,117 +797,18 @@ svg.lucide {
   gap: var(--dt-space-inline-sm);
 }
 
-/* The map's place on the page: full bleed, out of the page column to the
-   screen's edges. The map itself (.places-map) sits inside it, or moves to
-   the end of <body> when full screen. */
-.places-map-slot {
-  margin-inline: calc(50% - 50vw);
-  height: min(72svh, 680px);
-}
-
-/* A grid, so the node holding the map stretches to the slot's height. */
-.places-map-slot {
-  display: grid;
-}
-
-.places-map-slot > * {
-  min-width: 0;
-}
-
+/* The Places map: the whole screen, out of the page column to its edges. */
 .places-map {
   /* Leaflet's panes use z-indexes up to 1000; keep them inside the map so the
      floating nav and sheets stay on top. */
   position: relative;
   isolation: isolate;
   z-index: 0;
-  height: 100%;
+  margin-inline: calc(50% - 50vw);
+  height: 100svh;
   overflow: hidden;
   /* A light, minimal map drawing shows until (or unless) the tiles load. */
   background: #f3efe7 url('./assets/map-placeholder.svg') center / cover;
-  border-block: var(--dt-border-width-default) solid var(--dt-border-default);
-}
-
-/* Full screen: over the page and the nav, under sheets opened from a pin. */
-.places-map--full {
-  position: fixed;
-  inset: 0;
-  z-index: 150;
-  height: auto;
-  border: 0;
-}
-
-/* The key floats over the map's top-left corner; each entry toggles its pins. */
-.map-key {
-  position: absolute;
-  z-index: 1001;
-  top: var(--dt-space-stack-sm, 12px);
-  left: var(--dt-space-gutter);
-  right: calc(var(--dt-space-gutter) + 56px);
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  pointer-events: none;
-}
-
-.map-key__toggle {
-  pointer-events: auto;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  min-height: 32px;
-  padding: 4px 10px 4px 8px;
-  border: 0;
-  border-radius: var(--dt-radius-pill);
-  background: var(--dt-surface-glass-strong, rgb(255 255 255 / 0.9));
-  backdrop-filter: blur(12px) saturate(1.4);
-  -webkit-backdrop-filter: blur(12px) saturate(1.4);
-  box-shadow: 0 2px 8px color-mix(in oklab, black 16%, transparent);
-  color: var(--dt-text-primary);
-  font: inherit;
-  font-size: var(--dt-font-size-sm);
-  font-weight: var(--dt-font-weight-medium, 500);
-  cursor: pointer;
-  transition: opacity var(--dt-motion-micro), background var(--dt-motion-micro);
-}
-
-.map-key__toggle .legend-dot {
-  margin: 0;
-  box-shadow: 0 0 0 2px white;
-}
-
-.map-key__count {
-  color: var(--dt-text-secondary);
-  font-variant-numeric: tabular-nums;
-}
-
-/* Off: the pins are hidden, the dot hollow, the entry faded. */
-.map-key__toggle[aria-pressed='false'] {
-  color: var(--dt-text-secondary);
-  background: color-mix(in oklab, white 70%, transparent);
-  text-decoration: line-through;
-  text-decoration-color: color-mix(in oklab, currentColor 60%, transparent);
-}
-
-.map-key__toggle[aria-pressed='false'] .legend-dot {
-  background: transparent;
-  box-shadow: inset 0 0 0 2px var(--dt-color-neutral-400);
-}
-
-.map-key__toggle:focus-visible {
-  outline: var(--dt-focus-ring-width) solid var(--dt-focus-ring-color);
-  outline-offset: 2px;
-}
-
-.map-full-toggle {
-  position: absolute;
-  z-index: 1001;
-  top: var(--dt-space-stack-sm, 12px);
-  right: var(--dt-space-gutter);
-}
-
-.places-map--full .map-key,
-.places-map--full .map-full-toggle {
-  top: max(var(--dt-space-stack-sm, 12px), env(safe-area-inset-top));
 }
 
 .places-map--loading {
@@ -905,42 +824,137 @@ svg.lucide {
   font-size: 0.625rem;
 }
 
-/* A teardrop pin, coloured by how the place handles gluten. */
-.pin {
+/* Lift the zoom buttons and credits clear of the floating nav. */
+.places-map .leaflet-bottom {
+  bottom: calc(96px + env(safe-area-inset-bottom));
+}
+
+.app-main--immersive {
+  padding-bottom: 0;
+}
+
+/* The controls over the top of the map: view switch, near me, filters. */
+.map-overlay {
+  position: absolute;
+  z-index: 1001;
+  inset: 0 0 auto;
+  display: grid;
+  gap: var(--dt-space-stack-xs, 8px);
+  padding: max(var(--dt-space-stack-sm, 12px), env(safe-area-inset-top)) var(--dt-space-gutter) 0;
+  pointer-events: none;
+}
+
+.map-overlay > * {
+  pointer-events: auto;
+}
+
+.map-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--dt-space-inline-sm);
+}
+
+/* Tabs and chips sit on glass so they read over any part of the map. */
+.map-bar [role='tablist'] {
+  background: var(--dt-surface-glass-strong, rgb(255 255 255 / 0.9));
+  backdrop-filter: blur(12px) saturate(1.4);
+  -webkit-backdrop-filter: blur(12px) saturate(1.4);
+  box-shadow: 0 2px 10px color-mix(in oklab, black 18%, transparent);
+}
+
+.map-overlay .chip-row {
+  pointer-events: none;
+}
+
+.map-overlay .chip-row > * {
+  pointer-events: auto;
+  background: var(--dt-surface-glass-strong, rgb(255 255 255 / 0.9));
+  backdrop-filter: blur(12px) saturate(1.4);
+  -webkit-backdrop-filter: blur(12px) saturate(1.4);
+  box-shadow: 0 2px 8px color-mix(in oklab, black 14%, transparent);
+}
+
+.map-overlay .chip-row > [aria-pressed='true'] {
+  background: var(--dt-surface-selected-brand);
+}
+
+.map-note {
+  justify-self: start;
+  margin: 0;
+  padding: 6px 12px;
+  border-radius: var(--dt-radius-pill);
+  background: var(--dt-surface-glass-strong, rgb(255 255 255 / 0.9));
+  box-shadow: 0 2px 8px color-mix(in oklab, black 14%, transparent);
+  color: var(--dt-text-secondary);
+  font-size: var(--dt-font-size-sm);
+}
+
+/* Safety colours: the photo pins' rings and the filter chips' dots. */
+.safety--dedicated {
+  --safety: var(--dt-color-secondary-700);
+}
+
+.safety--gf-menu {
+  --safety: var(--dt-color-cyan-600);
+}
+
+.safety--gf-options {
+  --safety: var(--dt-color-amber-500);
+}
+
+/* A photo pin: the place's picture, square, ringed in its safety colour,
+   with a point at the foot marking the spot. */
+.thumb {
   position: relative;
   display: block;
   width: 100%;
   height: 100%;
-  border-radius: 50% 50% 50% 0;
-  transform: rotate(-45deg);
-  border: 2.5px solid white;
-  box-shadow: 0 2px 6px color-mix(in oklab, black 30%, transparent);
   box-sizing: border-box;
+  border: 3px solid var(--safety);
+  border-radius: 12px;
+  background: var(--safety);
+  box-shadow: 0 3px 10px color-mix(in oklab, black 30%, transparent);
   transition: transform var(--dt-motion-micro);
 }
 
-.pin::after {
+.thumb img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 9px;
+  outline: 2px solid white;
+  outline-offset: -2px;
+}
+
+.thumb::after {
   content: '';
   position: absolute;
-  inset: 30%;
-  border-radius: 50%;
-  background: white;
+  left: 50%;
+  bottom: -9px;
+  width: 12px;
+  height: 12px;
+  background: var(--safety);
+  transform: translateX(-50%) rotate(45deg);
+  border-radius: 0 0 3px 0;
+  z-index: -1;
 }
 
-.pin--dedicated {
-  background: var(--dt-color-secondary-700);
+.thumb--selected {
+  box-shadow: 0 0 0 4px color-mix(in oklab, var(--safety) 35%, transparent), 0 4px 14px color-mix(in oklab, black 35%, transparent);
 }
 
-.pin--gf-menu {
-  background: var(--dt-color-cyan-600);
+.leaflet-marker-icon:hover .thumb {
+  transform: translateY(-2px);
 }
 
-.pin--gf-options {
-  background: var(--dt-color-amber-500);
+.leaflet-marker-icon:focus-visible {
+  outline: none;
 }
 
-.pin--selected {
-  box-shadow: 0 0 0 4px color-mix(in oklab, var(--dt-color-primary-600) 35%, transparent), 0 3px 8px color-mix(in oklab, black 35%, transparent);
+.leaflet-marker-icon:focus-visible .thumb {
+  box-shadow: 0 0 0 3px white, 0 0 0 6px var(--dt-focus-ring-color);
 }
 
 .legend-dot {
@@ -949,6 +963,7 @@ svg.lucide {
   width: 10px;
   height: 10px;
   border-radius: 50%;
+  background: var(--safety);
 }
 
 .app-main {
@@ -1242,6 +1257,35 @@ svg.lucide {
 .item-sheet > :first-child {
   margin-inline: 0 !important;
   padding-inline: 0 !important;
+}
+
+/* A display-size title in item and preference sheets. Sheet sets its big
+   title from the heading-lg tokens. */
+.item-sheet {
+  --dt-text-heading-lg-size: clamp(2.75rem, 12vw, 3.5rem);
+  --dt-text-heading-lg-line: 1;
+}
+
+/* Form fields drawn by hand (like the chip group in preferences) match
+   Dovetail's own label and hint. */
+.field-label {
+  font-size: var(--dt-text-label-md-size);
+  font-weight: var(--dt-text-label-md-weight);
+  color: var(--dt-text-primary);
+}
+
+.field-hint {
+  font-size: var(--dt-text-body-xs-size);
+  color: var(--dt-input-hint-color);
+}
+
+/* Checkboxes and radios with the label first and the box at the end of the
+   row, like Switch labelPosition="start" (see docs/dovetail-requests.md). */
+.leading-labels label[for] {
+  flex: 1;
+  flex-direction: row-reverse;
+  justify-content: space-between;
+  gap: var(--dt-space-inline-md);
 }
 
 /* The Places row's featured slot, open for a partner: a brand panel. */

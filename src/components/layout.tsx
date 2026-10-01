@@ -1,6 +1,6 @@
 import type { ComponentProps, ReactNode } from 'react'
 import { useNavigate } from 'react-router'
-import { Button, EmptyState, Heading, IconButton, Section, Stack, Text } from '@dovetail-ds/react'
+import { Button, EmptyState, Heading, IconButton, Section, Stack, Text, VisuallyHidden } from '@dovetail-ds/react'
 import { ArrowLeft, CircleUserRound, SearchX } from '../icons'
 import { FilterChips, type ChipOption } from './FilterChips'
 import type { ChipSpec } from '../lib/chips'
@@ -14,7 +14,7 @@ export function Masthead() {
     <Section spacing="none" style={{ paddingBlock: 'var(--dt-space-stack-lg)' }}>
       <div className="masthead">
         <a className="wordmark" href="#/" aria-label="sans, the gluten-free companion: home">
-          sans<em>.</em>
+          sans
         </a>
         <IconButton label="Your preferences" className="icon-secondary" onClick={openSheet}>
           <CircleUserRound />
@@ -31,9 +31,11 @@ export function ButtonLink({ to, ...props }: { to: string } & ComponentProps<typ
 }
 
 interface ListingPageProps<T extends string> {
-  eyebrow: string
-  title: ReactNode
-  lead: string
+  eyebrow?: string
+  title?: ReactNode
+  lead?: string
+  /** With no title shown, the page's heading for screen readers. */
+  hiddenTitle?: string
   chips: ChipOption<T>[]
   selected: T[]
   onToggle: (id: T) => void
@@ -54,6 +56,7 @@ export function ListingPage<T extends string>({
   eyebrow,
   title,
   lead,
+  hiddenTitle,
   chips,
   selected,
   onToggle,
@@ -70,15 +73,21 @@ export function ListingPage<T extends string>({
       <Masthead />
       <Section spacing="compact">
         <Stack gap="xl">
-          <Stack gap="sm">
-            <Text variant="eyebrow" tone="brand">
-              {eyebrow}
-            </Text>
-            <Heading level={1} size="display-lg">
-              {title}
-            </Heading>
-            <Text variant="lead">{lead}</Text>
-          </Stack>
+          {title ? (
+            <Stack gap="sm">
+              <Text variant="eyebrow" tone="brand">
+                {eyebrow}
+              </Text>
+              <Heading level={1} size="display-lg">
+                {title}
+              </Heading>
+              <Text variant="lead">{lead}</Text>
+            </Stack>
+          ) : (
+            <VisuallyHidden>
+              <Heading level={1}>{hiddenTitle}</Heading>
+            </VisuallyHidden>
+          )}
           <FilterChips label={`Filter ${noun[1]}`} options={chips} selected={selected} onToggle={onToggle} />
           {toolbar}
           <Text variant="small" tone="secondary">

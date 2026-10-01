@@ -23,11 +23,11 @@ const pages = [
   { name: 'home', path: '/' },
   { name: 'recipes', path: '/recipes' },
   { name: 'products', path: '/products' },
-  { name: 'places', path: '/places' },
+  { name: 'places', path: '/places?view=list' },
   { name: 'recipe', path: '/recipes/margherita-pizza' },
   { name: 'product', path: '/products/bronze-cut-rigatoni' },
   { name: 'place', path: '/places/teocalli-cocina-lohi' },
-  { name: 'map', path: '/places?view=map' },
+  { name: 'map', path: '/places' },
   { name: 'about', path: '/about' },
   { name: 'search', path: '/', search: 'pizza' },
 ]

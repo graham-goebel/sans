@@ -16,6 +16,7 @@ const pages = [
   '/recipes',
   '/products',
   '/places',
+  '/places?view=list',
   '/about',
   '/privacy',
   '/terms',
@@ -97,7 +98,8 @@ describe('cards', () => {
   })
 
   it('keeps "Unverified" off place cards but on the place itself', () => {
-    visit('/places')
+    visit('/places?view=list')
+    expect(document.querySelectorAll('.card-grid .card-wrap').length).toBeGreaterThan(0)
     expect(document.querySelector('.card-grid .flag--unverified')).toBeNull()
     visit(`/places/${places[0].id}`)
     expect(screen.getAllByText('Unverified').length).toBeGreaterThan(0)
@@ -129,10 +131,12 @@ describe('preferences', () => {
     visit('/')
     await userEvent.click(screen.getAllByRole('button', { name: 'Your preferences' })[0])
     await screen.findByRole('dialog')
-    await userEvent.click(screen.getByRole('radio', { name: /Coeliac disease/ }))
-    await userEvent.click(screen.getByRole('checkbox', { name: 'Dairy' }))
+    await userEvent.click(screen.getByRole('checkbox', { name: /Coeliac disease/ }))
+    await userEvent.click(screen.getByRole('checkbox', { name: /Wheat allergy/ }))
+    const diet = screen.getByRole('group', { name: 'Diet type' })
+    await userEvent.click(within(diet).getByRole('button', { name: 'Dairy-free' }))
     expect(JSON.parse(window.localStorage.getItem('sans:preferences')!)).toMatchObject({
-      condition: 'coeliac',
+      conditions: ['coeliac', 'wheat-allergy'],
       avoid: ['dairy'],
     })
   })
@@ -146,7 +150,7 @@ describe('preferences', () => {
     window.localStorage.clear()
   })
 
-  it('warns people with coeliac disease about shared kitchens', () => {
+  it('warns people with coeliac disease about shared kitchens, including from older saved preferences', () => {
     window.localStorage.setItem('sans:preferences', JSON.stringify({ condition: 'coeliac' }))
     const shared = places.find((p) => p.safety === 'gf-options')!
     visit(`/places/${shared.id}`)
@@ -166,28 +170,21 @@ describe('preferences', () => {
 })
 
 describe('places map', () => {
-  it('switches to the map view and back', async () => {
+  it('opens on a full-screen map with the filters on it, and switches to the list and back', async () => {
     visit('/places')
-    await userEvent.click(screen.getByRole('tab', { name: 'Map' }))
-    expect(window.location.hash).toBe('#/places?view=map')
-    expect(await screen.findByText(/Tap a pin to preview the place/)).toBeTruthy()
+    const filters = await screen.findByRole('group', { name: 'Filter places' })
+    expect(filters.closest('.map-overlay')).toBeTruthy()
+    expect(screen.queryByText('Eat out,')).toBeNull()
+    expect(document.querySelector('.site-footer')).toBeNull()
+
+    await userEvent.click(within(filters).getByRole('button', { name: /100% gluten-free/ }))
+    expect(within(filters).getByRole('button', { name: /100% gluten-free/ }).getAttribute('aria-pressed')).toBe('true')
+
     await userEvent.click(screen.getByRole('tab', { name: 'List' }))
+    expect(window.location.hash).toBe('#/places?view=list')
+    expect(document.querySelector('.card-grid')).toBeTruthy()
+    await userEvent.click(screen.getByRole('tab', { name: 'Map' }))
     expect(window.location.hash).toBe('#/places')
-  })
-
-  it('toggles each safety level from the key, and goes full screen and back', async () => {
-    visit('/places?view=map')
-    const key = await screen.findByRole('group', { name: 'Show on the map' })
-    const dedicated = within(key).getByRole('button', { name: /100% gluten-free/ })
-    expect(dedicated.getAttribute('aria-pressed')).toBe('true')
-    await userEvent.click(dedicated)
-    expect(dedicated.getAttribute('aria-pressed')).toBe('false')
-
-    await userEvent.click(screen.getByRole('button', { name: 'Full screen map' }))
-    expect(document.body.lastElementChild?.querySelector('.places-map--full')).toBeTruthy()
-    await userEvent.keyboard('{Escape}')
-    expect(screen.getByRole('button', { name: 'Full screen map' })).toBeTruthy()
-    expect(document.querySelector('.places-map--full')).toBeNull()
   })
 
   it('explains when location is turned off', async () => {
@@ -197,7 +194,7 @@ describe('places map', () => {
       value: { getCurrentPosition: (_ok: unknown, fail: (e: object) => void) => fail({ code: 1, PERMISSION_DENIED: 1 }) },
     })
     visit('/places')
-    await userEvent.click(screen.getByRole('button', { name: 'Near me' }))
+    await userEvent.click(await screen.findByRole('button', { name: 'Near me' }))
     expect(screen.getByRole('status').textContent).toMatch(/Location is turned off/)
     Object.defineProperty(navigator, 'geolocation', { configurable: true, value: original })
   })

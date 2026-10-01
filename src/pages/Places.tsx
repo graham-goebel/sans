@@ -1,8 +1,7 @@
 import { lazy, Suspense, useEffect, useState } from 'react'
 import { useParams, useSearchParams } from 'react-router'
-import { Button, Callout, Heading, Link, Section, Stack, Tabs, Text } from '@dovetail-ds/react'
+import { Button, Callout, Heading, IconButton, Link, Section, Stack, Tabs, Text, VisuallyHidden } from '@dovetail-ds/react'
 import {
-  BookOpen,
   CalendarCheck,
   Clock,
   Coffee,
@@ -12,7 +11,6 @@ import {
   LocateOff,
   Map as MapIcon,
   MapPin,
-  ShieldCheck,
   Star,
   Store,
   Utensils,
@@ -22,7 +20,7 @@ import { placeChips } from '../lib/chips'
 import { SimpleList } from '../components/SimpleList'
 import { PrecautionList } from '../components/precautions'
 import { CoeliacNote } from '../components/CoeliacNote'
-import type { ChipOption } from '../components/FilterChips'
+import { FilterChips, type ChipOption } from '../components/FilterChips'
 import { DetailHero, ListingPage, MetaItem, NotFoundState } from '../components/layout'
 import { Rail } from '../components/Rail'
 import { useNearMe, useToggleSet } from '../hooks'
@@ -32,11 +30,18 @@ import { scrimFor } from '../lib/scrim'
 import { byDistance, nearestLocation } from '../lib/geo'
 import { matchesPlace, type PlaceFilter } from '../lib/filters'
 import { places } from '../data/places'
-import type { Place } from '../data/types'
+import type { Place, Safety } from '../data/types'
+
+/** A dot in a safety level's colour: the chip doubles as the key to the map's photo pins. */
+const safetyDot = (safety: Safety) =>
+  function SafetyDot() {
+    return <span className={`legend-dot safety--${safety}`} aria-hidden />
+  }
 
 const chips: ChipOption<PlaceFilter>[] = [
-  { id: 'dedicated', label: '100% gluten-free', icon: ShieldCheck },
-  { id: 'gf-menu', label: 'Separate GF menu', icon: BookOpen },
+  { id: 'dedicated', label: '100% gluten-free', icon: safetyDot('dedicated') },
+  { id: 'gf-menu', label: 'Separate GF menu', icon: safetyDot('gf-menu') },
+  { id: 'gf-options', label: 'GF options', icon: safetyDot('gf-options') },
   { id: 'restaurant', label: 'Restaurants', icon: Utensils },
   { id: 'cafe', label: 'Cafés', icon: Coffee },
   { id: 'bakery', label: 'Bakeries', icon: Croissant },
@@ -46,10 +51,14 @@ const chips: ChipOption<PlaceFilter>[] = [
 // The map (and Leaflet) loads only when someone opens it.
 const PlacesMap = lazy(() => import('../components/PlacesMap'))
 
+/**
+ * Places opens on the map, full screen, with the filters and the switch to
+ * the list floated over it. The list is a tap away (?view=list).
+ */
 export function PlacesPage() {
   const [selected, toggle, clear] = useToggleSet<PlaceFilter>()
   const [params, setParams] = useSearchParams()
-  const view = params.get('view') === 'map' ? 'map' : 'list'
+  const view = params.get('view') === 'list' ? 'list' : 'map'
   const [pickedId, setPickedId] = useState<string>()
   const nearMe = useNearMe()
   const openQuickView = useQuickView()
@@ -64,47 +73,79 @@ export function PlacesPage() {
   const filtered = places.filter((p) => matchesPlace(p, selected))
   const shown = nearMe.position ? byDistance(filtered, nearMe.position) : filtered
   const milesTo = (p: Place) => (nearMe.position ? nearestLocation(p, nearMe.position)?.miles : undefined)
-  const offMap = shown.filter((p) => !p.locations?.length)
 
-  const toolbar = (
-    <div className="places-toolbar">
-      <Tabs
-        label="Show places as"
-        variant="pill"
-        value={view}
-        onChange={(id) => setParams(id === 'map' ? { view: 'map' } : {}, { replace: true })}
-        tabs={[
-          { id: 'list', label: 'List', icon: <LayoutList /> },
-          { id: 'map', label: 'Map', icon: <MapIcon /> },
-        ]}
-      />
-      {nearMe.status === 'ready' ? (
-        <Button variant="secondary" size="sm" iconStart={<LocateOff />} onClick={nearMe.clear}>
-          Clear location
-        </Button>
-      ) : (
-        <Button
-          variant="secondary"
-          size="sm"
-          iconStart={<LocateFixed />}
-          loading={nearMe.status === 'locating'}
-          onClick={nearMe.locate}
-        >
-          Near me
-        </Button>
-      )}
-    </div>
+  const viewSwitch = (
+    <Tabs
+      label="Show places as"
+      variant="pill"
+      value={view}
+      onChange={(id) => setParams(id === 'list' ? { view: 'list' } : {}, { replace: true })}
+      tabs={[
+        { id: 'map', label: 'Map', icon: <MapIcon /> },
+        { id: 'list', label: 'List', icon: <LayoutList /> },
+      ]}
+    />
   )
+
+  const locationStatus =
+    nearMe.status === 'denied'
+      ? 'Location is turned off for this site. Allow it in your browser settings to sort by distance.'
+      : nearMe.status === 'unavailable'
+        ? 'Couldn’t find your location just now. Try again in a moment.'
+        : nearMe.status === 'ready' && view === 'list'
+          ? 'Sorted by distance from you. Your location stays on this device.'
+          : undefined
+
+  if (view === 'map') {
+    return (
+      <>
+        <VisuallyHidden>
+          <Heading level={1}>Places in Denver</Heading>
+        </VisuallyHidden>
+        <Suspense fallback={<div className="places-map places-map--loading" aria-label="Loading map" />}>
+          <PlacesMap
+            places={shown}
+            you={nearMe.position}
+            selectedId={pickedId}
+            onSelect={(id) => {
+              setPickedId(id)
+              if (id) openQuickView({ kind: 'place', id })
+            }}
+            overlay={
+              <>
+                <div className="map-bar">
+                  {viewSwitch}
+                  {nearMe.status === 'ready' ? (
+                    <IconButton label="Clear location" className="icon-glass" onClick={nearMe.clear}>
+                      <LocateOff />
+                    </IconButton>
+                  ) : (
+                    <IconButton label="Near me" className="icon-glass" onClick={nearMe.locate}>
+                      <LocateFixed />
+                    </IconButton>
+                  )}
+                </div>
+                <FilterChips label="Filter places" options={chips} selected={selected} onToggle={toggle} scroll />
+                {locationStatus && (
+                  <p className="map-note" role="status">
+                    {locationStatus}
+                  </p>
+                )}
+                {shown.length === 0 && (
+                  <p className="map-note" role="status">
+                    No places match these filters.
+                  </p>
+                )}
+              </>
+            }
+          />
+        </Suspense>
+      </>
+    )
+  }
 
   return (
     <ListingPage
-      eyebrow="Places · Denver"
-      title={
-        <>
-          Eat out, <em>safely</em>
-        </>
-      }
-      lead="Denver restaurants, cafés, bakeries and markets that take gluten-free seriously, with a note on how. We’re confirming each one with the place; until then it’s marked unverified."
       chips={chips}
       selected={selected}
       onToggle={toggle}
@@ -113,54 +154,36 @@ export function PlacesPage() {
       noun={['place', 'places']}
       toolbar={
         <Stack gap="xs">
-          {toolbar}
-          {(nearMe.status === 'denied' || nearMe.status === 'unavailable') && (
+          <div className="places-toolbar">
+            {viewSwitch}
+            {nearMe.status === 'ready' ? (
+              <Button variant="secondary" size="sm" iconStart={<LocateOff />} onClick={nearMe.clear}>
+                Clear location
+              </Button>
+            ) : (
+              <Button
+                variant="secondary"
+                size="sm"
+                iconStart={<LocateFixed />}
+                loading={nearMe.status === 'locating'}
+                onClick={nearMe.locate}
+              >
+                Near me
+              </Button>
+            )}
+          </div>
+          {locationStatus && (
             <Text variant="small" tone="secondary" role="status">
-              {nearMe.status === 'denied'
-                ? 'Location is turned off for this site. Allow it in your browser settings to sort by distance.'
-                : 'Couldn’t find your location just now. Try again in a moment.'}
-            </Text>
-          )}
-          {nearMe.status === 'ready' && (
-            <Text variant="small" tone="secondary" role="status">
-              Sorted by distance from you. Your location stays on this device.
+              {locationStatus}
             </Text>
           )}
         </Stack>
       }
-      layout={view === 'map' ? 'plain' : 'grid'}
+      hiddenTitle="Places in Denver"
     >
-      {view === 'map' ? (
-        <Stack gap="md">
-          <Suspense
-            fallback={
-              <div className="places-map-slot">
-                <div className="places-map places-map--loading" aria-label="Loading map" />
-              </div>
-            }
-          >
-            <PlacesMap
-              places={shown}
-              you={nearMe.position}
-              selectedId={pickedId}
-              onSelect={(id) => {
-                setPickedId(id)
-                if (id) openQuickView({ kind: 'place', id })
-              }}
-            />
-          </Suspense>
-          <Text variant="small" tone="secondary">
-            Tap a pin to preview the place. Tap a colour in the key to show or hide those places.
-          </Text>
-          {offMap.length > 0 && (
-            <Text variant="fine">
-              Not on the map (no single address): {offMap.map((p) => p.name).join(', ')}.
-            </Text>
-          )}
-        </Stack>
-      ) : (
-        shown.map((p) => <PlaceCard key={p.id} place={p} miles={milesTo(p)} />)
-      )}
+      {shown.map((p) => (
+        <PlaceCard key={p.id} place={p} miles={milesTo(p)} />
+      ))}
     </ListingPage>
   )
 }

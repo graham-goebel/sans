@@ -20,8 +20,6 @@ const groups: { title: string; kinds: Kind[] }[] = [
   { title: 'Places', kinds: ['restaurant', 'cafe', 'bakery', 'market'] },
 ]
 
-const suggestions = ['Pizza', 'Bakery', 'Breakfast', 'Chocolate', 'LoHi']
-
 /** Tag renders a span with role="button"; give it a button's keys. */
 const pressOnKeys = (action: () => void) => (event: KeyboardEvent) => {
   if (event.key === 'Enter' || event.key === ' ') {
@@ -106,25 +104,11 @@ export function SearchSheet({ open, onClose }: SearchSheetProps) {
           type="search"
         />
         {!searching ? (
-          <Stack gap="xl">
-            <Stack gap="sm">
-              <Text variant="small" tone="secondary">
-                Popular searches
-              </Text>
-              <div className="chip-row">
-                {suggestions.map((s) => (
-                  <Tag key={s} onClick={() => setQuery(s)} onKeyDown={pressOnKeys(() => setQuery(s))}>
-                    {s}
-                  </Tag>
-                ))}
-              </div>
-            </Stack>
-            <Stack gap="md">
-              <Text variant="eyebrow" tone="brand">
-                Recommended
-              </Text>
-              <ResultGroups results={recommendations} onOpen={go} />
-            </Stack>
+          <Stack gap="md">
+            <Text variant="eyebrow" tone="brand">
+              Recommended
+            </Text>
+            <ResultGroups results={recommendations} onOpen={go} />
           </Stack>
         ) : shown.length === 0 ? (
           <EmptyState
