@@ -1,0 +1,10 @@
+{
+  "primary": "custom",
+  "primaryHex": "#cd753a",
+  "secondary": "custom",
+  "secondaryHex": "#849549",
+  "font": "system",
+  "displayFont": "instrument",
+  "whitespace": "airy",
+  "iconLib": "heroicons"
+}

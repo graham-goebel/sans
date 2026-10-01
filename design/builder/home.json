@@ -1,0 +1,470 @@
+{
+  "frames": [
+    {
+      "name": "sans: Home (phone)",
+      "width": 390,
+      "height": 844,
+      "hug": true,
+      "surface": "base",
+      "spacing": "open",
+      "root": {
+        "children": [
+          {
+            "type": "Group",
+            "name": "Masthead",
+            "props": {
+              "direction": "row",
+              "justify": "space-between",
+              "align": "center"
+            },
+            "style": {
+              "padding": "lg"
+            },
+            "children": [
+              {
+                "type": "Heading",
+                "props": {
+                  "size": "heading-xl",
+                  "children": "sans"
+                }
+              },
+              {
+                "type": "IconButton",
+                "props": {
+                  "label": "Your preferences"
+                }
+              }
+            ]
+          },
+          {
+            "type": "Cover",
+            "name": "Hero",
+            "props": {
+              "src": "https://images.unsplash.com/photo-1529543544282-ea669407fca3?auto=format&fit=crop&w=2000&q=70",
+              "alt": "",
+              "radius": "none",
+              "eyebrow": "Autumn edition",
+              "title": "Gluten-free, beautifully done.",
+              "body": "The recipes, groceries and places worth knowing about when you can’t eat gluten."
+            }
+          },
+          {
+            "type": "Section",
+            "name": "Rails",
+            "children": [
+              {
+                "type": "Stack",
+                "name": "Recipes row",
+                "props": {
+                  "gap": "md"
+                },
+                "children": [
+                  {
+                    "type": "Group",
+                    "props": {
+                      "direction": "row",
+                      "justify": "space-between",
+                      "align": "flex-end"
+                    },
+                    "children": [
+                      {
+                        "type": "Stack",
+                        "props": {
+                          "gap": "2xs"
+                        },
+                        "children": [
+                          {
+                            "type": "Heading",
+                            "props": {
+                              "size": "heading-xl",
+                              "children": "Recipes"
+                            }
+                          },
+                          {
+                            "type": "Text",
+                            "props": {
+                              "variant": "small",
+                              "tone": "secondary",
+                              "children": "Tested at home, properly gluten-free."
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "type": "IconButton",
+                        "props": {
+                          "label": "See all recipes"
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "type": "Cover",
+                    "name": "Featured recipe",
+                    "props": {
+                      "src": "https://images.unsplash.com/photo-1574071318508-1cdbab80d002?auto=format&fit=crop&w=900&q=70",
+                      "alt": "",
+                      "radius": "container",
+                      "eyebrow": "Featured",
+                      "title": "Mill House"
+                    }
+                  },
+                  {
+                    "type": "Cover",
+                    "props": {
+                      "src": "https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?auto=format&fit=crop&w=900&q=70",
+                      "alt": "",
+                      "radius": "container",
+                      "eyebrow": "25 min · Easy",
+                      "title": "Brown butter buckwheat pancakes"
+                    }
+                  }
+                ]
+              },
+              {
+                "type": "Stack",
+                "name": "Products row",
+                "props": {
+                  "gap": "md"
+                },
+                "style": {
+                  "marginTop": "2xl"
+                },
+                "children": [
+                  {
+                    "type": "Group",
+                    "props": {
+                      "direction": "row",
+                      "justify": "space-between",
+                      "align": "flex-end"
+                    },
+                    "children": [
+                      {
+                        "type": "Stack",
+                        "props": {
+                          "gap": "2xs"
+                        },
+                        "children": [
+                          {
+                            "type": "Heading",
+                            "props": {
+                              "size": "heading-xl",
+                              "children": "Products"
+                            }
+                          },
+                          {
+                            "type": "Text",
+                            "props": {
+                              "variant": "small",
+                              "tone": "secondary",
+                              "children": "Groceries that taste like the real thing."
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "type": "IconButton",
+                        "props": {
+                          "label": "See all products"
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "type": "Grid",
+                    "props": {
+                      "columns": 2,
+                      "gap": "md"
+                    },
+                    "children": [
+                      {
+                        "type": "Group",
+                        "props": {
+                          "direction": "column",
+                          "gap": "none"
+                        },
+                        "style": {
+                          "radius": "container",
+                          "border": "default",
+                          "surface": "raised"
+                        },
+                        "children": [
+                          {
+                            "type": "Image",
+                            "props": {
+                              "src": "https://images.unsplash.com/photo-1549931319-a545dcf3bc73?auto=format&fit=crop&w=900&q=70",
+                              "alt": "",
+                              "radius": "none"
+                            }
+                          },
+                          {
+                            "type": "Stack",
+                            "props": {
+                              "gap": "xs"
+                            },
+                            "style": {
+                              "padding": "md"
+                            },
+                            "children": [
+                              {
+                                "type": "Text",
+                                "props": {
+                                  "variant": "eyebrow",
+                                  "children": "Hearth & Grain"
+                                }
+                              },
+                              {
+                                "type": "Heading",
+                                "props": {
+                                  "size": "heading-md",
+                                  "children": "Seeded Sandwich Loaf"
+                                }
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "type": "Group",
+                        "props": {
+                          "direction": "column",
+                          "gap": "none"
+                        },
+                        "style": {
+                          "radius": "container",
+                          "border": "default",
+                          "surface": "raised"
+                        },
+                        "children": [
+                          {
+                            "type": "Image",
+                            "props": {
+                              "src": "https://images.unsplash.com/photo-1563379926898-05f4575a45d8?auto=format&fit=crop&w=900&q=70",
+                              "alt": "",
+                              "radius": "none"
+                            }
+                          },
+                          {
+                            "type": "Stack",
+                            "props": {
+                              "gap": "xs"
+                            },
+                            "style": {
+                              "padding": "md"
+                            },
+                            "children": [
+                              {
+                                "type": "Text",
+                                "props": {
+                                  "variant": "eyebrow",
+                                  "children": "Campo Verde"
+                                }
+                              },
+                              {
+                                "type": "Heading",
+                                "props": {
+                                  "size": "heading-md",
+                                  "children": "Bronze-Cut Rigatoni"
+                                }
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "Stack",
+                "name": "Places row",
+                "props": {
+                  "gap": "md"
+                },
+                "style": {
+                  "marginTop": "2xl"
+                },
+                "children": [
+                  {
+                    "type": "Group",
+                    "props": {
+                      "direction": "row",
+                      "justify": "space-between",
+                      "align": "flex-end"
+                    },
+                    "children": [
+                      {
+                        "type": "Stack",
+                        "props": {
+                          "gap": "2xs"
+                        },
+                        "children": [
+                          {
+                            "type": "Heading",
+                            "props": {
+                              "size": "heading-xl",
+                              "children": "Places"
+                            }
+                          },
+                          {
+                            "type": "Text",
+                            "props": {
+                              "variant": "small",
+                              "tone": "secondary",
+                              "children": "Where to eat and shop in Denver."
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "type": "IconButton",
+                        "props": {
+                          "label": "See all places"
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "type": "Group",
+                    "name": "Partner slot",
+                    "props": {
+                      "direction": "column",
+                      "gap": "sm",
+                      "justify": "flex-end"
+                    },
+                    "style": {
+                      "surface": "brand-muted",
+                      "radius": "container",
+                      "padding": "lg",
+                      "h": "x8"
+                    },
+                    "children": [
+                      {
+                        "type": "Badge",
+                        "props": {
+                          "children": "Featured"
+                        }
+                      },
+                      {
+                        "type": "Heading",
+                        "props": {
+                          "size": "heading-lg",
+                          "tone": "brand",
+                          "children": "Your place, featured here"
+                        }
+                      },
+                      {
+                        "type": "Text",
+                        "props": {
+                          "variant": "small",
+                          "children": "For Denver kitchens that take gluten seriously."
+                        }
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "SplitBlock",
+            "props": {
+              "tone": "secondary-muted",
+              "eyebrow": "Partner pick",
+              "title": "Bronze-Cut Rigatoni",
+              "body": "Corn and rice pasta that holds its bite, even reheated."
+            }
+          },
+          {
+            "type": "FeatureGridBlock",
+            "props": {
+              "tone": "subtle",
+              "align": "start",
+              "eyebrow": "Gluten-free, decoded",
+              "title": "Three habits worth building",
+              "lead": "Gluten turns up in more places than bread. These three habits catch most of it."
+            }
+          },
+          {
+            "type": "Section",
+            "name": "Now in Denver",
+            "children": [
+              {
+                "type": "Stack",
+                "props": {
+                  "gap": "lg"
+                },
+                "children": [
+                  {
+                    "type": "Stack",
+                    "props": {
+                      "layer": "eyebrow"
+                    },
+                    "children": [
+                      {
+                        "type": "Text",
+                        "props": {
+                          "variant": "eyebrow",
+                          "tone": "brand",
+                          "children": "Now in Denver"
+                        }
+                      },
+                      {
+                        "type": "Heading",
+                        "props": {
+                          "size": "heading-xl",
+                          "children": "Starting in the Mile High City"
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "type": "Cover",
+                    "props": {
+                      "src": "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&w=1600&q=70",
+                      "alt": "",
+                      "radius": "container",
+                      "eyebrow": "20 places · 10 reported 100% gluten-free",
+                      "title": "Denver, first look"
+                    }
+                  },
+                  {
+                    "type": "Text",
+                    "props": {
+                      "variant": "lead",
+                      "children": "We’ve gathered Denver’s gluten-free restaurants, bakeries and markets from public listings and press, and we’re confirming each one directly."
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "TestimonialBlock",
+            "props": {
+              "tone": "brand-muted",
+              "eyebrow": "From the community",
+              "title": "People who get it",
+              "lead": "Sample quotes, written to show how this will look."
+            }
+          },
+          {
+            "type": "CtaBlock",
+            "props": {
+              "eyebrow": "The sans community",
+              "title": "Find your gluten-free people.",
+              "lead": "A sans app for reviewing places, sharing finds and swapping recipes with people who eat the way you do."
+            }
+          },
+          {
+            "type": "BottomNav",
+            "props": {
+              "variant": "floating",
+              "label": "Main"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}
