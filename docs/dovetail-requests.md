@@ -1,6 +1,6 @@
 # Dovetail feature requests from sans
 
-sans works around ten gaps in `@dovetail-ds/react` 0.4.0 by styling
+sans works around nine gaps in `@dovetail-ds/react` 0.7.0 by styling
 Dovetail's internal markup or tokens. Those workarounds break silently if the
 internals change. Each request below would let sans delete one. They're
 written to be filed as issues on the Dovetail repo.
@@ -115,17 +115,10 @@ sheet width), and give the header bar a class so it can be styled without
 
 ---
 
-## 8. Checkbox and Radio: `labelPosition`
+## 8. Checkbox and Radio: `labelPosition` (shipped in 0.7.0)
 
-**Need:** settings-style rows with the label first and the box at the end,
-like `Switch labelPosition="start"`.
-
-**Today:** sans reverses each row with
-`.leading-labels label[for] { flex-direction: row-reverse }`, which depends on
-the label holding the box and the text in that order.
-
-**Proposal:** `labelPosition?: 'start' | 'end'` on `Checkbox`, `Radio`,
-`CheckboxGroup` and `RadioGroup`, matching `Switch`.
+Dovetail 0.7.0 added `labelPosition="start"` to `Checkbox`, `Radio`,
+`CheckboxGroup` and `RadioGroup`. sans uses it and no longer restyles the rows.
 
 ---
 

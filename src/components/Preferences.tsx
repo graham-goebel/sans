@@ -65,7 +65,7 @@ export function PreferencesProvider({ children }: { children: ReactNode }) {
             />
           </Stack>
           <CheckboxGroup
-            className="leading-labels"
+            labelPosition="start"
             label="Why do you eat gluten-free?"
             hint="Pick any that apply."
             value={preferences.conditions}
