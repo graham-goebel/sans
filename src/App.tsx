@@ -36,10 +36,12 @@ function Shell() {
   const current = section ? destinations.find((d) => d.id === section)?.id : 'home'
   // Item pages (level 2) give the screen to the content; their photo carries a back button instead.
   const showNav = !item
+  // The Places map fills the screen: no footer under it, no padding to clear the nav.
+  const immersive = location.pathname === '/places' && new URLSearchParams(location.search).get('view') !== 'list'
 
   return (
     <>
-      <main className={showNav ? 'app-main' : 'app-main app-main--bare'}>
+      <main className={immersive ? 'app-main app-main--immersive' : showNav ? 'app-main' : 'app-main app-main--bare'}>
         {/* Keyed on the path so each page mounts fresh and plays its entrance, and a crash resets on navigation. */}
         <div className="page" key={location.pathname}>
           <ErrorBoundary>
@@ -58,7 +60,7 @@ function Shell() {
               <Route path="*" element={<NotFound />} />
             </Routes>
           </ErrorBoundary>
-          <SiteFooter />
+          {!immersive && <SiteFooter />}
         </div>
       </main>
       {showNav && (

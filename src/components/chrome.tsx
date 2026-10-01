@@ -12,7 +12,7 @@ export function SiteFooter() {
   return (
     <footer className="site-footer">
       <span className="wordmark" style={{ fontSize: '1.5rem' }}>
-        sans<em>.</em>
+        sans
       </span>
       {site.sampleContent && (
         <Text variant="fine">

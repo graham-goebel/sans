@@ -1,6 +1,6 @@
 # Dovetail feature requests from sans
 
-sans works around seven gaps in `@dovetail-ds/react` 0.4.0 by styling
+sans works around ten gaps in `@dovetail-ds/react` 0.4.0 by styling
 Dovetail's internal markup or tokens. Those workarounds break silently if the
 internals change. Each request below would let sans delete one. They're
 written to be filed as issues on the Dovetail repo.
@@ -112,3 +112,41 @@ sticks out past the content on both sides. sans resets it with
 sheet width), and give the header bar a class so it can be styled without
 `!important`.
 
+
+---
+
+## 8. Checkbox and Radio: `labelPosition`
+
+**Need:** settings-style rows with the label first and the box at the end,
+like `Switch labelPosition="start"`.
+
+**Today:** sans reverses each row with
+`.leading-labels label[for] { flex-direction: row-reverse }`, which depends on
+the label holding the box and the text in that order.
+
+**Proposal:** `labelPosition?: 'start' | 'end'` on `Checkbox`, `Radio`,
+`CheckboxGroup` and `RadioGroup`, matching `Switch`.
+
+---
+
+## 9. Card: title size
+
+**Need:** a big display title on photo cards, and a step up on small ones.
+
+**Today:** sans re-points `--dt-text-heading-sm-size` and `-line` on the card,
+since Card sets its title from those tokens inline.
+
+**Proposal:** `titleSize?: 'sm' | 'md' | 'lg' | 'display'` on `Card`, or a
+`--dt-card-title-size` token.
+
+---
+
+## 10. Sheet: title size
+
+**Need:** a display-size title in item sheets.
+
+**Today:** sans re-points `--dt-text-heading-lg-size` and `-line` on the
+sheet, since Sheet sets its big title from those tokens inline.
+
+**Proposal:** `titleSize?: 'lg' | 'display'` on `Sheet`, or a
+`--dt-sheet-title-size` token.

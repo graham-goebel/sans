@@ -12,12 +12,14 @@ interface FilterChipsProps<T extends string> {
   options: ChipOption<T>[]
   selected: T[]
   onToggle: (id: T) => void
+  /** One sideways-scrolling row, for tight spots like over the map. Chips wrap otherwise. */
+  scroll?: boolean
 }
 
-/** A sideways-scrolling row of toggleable filter chips, each with an icon. */
-export function FilterChips<T extends string>({ label, options, selected, onToggle }: FilterChipsProps<T>) {
+/** Toggleable filter chips, each with an icon. */
+export function FilterChips<T extends string>({ label, options, selected, onToggle, scroll }: FilterChipsProps<T>) {
   return (
-    <div className="chip-row" role="group" aria-label={label}>
+    <div className={scroll ? 'chip-row chip-row--scroll' : 'chip-row'} role="group" aria-label={label}>
       {options.map(({ id, label, icon: Icon }) => (
         <Tag
           key={id}

@@ -25,12 +25,12 @@ export function matchesProduct(product: Product, selected: ProductFilter[]) {
   return selected.filter((f): f is Trait => f in traitLabel).every((t) => product.traits.includes(t))
 }
 
-export type PlaceFilter = Place['type'] | 'dedicated' | 'gf-menu'
+export type PlaceFilter = Place['type'] | Place['safety']
 
 const placeTypes = new Set<string>(['restaurant', 'cafe', 'bakery', 'market'])
-const placeSafeties = new Set<string>(['dedicated', 'gf-menu'])
+const placeSafeties = new Set<string>(['dedicated', 'gf-menu', 'gf-options'])
 
-/** Types widen the list, and so do safety levels: pick either and you see both. */
+/** Types widen the list, and so do safety levels: pick two and you see both. */
 export function matchesPlace(place: Place, selected: PlaceFilter[]) {
   const pickedTypes = selected.filter((f) => placeTypes.has(f))
   const pickedSafety = selected.filter((f) => placeSafeties.has(f))

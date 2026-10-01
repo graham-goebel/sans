@@ -41,11 +41,14 @@ export function RecipeCard({ recipe }: { recipe: Recipe }) {
   )
 }
 
-// Tighter padding for the small shelf cards; the photo's bleed follows it.
+// Tighter padding for the small shelf cards (the photo's bleed follows it),
+// and a bigger title than Card's default, a step below the photo cards'.
 const productCardStyle = {
   overflow: 'hidden',
   height: '100%',
   '--dt-card-padding': 'var(--dt-space-inset-md)',
+  '--dt-text-heading-sm-size': '1.625rem',
+  '--dt-text-heading-sm-line': '1.08',
 } as CSSProperties
 
 interface LogoCardProps {

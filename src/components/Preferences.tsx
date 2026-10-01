@@ -1,14 +1,23 @@
 import { useState, type ReactNode } from 'react'
-import { Button, CheckboxGroup, RadioGroup, Select, Sheet, Stack, Switch, Text } from '@dovetail-ds/react'
+import { Button, CheckboxGroup, Select, Sheet, Slider, Stack, Switch, Text } from '@dovetail-ds/react'
+import { EggOff, MilkOff, NutOff, Vegan } from '../icons'
 import {
+  experienceLevels,
   loadPreferences,
   PreferencesContext,
   savePreferences,
   type Avoid,
   type Condition,
-  type Experience,
   type Preferences,
 } from '../lib/preferences'
+import { FilterChips, type ChipOption } from './FilterChips'
+
+const diets: ChipOption<Avoid>[] = [
+  { id: 'dairy', label: 'Dairy-free', icon: MilkOff },
+  { id: 'eggs', label: 'Egg-free', icon: EggOff },
+  { id: 'nuts', label: 'Nut-free', icon: NutOff },
+  { id: 'animal', label: 'Vegan', icon: Vegan },
+]
 
 export function PreferencesProvider({ children }: { children: ReactNode }) {
   const [preferences, setPreferences] = useState<Preferences>(loadPreferences)
@@ -55,10 +64,12 @@ export function PreferencesProvider({ children }: { children: ReactNode }) {
               onChange={(event) => update({ useLocation: event.target.checked })}
             />
           </Stack>
-          <RadioGroup
+          <CheckboxGroup
+            className="leading-labels"
             label="Why do you eat gluten-free?"
-            value={preferences.condition}
-            onChange={(value) => update({ condition: value as Condition })}
+            hint="Pick any that apply."
+            value={preferences.conditions}
+            onChange={(value) => update({ conditions: value as Condition[] })}
             options={[
               { value: 'coeliac', label: 'Coeliac disease', hint: 'Even traces matter; we’ll flag shared kitchens.' },
               { value: 'sensitivity', label: 'Gluten intolerance or sensitivity' },
@@ -66,27 +77,35 @@ export function PreferencesProvider({ children }: { children: ReactNode }) {
               { value: 'preference', label: 'By choice' },
             ]}
           />
-          <CheckboxGroup
-            label="Anything else you avoid?"
-            hint="Recipes and products start filtered to match."
-            value={preferences.avoid}
-            onChange={(value) => update({ avoid: value as Avoid[] })}
-            options={[
-              { value: 'dairy', label: 'Dairy' },
-              { value: 'eggs', label: 'Eggs' },
-              { value: 'nuts', label: 'Nuts' },
-              { value: 'animal', label: 'Animal products (vegan)' },
-            ]}
-          />
-          <RadioGroup
-            label="How long have you been gluten-free?"
-            value={preferences.experience}
-            onChange={(value) => update({ experience: value as Experience })}
-            options={[
-              { value: 'new', label: 'Just starting', hint: 'Under a year' },
-              { value: 'learning', label: 'Getting the hang of it', hint: '1–3 years' },
-              { value: 'seasoned', label: 'Seasoned', hint: '3 years or more' },
-            ]}
+          <Stack gap="sm">
+            {/* Set like a form field's label and hint, to match the fields around it. */}
+            <Stack gap="2xs">
+              <span className="field-label">Diet type</span>
+              <span className="field-hint">Recipes and products start filtered to match.</span>
+            </Stack>
+            <FilterChips
+              label="Diet type"
+              options={diets}
+              selected={preferences.avoid}
+              onToggle={(id) =>
+                update({
+                  avoid: preferences.avoid.includes(id)
+                    ? preferences.avoid.filter((a) => a !== id)
+                    : [...preferences.avoid, id],
+                })
+              }
+            />
+          </Stack>
+          <Slider
+            label="Experience level"
+            hint="How long you’ve been gluten-free."
+            min={0}
+            max={experienceLevels.length - 1}
+            step={1}
+            value={Math.max(0, experienceLevels.findIndex((l) => l.value === (preferences.experience ?? 'learning')))}
+            onChange={(index) => update({ experience: experienceLevels[index].value })}
+            showValue
+            formatValue={(index) => experienceLevels[index]?.label ?? ''}
           />
           <Text variant="fine">sans shares information, not medical advice.</Text>
         </Stack>

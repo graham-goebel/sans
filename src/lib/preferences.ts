@@ -9,13 +9,21 @@ export interface Preferences {
   city: 'denver'
   /** Sort places by distance as soon as the Places page opens. */
   useLocation: boolean
-  condition?: Condition
-  /** Other things to avoid, beyond gluten. */
+  /** Why they eat gluten-free; there can be more than one reason. */
+  conditions: Condition[]
+  /** Diet types beyond gluten-free; recipes and products start filtered to match. */
   avoid: Avoid[]
   experience?: Experience
 }
 
-export const defaultPreferences: Preferences = { city: 'denver', useLocation: false, avoid: [] }
+export const defaultPreferences: Preferences = { city: 'denver', useLocation: false, conditions: [], avoid: [] }
+
+/** Experience levels in order, for the slider. */
+export const experienceLevels: { value: Experience; label: string }[] = [
+  { value: 'new', label: 'Just starting' },
+  { value: 'learning', label: 'Getting the hang of it' },
+  { value: 'seasoned', label: 'Seasoned' },
+]
 
 /** The recipe and product filter chip each avoidance turns on. */
 export const avoidTrait: Record<Avoid, Trait> = {
@@ -31,7 +39,11 @@ const KEY = 'sans:preferences'
 export function loadPreferences(): Preferences {
   try {
     const raw = window.localStorage.getItem(KEY)
-    return raw ? { ...defaultPreferences, ...JSON.parse(raw) } : defaultPreferences
+    if (!raw) return defaultPreferences
+    const { condition, ...saved } = JSON.parse(raw)
+    // Saved before more than one reason could be picked: carry the single one over.
+    if (condition && !saved.conditions) saved.conditions = [condition]
+    return { ...defaultPreferences, ...saved }
   } catch {
     return defaultPreferences
   }
