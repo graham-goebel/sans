@@ -1279,15 +1279,6 @@ svg.lucide {
   color: var(--dt-input-hint-color);
 }
 
-/* Checkboxes and radios with the label first and the box at the end of the
-   row, like Switch labelPosition="start" (see docs/dovetail-requests.md). */
-.leading-labels label[for] {
-  flex: 1;
-  flex-direction: row-reverse;
-  justify-content: space-between;
-  gap: var(--dt-space-inline-md);
-}
-
 /* The Places row's featured slot, open for a partner: a brand panel. */
 .partner-slot {
   place-items: end start;
