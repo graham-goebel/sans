@@ -7,6 +7,7 @@ import { ErrorBoundary } from './components/ErrorBoundary'
 import { PreferencesProvider } from './components/Preferences'
 import { QuickViewProvider } from './components/QuickView'
 import { SearchSheet } from './components/SearchSheet'
+import { Landing } from './pages/Dummy'
 import { Home } from './pages/Home'
 import { AboutPage, CreditsPage, PrivacyPage, TermsPage } from './pages/Info'
 import { NotFound } from './pages/NotFound'
@@ -57,6 +58,7 @@ function Shell() {
               <Route path="/privacy" element={<PrivacyPage />} />
               <Route path="/terms" element={<TermsPage />} />
               <Route path="/credits" element={<CreditsPage />} />
+              <Route path="/dummy" element={<Landing />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </ErrorBoundary>
